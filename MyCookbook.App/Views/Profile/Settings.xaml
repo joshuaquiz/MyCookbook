@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="MyCookbook.App.Views.Profile.Settings"
+             CanBeDismissedByTappingOutsideOfPopup="True"
+             Color="Transparent">
+    <Frame
+        HasShadow="True"
+        Padding="0"
+        Margin="0">
+        <Grid
+            RowDefinitions="50,2,20,40,20"
+            ColumnDefinitions="20,100,125,20">
+            <Label
+                Grid.Row="0"
+                Grid.Column="1"
+                FontAttributes="Bold"
+                FontSize="20"
+                HeightRequest="50"
+                WidthRequest="100"
+                Text="Settings"
+                VerticalOptions="Fill"
+                VerticalTextAlignment="Center" />
+            <ImageButton
+                Grid.Row="0"
+                Grid.Column="2"
+                HorizontalOptions="End"
+                HeightRequest="20"
+                WidthRequest="20"
+                VerticalOptions="Center"
+                Source="close"
+                BackgroundColor="Transparent"
+                Clicked="Button_OnClicked" />
+            <Rectangle
+                Grid.Row="1"
+                Grid.Column="0"
+                Grid.ColumnSpan="4"
+                BackgroundColor="LightGray" />
+            <Label
+                Grid.Row="3"
+                Grid.Column="1"
+                HeightRequest="40"
+                WidthRequest="100"
+                VerticalOptions="Fill"
+                VerticalTextAlignment="Center"
+                FontAttributes="Bold"
+                Text="App Theme:"/>
+            <Picker
+                x:Name="ThemePicker"
+                Grid.Row="3"
+                Grid.Column="2"
+                VerticalOptions="Fill"
+                VerticalTextAlignment="Center"
+                ItemsSource="{Binding AppThemes}"
+                SelectedIndexChanged="Picker_OnSelectedIndexChanged" />
+        </Grid>
+    </Frame>
+</toolkit:Popup>

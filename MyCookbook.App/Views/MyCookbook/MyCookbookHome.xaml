@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:BasePage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="MyCookbook.App.Views.MyCookbook.MyCookbookHome"
+    xmlns:views="using:MyCookbook.App.Views"
+    xmlns:myCookbook="using:MyCookbook.App.Views.MyCookbook"
+    xmlns:viewModels="using:MyCookbook.App.ViewModels"
+    x:DataType="viewModels:MyCookbookViewModel"
+    Title="{Binding Title}"
+    Shell.NavBarIsVisible="False"
+    Shell.PresentationMode="ModalAnimated">
+    <Grid
+        ColumnDefinitions="*,Auto"
+        RowDefinitions="Auto,*,50"
+        BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Black}}">
+        <SearchBar
+            x:Name="TextSearchBar"
+            Grid.Row="0"
+            Grid.Column="0"
+            HorizontalOptions="Start"
+            IsTextPredictionEnabled="True"
+            IsSpellCheckEnabled="True"
+            Placeholder="Search"
+            TextChanged="SearchBar_OnTextChanged" />
+        <ImageButton
+            Grid.Row="0"
+            Grid.Column="1"
+            HorizontalOptions="End"
+            HeightRequest="30"
+            WidthRequest="30"
+            Margin="10"
+            Source="profile" />
+        <RefreshView 
+            Grid.Row="1"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            Margin="0"
+            Padding="10"
+            IsRefreshing="{Binding IsRefreshing}"
+            Command="{Binding GetRecipesCommand}"
+            CommandParameter="{x:Reference TextSearchBar}"
+            RefreshColor="{StaticResource Primary}">
+            <CollectionView
+                Margin="0"
+                ItemsLayout="VerticalList"
+                ItemsSource="{Binding RecipesToDisplay}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <myCookbook:CookbookRecipeItem
+                            Item="{Binding .}" />
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+        <Rectangle
+            Grid.Row="2"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            HorizontalOptions="Fill"
+            VerticalOptions="Fill"
+            BackgroundColor="Gray"/>
+        <!--<controls:MTAdView
+            Grid.Row="1"
+            Grid.Column="0"/>-->
+        <Label
+            Grid.Row="2"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            HorizontalOptions="Fill"
+            VerticalOptions="Fill"
+            VerticalTextAlignment="Center"
+            HorizontalTextAlignment="Center"
+            Text="Ads go here"
+            TextColor="{AppThemeBinding Light=Black, Dark=White}" />
+    </Grid>
+</views:BasePage>

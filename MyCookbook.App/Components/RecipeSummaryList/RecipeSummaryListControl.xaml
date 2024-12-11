@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:recipeSummary="clr-namespace:MyCookbook.App.Components.RecipeSummary"
+    x:Class="MyCookbook.App.Components.RecipeSummaryList.RecipeSummaryListControl"
+    x:Name="Root">
+    <ContentView.Content>
+        <Grid
+            HorizontalOptions="Fill"
+            ColumnDefinitions="*"
+            RowDefinitions="*"
+            BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Black}}">
+            <Label
+                Text="{Binding Count, Source={Reference Root}}"/>
+            <RefreshView
+                Grid.Row="0"
+                Grid.Column="0"
+                Margin="0"
+                Padding="10"
+                IsRefreshing="{Binding IsRefreshing, Source={Reference Root}}"
+                Command="{Binding RefreshCommand, Source={Reference Root}}"
+                RefreshColor="{StaticResource Primary}">
+                <CollectionView
+                    x:Name="Cv"
+                    Margin="0"
+                    ItemsLayout="VerticalList"
+                    ItemsUpdatingScrollMode="KeepScrollOffset"
+                    HorizontalScrollBarVisibility="Never"
+                    VerticalScrollBarVisibility="Never"
+                    ItemsSource="{Binding Items, Source={Reference Root}}"
+                    RemainingItemsThreshold="3"
+                    RemainingItemsThresholdReachedCommand="{Binding GetNextPageCommand, Source={Reference Root}}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <recipeSummary:RecipeSummaryComponent
+                                Item="{Binding .}" />
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                    <CollectionView.Footer>
+                        <VerticalStackLayout
+                            HorizontalOptions="Fill"
+                            VerticalOptions="Start">
+                            <Rectangle
+                                HeightRequest="90"
+                                HorizontalOptions="Fill"
+                                VerticalOptions="Fill"
+                                BackgroundColor="Transparent" />
+                        </VerticalStackLayout>
+                    </CollectionView.Footer>
+                </CollectionView>
+            </RefreshView>
+            <ActivityIndicator
+                Grid.Row="0"
+                Grid.Column="0"
+                IsVisible="{Binding IsBusy, Source={Reference Root}}"
+                IsRunning="{Binding IsBusy, Source={Reference Root}}"
+                HorizontalOptions="Fill"
+                VerticalOptions="Center" />
+        </Grid>
+    </ContentView.Content>
+</ContentView>

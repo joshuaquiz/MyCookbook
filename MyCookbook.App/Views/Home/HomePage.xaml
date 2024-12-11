@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:BasePage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="using:MyCookbook.App.Views"
+    xmlns:home="using:MyCookbook.App.Views.Home"
+    xmlns:recipeSummaryList="clr-namespace:MyCookbook.App.Components.RecipeSummaryList"
+    x:Class="MyCookbook.App.Views.Home.HomePage"
+    x:Name="Root"
+    Title="Home"
+    Shell.NavBarIsVisible="False"
+    Shell.PresentationMode="NotAnimated">
+    <Grid
+        ColumnDefinitions="*"
+        RowDefinitions="*,50"
+        BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Black}}">
+        <recipeSummaryList:RecipeSummaryListControl
+            Grid.Row="0"
+            Grid.Column="0"
+            GetData="{Binding GetData, Source={Reference Root}}" />
+        <home:HomeBar
+            Grid.Row="0"
+            Grid.Column="0"
+            Margin="10,0,10,10"
+            Navigate="HomeBar_OnNavigate" />
+        <Rectangle
+            Grid.Row="1"
+            Grid.Column="0"
+            HorizontalOptions="Fill"
+            VerticalOptions="Fill"
+            BackgroundColor="Gray"/>
+        <!--<controls:MTAdView
+            x:Name="MyAdView"
+            Grid.Row="1"
+            Grid.Column="0"
+            HeightRequest="90"
+            Margin="0,50,0,0"
+            BackgroundColor="Transparent"
+            AdsId="ca-app-pub-3327131024555440/4066729058"
+            AdSize="AnchoredAdaptive" />-->
+    </Grid>
+</views:BasePage>

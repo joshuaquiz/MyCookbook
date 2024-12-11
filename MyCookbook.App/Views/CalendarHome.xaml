@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:BasePage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="MyCookbook.App.Views.CalendarHome"
+    xmlns:xc="clr-namespace:XCalendar.Maui.Views;assembly=XCalendar.Maui"
+    xmlns:views="using:MyCookbook.App.Views"
+    xmlns:recipeSummary="clr-namespace:MyCookbook.App.Components.RecipeSummary"
+    Shell.NavBarIsVisible="False"
+    Shell.PresentationMode="ModalAnimated"
+    Title="{Binding Recipe.Name}">
+    <Grid
+        RowDefinitions="50,*"
+        ColumnDefinitions="*">
+        <xc:CalendarView
+            Grid.Row="1"
+            Grid.Column="0"
+            Days="{Binding MyCalendar.Days}"
+            DaysOfWeek="{Binding MyCalendar.DayNamesOrder}"
+            NavigatedDate="{Binding MyCalendar.NavigatedDate}"
+            />
+        <!--<CollectionView
+            IsVisible="{Binding IsNotBusy}"
+            HorizontalScrollBarVisibility="Never"
+            ItemsSource="{Binding DayRecipes}"
+            ItemsLayout="HorizontalList"
+            Margin="0">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <recipeSummary:RecipeSummaryComponent
+                        Item="{Binding .}" />
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>-->
+    </Grid>
+</views:BasePage>

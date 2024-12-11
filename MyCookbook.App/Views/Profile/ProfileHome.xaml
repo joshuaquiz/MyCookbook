@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:BasePage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="MyCookbook.App.Views.Profile.ProfileHome"
+    xmlns:views="using:MyCookbook.App.Views"
+    xmlns:viewModels="using:MyCookbook.App.ViewModels"
+    xmlns:recipeSummaryList="clr-namespace:MyCookbook.App.Components.RecipeSummaryList"
+    x:DataType="viewModels:ProfileViewModel"
+    x:Name="Root"
+    Title="{Binding Title}"
+    Shell.NavBarIsVisible="True"
+    Shell.PresentationMode="Animated">
+    <ScrollView
+        VerticalScrollBarVisibility="Never"
+        HorizontalScrollBarVisibility="Never">
+        <VerticalStackLayout>
+            <ActivityIndicator
+                IsVisible="{Binding IsBusy}"
+                IsEnabled="{Binding IsBusy}" />
+            <Image
+                IsVisible="{Binding IsNotBusy}"
+                HeightRequest="160"
+                Source="{Binding UserProfile.BackgroundImageUri}"
+                Aspect="AspectFill" />
+            <Frame
+                IsVisible="{Binding IsNotBusy}"
+                Margin="0,-75,0,0"
+                HeightRequest="150"
+                WidthRequest="150"
+                BorderColor="White"
+                HorizontalOptions="Center"
+                HasShadow="False"
+                CornerRadius="75"
+                Padding="0"
+                IsClippedToBounds="True">
+                <Image
+                    Source="{Binding UserProfile.ProfileImageUri}"
+                    Aspect="AspectFill" />
+            </Frame>
+            <Label
+                IsVisible="{Binding IsNotBusy}"
+                FontAttributes="Bold"
+                TextColor="#383b67"
+                HorizontalTextAlignment="Center"
+                Margin="0,20,0,0"
+                FontSize="28">
+                <Label.Text>
+                    <MultiBinding StringFormat="{}{0} {1}">
+                        <Binding Path="UserProfile.FirstName" />
+                        <Binding Path="UserProfile.LastName" />
+                    </MultiBinding>
+                </Label.Text>
+            </Label>
+            <Grid
+                IsVisible="{Binding IsNotBusy}"
+                ColumnDefinitions="Auto,Auto,10,Auto,5,Auto,5,Auto,5,Auto"
+                VerticalOptions="Center"
+                HorizontalOptions="Center"
+                Margin="0,20,0,0">
+                <Image
+                    Grid.Column="0"
+                    Source="location"
+                    WidthRequest="18"
+                    HeightRequest="18"
+                    HorizontalOptions="Center" />
+                <Label
+                    Grid.Column="1"
+                    FontSize="15">
+                    <Label.Text>
+                        <MultiBinding StringFormat="{}{0}, {1}">
+                            <Binding Path="UserProfile.City" />
+                            <Binding Path="UserProfile.Country" />
+                        </MultiBinding>
+                    </Label.Text>
+                </Label>
+                <Image
+                    Grid.Column="3"
+                    Source="calendar"
+                    WidthRequest="18"
+                    HeightRequest="18"
+                    HorizontalOptions="Center" />
+                <Label
+                    Grid.Column="5">
+                    <Label.Text>
+                        <MultiBinding StringFormat="{}Age, {0}">
+                            <Binding Path="UserProfile.Age" />
+                        </MultiBinding>
+                    </Label.Text>
+                </Label>
+                <Image
+                    Grid.Column="7"
+                    Source="chef_hat"
+                    WidthRequest="18"
+                    HeightRequest="18"
+                    HorizontalOptions="Center"
+                    IsVisible="{Binding UserProfile.IsPremium}" />
+                <Label
+                    Grid.Column="9"
+                    Text="Premium"
+                    IsVisible="{Binding UserProfile.IsPremium}">
+                </Label>
+            </Grid>
+            <Label
+                IsVisible="{Binding IsNotBusy}"
+                FontAttributes="Bold"
+                HorizontalTextAlignment="Start"
+                Margin="20,20,15,10"
+                FontSize="20">
+                <Label.Text>
+                    <MultiBinding StringFormat="{}About {0}">
+                        <Binding Path="UserProfile.FirstName" />
+                    </MultiBinding>
+                </Label.Text>
+            </Label>
+            <Label
+                IsVisible="{Binding IsNotBusy}"
+                HorizontalTextAlignment="Start"
+                FontSize="15"
+                Margin="20,0,20,0"
+                Text="{Binding UserProfile.Description}" />
+            <Label
+                IsVisible="{Binding IsNotBusy}"
+                Text="Recipes"
+                FontAttributes="Bold"
+                HorizontalTextAlignment="Start"
+                Margin="20,20,20,0"
+                FontSize="20" />
+            <recipeSummaryList:RecipeSummaryListControl
+                x:Name="RecipeSummaryListControl"
+                GetData="{Binding GetData, Source={Reference Root}}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</views:BasePage>

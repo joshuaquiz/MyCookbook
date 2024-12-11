@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:BasePage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                xmlns:views="using:MyCookbook.App.Views"
+                x:Class="MyCookbook.App.Views.ShoppingListHome"
+                Title="{Binding Title}"
+                Shell.NavBarIsVisible="False"
+                Shell.PresentationMode="ModalAnimated">
+    <CollectionView
+        ItemsSource="{Binding Ingredients}"
+        ItemsLayout="VerticalList">
+        <CollectionView.ItemTemplate>
+            <DataTemplate>
+                <VerticalStackLayout>
+                    <Grid
+                        RowDefinitions="50"
+                        ColumnDefinitions="Auto,*,150">
+                        <CheckBox
+                            HeightRequest="40"
+                            WidthRequest="40"
+                            VerticalOptions="Center"
+                            HorizontalOptions="Center"
+                            Color="{StaticResource Primary}" />
+                        <Label
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            VerticalOptions="Fill"
+                            VerticalTextAlignment="Center"
+                            Margin="15,0,0,0">
+                            <Label.Text>
+                                <MultiBinding StringFormat="{}{0} {1} - {2}">
+                                    <Binding Path="Quantity" />
+                                    <Binding Path="Measurement" />
+                                    <Binding Path="Ingredient.Name" />
+                                </MultiBinding>
+                            </Label.Text>
+                        </Label>
+                        <Image
+                            Grid.Row="0"
+                            Grid.Column="3"
+                            Source="{Binding ImageUri, TargetNullValue=profile}"
+                            Aspect="AspectFill"
+                            HeightRequest="50"
+                            WidthRequest="150" />
+                        <Rectangle
+                            Grid.Row="0"
+                            Grid.Column="3">
+                            <Rectangle.Background>
+                                <LinearGradientBrush
+                                    StartPoint="1,1"
+                                    EndPoint="0,1">
+                                    <GradientStop
+                                        Color="Transparent"
+                                        Offset="0.7" />
+                                    <GradientStop
+                                        Color="{AppThemeBinding Light=White, Dark=Black}"
+                                        Offset="1" />
+                                </LinearGradientBrush>
+                            </Rectangle.Background>
+                        </Rectangle>
+                    </Grid>
+                    <Rectangle
+                        Fill="LightGray"
+                        HeightRequest="2"
+                        HorizontalOptions="Fill" />
+                </VerticalStackLayout>
+            </DataTemplate>
+        </CollectionView.ItemTemplate>
+    </CollectionView>
+</views:BasePage>

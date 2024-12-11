@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="MyCookbook.App.Components.RecipeSummary.RecipeSummaryComponent"
+    x:Name="Root"
+    HorizontalOptions="Fill"
+    VerticalOptions="End"
+    Padding="5"
+    BindingContext="RecipeSummaryViewModel">
+    <ContentView.Shadow>
+        <Shadow
+            Brush="{StaticResource Black}"
+            Offset="0,3"
+            Radius="10"
+            Opacity="0.6" />
+    </ContentView.Shadow>
+    <Border
+        StrokeShape="RoundRectangle 5"
+        StrokeThickness="0"
+        HorizontalOptions="Fill"
+        VerticalOptions="Fill"
+        Padding="0"
+        Margin="0">
+        <Border.GestureRecognizers>
+            <TapGestureRecognizer
+                Tapped="OnTapped" />
+        </Border.GestureRecognizers>
+        <Grid
+            RowDefinitions="10,100,50,50,10"
+            ColumnDefinitions="10,50,10,*,10,80,10"
+            HorizontalOptions="Fill"
+            VerticalOptions="Fill">
+            <Border
+                Grid.Row="0"
+                Grid.RowSpan="5"
+                Grid.Column="0"
+                Grid.ColumnSpan="7"
+                StrokeShape="RoundRectangle 5"
+                StrokeThickness="0">
+                <Image
+                    Source="{Binding ImageUrl}"
+                    Aspect="AspectFill"
+                    HorizontalOptions="Fill"
+                    VerticalOptions="Fill"
+                    HeightRequest="220" />
+            </Border>
+            <Border
+                Grid.Row="2"
+                Grid.RowSpan="3"
+                Grid.Column="0"
+                Grid.ColumnSpan="7"
+                HeightRequest="110"
+                HorizontalOptions="Fill"
+                StrokeShape="RoundRectangle 5"
+                StrokeThickness="0">
+                <Rectangle
+                    HeightRequest="110"
+                    HorizontalOptions="Fill">
+                    <Rectangle.Background>
+                        <LinearGradientBrush
+                            EndPoint="0,1">
+                            <GradientStop
+                                Color="Transparent"
+                                Offset="0.1" />
+                            <GradientStop
+                                Color="{AppThemeBinding Light=White, Dark=Black}"
+                                Offset=".55" />
+                        </LinearGradientBrush>
+                    </Rectangle.Background>
+                </Rectangle>
+            </Border>
+            <Border
+                Grid.Row="3"
+                Grid.Column="1"
+                StrokeShape="RoundRectangle 5"
+                StrokeThickness="0">
+                <Image
+                    Source="{Binding AuthorImageUrl}"
+                    HeightRequest="50"
+                    WidthRequest="50"
+                    Aspect="AspectFill" />
+            </Border>
+            <Label
+                Grid.Row="3"
+                Grid.Column="3"
+                Text="{Binding Name}"
+                VerticalOptions="Center"
+                HorizontalOptions="Start"
+                LineBreakMode="TailTruncation"
+                FontSize="20" />
+            <Label
+                Grid.Row="3"
+                Grid.Column="5"
+                Margin="0,15,0,0"
+                VerticalOptions="Start" 
+                HorizontalOptions="End">
+                <Label.Text>
+                    <MultiBinding StringFormat="{}{0}h {1}m">
+                        <Binding Path="TotalTimeSpan.Hours"/>
+                        <Binding Path="TotalTimeSpan.Minutes"/>
+                    </MultiBinding>
+                </Label.Text>
+            </Label>
+            <Label
+                Grid.Row="3"
+                Grid.Column="5"
+                VerticalOptions="End" 
+                HorizontalOptions="End">
+                <Label.Text>
+                    <MultiBinding StringFormat="{}{0} Servings">
+                        <Binding Path="Servings"></Binding>
+                    </MultiBinding>
+                </Label.Text>
+            </Label>
+        </Grid>
+    </Border>
+</ContentView>
