@@ -17,13 +17,13 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Amazon.CDK.Lib" Version="2.172.0" />
-    <PackageReference Include="Amazon.Jsii.Analyzers" Version="1.105.0" PrivateAssets="all" />
-    <PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="3.7.403.3" />
+    <PackageReference Include="Amazon.CDK.Lib" Version="2.218.0" />
+    <PackageReference Include="Amazon.Jsii.Analyzers" Version="1.115.0" PrivateAssets="all" />
+    <PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="4.0.4.1" />
     <PackageReference Include="Constructs" Version="10.4.2" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="9.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="9.0.9" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.9" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.9" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="9.0.9" />
   </ItemGroup>
 </Project>
