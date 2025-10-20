@@ -28,12 +28,12 @@ public sealed class Program
                 opt.UseSqlite(
                     "Data Source=MyCookbook.db;");
             });
-        builder.Services.AddDbContextFactory<MyCookbookContext>(
+        /*builder.Services.AddDbContextFactory<MyCookbookContext>(
             opt =>
             {
                 opt.UseNpgsql(
                     "");
-            });
+            });*/
         builder.Services.AddSingleton<IJobQueuer, JobQueuer>();
         builder.Services.AddSingleton<ILdJsonExtractor, LdJsonExtractor>();
         builder.Services.AddSingleton<ILdJsonSectionJsonObjectExtractor, LdJsonSectionJsonObjectExtractor>();
@@ -42,10 +42,10 @@ public sealed class Program
         builder.Services.AddSingleton<IRecipeWebSiteWrapperProcessor, RecipeWebSiteWrapperProcessor>();
         builder.Services.AddSingleton<IUrlProcessor, UrlProcessor>();
         builder.Services.AddSingleton<IIngredientsCache, IngredientsCache>();
-        //builder.Services.AddSingleton<JobRunner>();
-        //builder.Services.AddHostedService<JobRunner>();
-        builder.Services.AddSingleton<JobReRunner>();
-        builder.Services.AddHostedService<JobReRunner>();
+        builder.Services.AddSingleton<JobRunner>();
+        builder.Services.AddHostedService<JobRunner>();
+        //builder.Services.AddSingleton<JobReRunner>();
+        //builder.Services.AddHostedService<JobReRunner>();
         //builder.Services.AddSingleton<OneOffs>();
         //builder.Services.AddHostedService<OneOffs>();
         var app = builder.Build();

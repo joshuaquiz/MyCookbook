@@ -25,9 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyCookbook.UnitTests", "MyC
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{AA04F183-FD0B-453A-B798-62ED0F7AD335}"
 	ProjectSection(SolutionItems) = preProject
+		Database\FreshMyCookbook.db = Database\FreshMyCookbook.db
 		Database\MyCookbook.db = Database\MyCookbook.db
-		Database\MyCookbook.db-shm = Database\MyCookbook.db-shm
-		Database\MyCookbook.db-wal = Database\MyCookbook.db-wal
 	EndProjectSection
 EndProject
 Global

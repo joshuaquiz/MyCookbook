@@ -127,17 +127,11 @@ public sealed class JobRunner(
                             stoppingToken);
                         if (recipe != null)
                         {
-                            db.Recipes.Attach(
-                                recipe);
-                            db.Authors.Attach(
-                                recipe.Author);
-                            db.RecipeSteps.AttachRange(
-                                recipe.RecipeSteps);
-                            db.RecipeStepIngredients.AttachRange(
-                                recipe.RecipeSteps
-                                    .SelectMany(
-                                        y =>
-                                            y.RecipeIngredients));
+                            await db.Recipes.AddAsync(
+                                recipe,
+                                stoppingToken);
+                            await db.SaveChangesAsync(
+                                stoppingToken);
                         }
 
                         recipeUrl.ProcessingStatus = RecipeUrlStatus.FinishedSuccess;

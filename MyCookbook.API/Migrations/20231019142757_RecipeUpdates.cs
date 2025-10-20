@@ -11,173 +11,63 @@ namespace MyCookbook.API.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "Ingredients",
-                columns: table => new
-                {
-                    Guid = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    Image = table.Column<string>(type: "TEXT", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Ingredients", x => x.Guid);
-                });
+            migrationBuilder.AddColumn<string>("Image", "Ingredients", "TEXT", nullable: true);
 
-            migrationBuilder.CreateTable(
-                name: "RecipeUrls",
-                columns: table => new
-                {
-                    Guid = table.Column<Guid>(type: "TEXT", nullable: false),
-                    ParserVersion = table.Column<int>(type: "INTEGER", nullable: false),
-                    ProcessingStatus = table.Column<int>(type: "INTEGER", nullable: false),
-                    Host = table.Column<string>(type: "TEXT", nullable: false),
-                    Uri = table.Column<string>(type: "TEXT", nullable: false),
-                    StatusCode = table.Column<int>(type: "INTEGER", nullable: true),
-                    LdJson = table.Column<string>(type: "TEXT", nullable: true),
-                    Exception = table.Column<string>(type: "TEXT", nullable: true),
-                    CompletedAt = table.Column<DateTimeOffset>(type: "TEXT", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RecipeUrls", x => x.Guid);
-                });
+            migrationBuilder.AddColumn<string>("ParserVersion", "RecipeUrls", "INTEGER", nullable: false);
+            migrationBuilder.AddColumn<string>("Host", "RecipeUrls", "TEXT", nullable: false);
 
-            migrationBuilder.CreateTable(
-                name: "Users",
-                columns: table => new
-                {
-                    Guid = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    Image = table.Column<string>(type: "TEXT", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Users", x => x.Guid);
-                });
+            migrationBuilder.AddColumn<string>("BackgroundImage", "Authors", "TEXT", nullable: true);
 
-            migrationBuilder.CreateTable(
-                name: "Authors",
-                columns: table => new
-                {
-                    Guid = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    Image = table.Column<string>(type: "TEXT", nullable: true),
-                    BackgroundImage = table.Column<string>(type: "TEXT", nullable: true),
-                    UserGuid = table.Column<Guid>(type: "TEXT", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Authors", x => x.Guid);
-                    table.ForeignKey(
-                        name: "FK_Authors_Users_UserGuid",
-                        column: x => x.UserGuid,
-                        principalTable: "Users",
-                        principalColumn: "Guid");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Recipes",
-                columns: table => new
-                {
-                    Guid = table.Column<Guid>(type: "TEXT", nullable: false),
-                    RecipeUrlGuid = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Image = table.Column<string>(type: "TEXT", nullable: true),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    TotalTime = table.Column<TimeSpan>(type: "TEXT", nullable: false),
-                    AuthorGuid = table.Column<Guid>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Recipes", x => x.Guid);
-                    table.ForeignKey(
-                        name: "FK_Recipes_Authors_AuthorGuid",
-                        column: x => x.AuthorGuid,
-                        principalTable: "Authors",
-                        principalColumn: "Guid",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Recipes_RecipeUrls_RecipeUrlGuid",
-                        column: x => x.RecipeUrlGuid,
-                        principalTable: "RecipeUrls",
-                        principalColumn: "Guid",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "RecipeIngredients",
-                columns: table => new
-                {
-                    Guid = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Quantity = table.Column<string>(type: "TEXT", nullable: false),
-                    Measurement = table.Column<int>(type: "INTEGER", nullable: false),
-                    Notes = table.Column<string>(type: "TEXT", nullable: true),
-                    IngredientGuid = table.Column<Guid>(type: "TEXT", nullable: false),
-                    RecipeGuid = table.Column<Guid>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RecipeIngredients", x => x.Guid);
-                    table.ForeignKey(
-                        name: "FK_RecipeIngredients_Ingredients_IngredientGuid",
-                        column: x => x.IngredientGuid,
-                        principalTable: "Ingredients",
-                        principalColumn: "Guid",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_RecipeIngredients_Recipes_RecipeGuid",
-                        column: x => x.RecipeGuid,
-                        principalTable: "Recipes",
-                        principalColumn: "Guid",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
+            migrationBuilder.AddColumn<string>("RecipeUrlGuid", "Recipes", "TEXT", nullable: true);
+            migrationBuilder.AddForeignKey(
+                name: "FK_Recipes_RecipeUrls_RecipeUrlGuid",
+                table: "Recipes",
+                column: "RecipeUrlGuid",
+                principalTable: "RecipeUrls",
+                principalColumn: "Guid",
+                onDelete: ReferentialAction.Cascade);
             migrationBuilder.CreateIndex(
-                name: "IX_Authors_UserGuid",
-                table: "Authors",
-                column: "UserGuid");
+                name: "IX_Recipes_RecipeUrlGuid",
+                table: "Recipes",
+                column: "RecipeUrlGuid");
+
+            migrationBuilder.RenameTable("IngredientRecipe", newName: "RecipeIngredients");
+            migrationBuilder.DropPrimaryKey("PK_IngredientRecipe", "RecipeIngredients");
+            migrationBuilder.AddColumn<Guid>("Guid", "RecipeIngredients", "TEXT", nullable: false);
+            migrationBuilder.AddColumn<string>("Quantity", "RecipeIngredients", "TEXT", nullable: false);
+            migrationBuilder.AddColumn<int>("Measurement", "RecipeIngredients", "INTEGER", nullable: false);
+            migrationBuilder.AddColumn<string>("Notes", "RecipeIngredients", "TEXT", nullable: false);
+            migrationBuilder.AddPrimaryKey("PK_RecipeIngredients", "RecipeIngredients", "Guid");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RecipeIngredients_IngredientGuid",
                 table: "RecipeIngredients",
                 column: "IngredientGuid");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RecipeIngredients_RecipeGuid",
-                table: "RecipeIngredients",
-                column: "RecipeGuid");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Recipes_AuthorGuid",
-                table: "Recipes",
-                column: "AuthorGuid");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Recipes_RecipeUrlGuid",
-                table: "Recipes",
-                column: "RecipeUrlGuid");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "RecipeIngredients");
+            migrationBuilder.DropIndex("IX_RecipeIngredients_IngredientGuid", "RecipeIngredients");
 
-            migrationBuilder.DropTable(
-                name: "Ingredients");
+            migrationBuilder.DropColumn("Image", "Ingredients");
 
-            migrationBuilder.DropTable(
-                name: "Recipes");
+            migrationBuilder.DropColumn("ParserVersion", "RecipeUrls");
+            migrationBuilder.DropColumn("Host", "RecipeUrls");
 
-            migrationBuilder.DropTable(
-                name: "Authors");
+            migrationBuilder.DropColumn("BackgroundImage", "Authors");
 
-            migrationBuilder.DropTable(
-                name: "RecipeUrls");
+            migrationBuilder.DropForeignKey("FK_Recipes_RecipeUrls_RecipeUrlGuid", "Recipes");
+            migrationBuilder.DropColumn("RecipeUrlGuid", "Recipes");
+            migrationBuilder.DropIndex("IX_Recipes_RecipeUrlGuid", "Recipes");
 
-            migrationBuilder.DropTable(
-                name: "Users");
+            migrationBuilder.DropPrimaryKey("PK_RecipeIngredients", "RecipeIngredients");
+            migrationBuilder.DropColumn("Guid", "RecipeIngredients");
+            migrationBuilder.DropColumn("Quantity", "RecipeIngredients");
+            migrationBuilder.DropColumn("Measurement", "RecipeIngredients");
+            migrationBuilder.DropColumn("Notes", "RecipeIngredients");
+            migrationBuilder.AddPrimaryKey("PK_IngredientRecipe", "RecipeIngredients", ["IngredientsGuid", "RecipesGuid"]);
+            migrationBuilder.RenameTable("RecipeIngredients", newName: "IngredientRecipe");
         }
     }
 }

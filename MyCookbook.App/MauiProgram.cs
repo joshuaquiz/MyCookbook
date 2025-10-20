@@ -1,14 +1,18 @@
-﻿using System;
-using System.IO;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Reflection;
+using Amazon.S3;
 using CommunityToolkit.Maui;
+using CommunityToolkit.Maui.Core;
+using G3.Maui.Core;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Maui.Controls.Hosting;
 using Microsoft.Maui.Hosting;
 using Microsoft.Maui.Networking;
 using Microsoft.Maui.Storage;
+using MyCookbook.App.Helpers;
 using MyCookbook.App.Implementations;
 using MyCookbook.App.Interfaces;
 using MyCookbook.App.ViewModels;
@@ -17,11 +21,7 @@ using MyCookbook.App.Views.Home;
 using MyCookbook.App.Views.MyCookbook;
 using MyCookbook.App.Views.Profile;
 using MyCookbook.App.Views.Search;
-using G3.Maui.Core;
-using Microsoft.Extensions.Caching.Memory;
-using CommunityToolkit.Maui.Core;
 using SQLite;
-
 //using Plugin.MauiMTAdmob;
 
 namespace MyCookbook.App;
@@ -31,6 +31,20 @@ public static class MauiProgram
     public static MauiApp CreateMauiApp()
     {
         var builder = MauiApp.CreateBuilder();
+        var a = Assembly.GetExecutingAssembly();
+        using var stream = a.GetManifestResourceStream($"{a.GetName().Name}.appsettings.json");
+        if (stream != null)
+        {
+            var config = new ConfigurationBuilder()
+                .AddJsonStream(stream)
+                .Build();
+            builder.Configuration.AddConfiguration(config);
+        }
+
+        builder.Configuration.AddUserSecrets<App>();
+        builder.Services.AddDefaultAWSOptions(builder.Configuration.GetAWSOptions());
+        builder.Services.AddAWSService<IAmazonS3>();
+
         builder
             .UseMauiApp<App>()
             .UseMauiCommunityToolkit()
@@ -45,24 +59,6 @@ public static class MauiProgram
         builder.Services
             .AddCoreDeviceServices();
 #if DEBUG
-        /*if (!File.Exists(
-                Path.Combine(
-                    Environment.GetFolderPath(
-                        Environment.SpecialFolder.LocalApplicationData),
-                "MyCookbook.db")))
-        {*/
-        var assembly = typeof(App).GetTypeInfo().Assembly;
-        using var stream = assembly.GetManifestResourceStream("MyCookbook.App.MyCookbook.db");
-        using var memoryStream = new MemoryStream();
-        stream?.CopyTo(memoryStream);
-        var array = memoryStream.ToArray();
-        File.WriteAllBytes(
-            Path.Combine(
-                Environment.GetFolderPath(
-                    Environment.SpecialFolder.LocalApplicationData),
-                "MyCookbook.db"),
-            array);
-        /*}*/
         builder.Services
             .AddLogging(
                 x =>
@@ -70,15 +66,12 @@ public static class MauiProgram
                         .AddConsole())
             .AddSingleton(
                 s =>
-                    new SQLiteAsyncConnection(
-                        Path.Combine(
-                            Environment.GetFolderPath(
-                                Environment.SpecialFolder.LocalApplicationData),
-                            "MyCookbook.db"))
-                    {
-                        Trace = true,
-                        Tracer = x => s.GetRequiredService<ILogger<SQLiteAsyncConnection>>().LogDebug(x)
-                    })
+                    DatabaseSetupHelper.GetDatabaseConnection(
+                            s.GetRequiredService<IConfiguration>(),
+                            s.GetRequiredService<IAmazonS3>(),
+                            s.GetRequiredService<ILogger<SQLiteAsyncConnection>>())
+                        .GetAwaiter()
+                        .GetResult())
             .AddDevelopmentHttpClient<CookbookDelegatingHandler, CookbookHttpClient>(
                 (serviceProvider, baseDelegatingHandler, baseUri) =>
                     new CookbookHttpClient(
