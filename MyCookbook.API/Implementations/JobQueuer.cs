@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MyCookbook.API.Interfaces;
+using MyCookbook.Common.Database;
 
 namespace MyCookbook.API.Implementations;
 

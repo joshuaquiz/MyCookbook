@@ -45,12 +45,15 @@
     <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="appsettings.json" />
+    <None Remove="appsettings.local.json" />
     <None Remove="MyCookbook.db" />
     <None Remove="sqlite-net-pcl" />
     <None Remove="Resources\Images\cookbook.svg" />
     <None Remove="Resources\Images\icon.png" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="AWSSDK.Core" Version="4.0.1.1" />
     <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="4.0.3.7" />
     <PackageReference Include="AWSSDK.S3" Version="4.0.7.12" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.9" />
@@ -88,6 +91,14 @@
   </ItemGroup>-->
   <ItemGroup>
     <ProjectReference Include="..\MyCookbook.Common\MyCookbook.Common.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="appsettings.local.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Components\RecipeSummaryList\RecipeSummaryListControl.xaml.cs">

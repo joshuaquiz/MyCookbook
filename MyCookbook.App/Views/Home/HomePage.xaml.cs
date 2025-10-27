@@ -7,7 +7,7 @@ using MyCookbook.App.Components.RecipeSummary;
 using MyCookbook.App.Implementations;
 using MyCookbook.App.Interfaces;
 using MyCookbook.App.Views.Profile;
-using MyCookbook.Common;
+using MyCookbook.Common.ApiModels;
 //using Plugin.MauiMTAdmob.Extra;
 
 namespace MyCookbook.App.Views.Home;
@@ -40,7 +40,7 @@ public partial class HomePage
                 new Dictionary<string, object>
                 {
                     {
-                        nameof(UserProfile),
+                        nameof(UserProfileModel),
                         userProfile!
                     }
                 });

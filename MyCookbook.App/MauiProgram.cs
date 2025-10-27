@@ -1,5 +1,8 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Reflection;
+using Amazon.Extensions.NETCore.Setup;
+using Amazon.Runtime;
 using Amazon.S3;
 using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Core;
@@ -31,19 +34,42 @@ public static class MauiProgram
     public static MauiApp CreateMauiApp()
     {
         var builder = MauiApp.CreateBuilder();
+        builder.Configuration.AddUserSecrets<App>();
         var a = Assembly.GetExecutingAssembly();
         using var stream = a.GetManifestResourceStream($"{a.GetName().Name}.appsettings.json");
         if (stream != null)
         {
-            var config = new ConfigurationBuilder()
-                .AddJsonStream(stream)
-                .Build();
-            builder.Configuration.AddConfiguration(config);
+            builder.Configuration.AddJsonStream(stream);
         }
 
-        builder.Configuration.AddUserSecrets<App>();
-        builder.Services.AddDefaultAWSOptions(builder.Configuration.GetAWSOptions());
-        builder.Services.AddAWSService<IAmazonS3>();
+        using var localStream = a.GetManifestResourceStream($"{a.GetName().Name}.appsettings.local.json");
+        if (localStream != null)
+        {
+            builder.Configuration.AddJsonStream(localStream);
+        }
+
+        var awsConfig = builder.Configuration.GetSection("AWS");
+        var accessKey = awsConfig["AccessKey"];
+        var secretKey = awsConfig["SecretKey"];
+        var region = awsConfig["Region"];
+        if (string.IsNullOrWhiteSpace(accessKey) || string.IsNullOrWhiteSpace(secretKey))
+        {
+            throw new InvalidOperationException("AWS credentials were not properly loaded from configuration.");
+        }
+
+        builder.Services.AddSingleton(new BasicAWSCredentials(accessKey, secretKey));
+        builder.Services.AddSingleton(
+            s =>
+                new AWSOptions
+                {
+                    Credentials = s.GetRequiredService<BasicAWSCredentials>(),
+                    Region = Amazon.RegionEndpoint.GetBySystemName(region)
+                });
+        builder.Services.AddSingleton<IAmazonS3, AmazonS3Client>(
+            s =>
+                new AmazonS3Client(
+                    s.GetRequiredService<BasicAWSCredentials>(),
+                    Amazon.RegionEndpoint.GetBySystemName(region)));
 
         builder
             .UseMauiApp<App>()
@@ -66,12 +92,10 @@ public static class MauiProgram
                         .AddConsole())
             .AddSingleton(
                 s =>
-                    DatabaseSetupHelper.GetDatabaseConnection(
+                    DatabaseSetupHelper.SetupDatabaseConnection(
                             s.GetRequiredService<IConfiguration>(),
                             s.GetRequiredService<IAmazonS3>(),
-                            s.GetRequiredService<ILogger<SQLiteAsyncConnection>>())
-                        .GetAwaiter()
-                        .GetResult())
+                            s.GetRequiredService<ILogger<SQLiteAsyncConnection>>()))
             .AddDevelopmentHttpClient<CookbookDelegatingHandler, CookbookHttpClient>(
                 (serviceProvider, baseDelegatingHandler, baseUri) =>
                     new CookbookHttpClient(
@@ -102,6 +126,7 @@ public static class MauiProgram
             .AddSingleton<ICookbookStorage, CookbookStorage>();
 
         builder.Services
+            .AddSingleton<LoadingViewModel>()
             .AddSingleton<LoginViewModel>()
             .AddTransient<ProfileViewModel>()
             .AddTransient<RecipeViewModel>()
@@ -109,6 +134,7 @@ public static class MauiProgram
             .AddSingleton<MyCookbookViewModel>();
 
         builder.Services
+            .AddSingleton<LoadingScreen>()
             .AddSingleton<Login>()
             .AddSingleton<HomePage>()
             .AddTransient<ProfileHome>()

@@ -5,7 +5,7 @@ using System.Linq;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using MyCookbook.API.Implementations;
-using MyCookbook.Common;
+using MyCookbook.Common.Enums;
 using Xunit;
 
 namespace MyCookbook.UnitTests;

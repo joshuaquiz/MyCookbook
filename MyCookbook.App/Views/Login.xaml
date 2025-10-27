@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="MyCookbook.App.Views.Login"
-             Shell.NavBarIsVisible="False"
-             Shell.PresentationMode="NotAnimated">
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="MyCookbook.App.Views.Login"
+    Shell.NavBarIsVisible="False"
+    Shell.PresentationMode="NotAnimated">
     <Grid
         RowDefinitions="*,10,50,5,50,5,50,30,50,10,*"
         ColumnDefinitions="*,10,125,125,10,*">
@@ -23,7 +24,8 @@
             FontAttributes="Bold"
             VerticalTextAlignment="Center"
             HorizontalTextAlignment="Start"
-            Placeholder="Username" />
+            Placeholder="Username"
+            TextColor="Black" />
         <Entry
             x:Name="Password"
             Grid.Row="4"
@@ -33,7 +35,8 @@
             FontAttributes="Bold"
             VerticalTextAlignment="Center"
             HorizontalTextAlignment="Start"
-            Placeholder="Password" />
+            Placeholder="Password"
+            TextColor="Black" />
         <Button
             Grid.Row="6"
             Grid.Column="2"

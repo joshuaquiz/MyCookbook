@@ -9,6 +9,8 @@ using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using MyCookbook.API.Interfaces;
 using MyCookbook.API.Models;
+using MyCookbook.Common.Database;
+using Recipe = MyCookbook.Common.Database.Recipe;
 
 namespace MyCookbook.API.Implementations;
 

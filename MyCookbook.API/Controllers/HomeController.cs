@@ -2,31 +2,26 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
-using MyCookbook.Common;
 using System.Threading.Tasks;
 using System.Threading;
 using Microsoft.EntityFrameworkCore;
+using MyCookbook.Common.ApiModels;
+using MyCookbook.Common.Database;
 
 namespace MyCookbook.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
 //[Authorize]
-public sealed class HomeController : ControllerBase
+public sealed class HomeController(
+    IDbContextFactory<MyCookbookContext> myCookbookContextFactory)
+    : ControllerBase
 {
-    private readonly IDbContextFactory<MyCookbookContext> _myCookbookContextFactory;
-
-    public HomeController(
-        IDbContextFactory<MyCookbookContext> myCookbookContextFactory)
-    {
-        _myCookbookContextFactory = myCookbookContextFactory;
-    }
-
     [HttpGet("Popular")]
     public async ValueTask<ActionResult<List<PopularItem>>> GetPopular(
         CancellationToken cancellationToken)
     {
-        await using var db = await _myCookbookContextFactory.CreateDbContextAsync(
+        await using var db = await myCookbookContextFactory.CreateDbContextAsync(
             cancellationToken);
         return new JsonResult(
             await db.Recipes

@@ -6,32 +6,24 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyCookbook.API.BackgroundJobs;
 using MyCookbook.API.Interfaces;
-using MyCookbook.API.Models;
+using MyCookbook.Common.Database;
 
 namespace MyCookbook.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
 //[Authorize]
-public sealed class JobQueuerController : ControllerBase
+public sealed class JobQueuerController(
+    IDbContextFactory<MyCookbookContext> dbContextFactory,
+    IJobQueuer jobQueuer)
+    : ControllerBase
 {
-    private readonly IDbContextFactory<MyCookbookContext> _dbContextFactory;
-    private readonly IJobQueuer _jobQueuer;
-
-    public JobQueuerController(
-        IDbContextFactory<MyCookbookContext> dbContextFactory,
-        IJobQueuer jobQueuer)
-    {
-        _dbContextFactory = dbContextFactory;
-        _jobQueuer = jobQueuer;
-    }
-
     [HttpGet("QueueUrl")]
     public async Task<OkResult> QueueUrl(
         Uri uri)
     {
-        await using var db = await _dbContextFactory.CreateDbContextAsync();
-        await _jobQueuer.QueueUrlProcessingJob(
+        await using var db = await dbContextFactory.CreateDbContextAsync();
+        await jobQueuer.QueueUrlProcessingJob(
             db,
             uri);
         await db.SaveChangesAsync();
@@ -41,7 +33,7 @@ public sealed class JobQueuerController : ControllerBase
     [HttpGet("GetOverallStatus")]
     public async Task<ActionResult> GetOverallStatus()
     {
-        await using var db = await _dbContextFactory.CreateDbContextAsync();
+        await using var db = await dbContextFactory.CreateDbContextAsync();
         var data = await db.RecipeUrls
             .GroupBy(
                 x =>
@@ -56,7 +48,7 @@ public sealed class JobQueuerController : ControllerBase
     [HttpGet("GetHostStatuses")]
     public async Task<IDictionary<string, HostStatus>> GetHostStatuses()
     {
-        await using var db = await _dbContextFactory.CreateDbContextAsync();
+        await using var db = await dbContextFactory.CreateDbContextAsync();
         return JobRunner.HostStatuses;
     }
 
@@ -68,7 +60,7 @@ public sealed class JobQueuerController : ControllerBase
 
     private async Task<List<UrlSegment>> GetUrlSegments()
     {
-        await using var db = await _dbContextFactory.CreateDbContextAsync();
+        await using var db = await dbContextFactory.CreateDbContextAsync();
         var urls = db.RecipeUrls.Select(x => x.Uri).ToList();
 
         var root = new UrlSegment { Segment = "/" };

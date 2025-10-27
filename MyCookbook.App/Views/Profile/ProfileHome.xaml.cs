@@ -37,7 +37,7 @@ public partial class ProfileHome
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        if (ViewModel.UserProfile?.Guid == (await _cookbookStorage.GetUser())!.Guid)
+        if (ViewModel.UserProfile?.Guid == (await _cookbookStorage.GetUser())!.Value.Guid)
         {
             ToolbarItems.Add(
                 new ToolbarItem(
@@ -49,7 +49,7 @@ public partial class ProfileHome
                     "Log out",
                     "logout",
                     Logout_Clicked));
-            if (!ViewModel.UserProfile.IsPremium)
+            if (!ViewModel.UserProfile.Value.IsPremium)
             {
                 ToolbarItems.Add(
                     new ToolbarItem(

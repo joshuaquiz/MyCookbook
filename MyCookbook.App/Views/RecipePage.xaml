@@ -4,11 +4,13 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:views="using:MyCookbook.App.Views"
+    xmlns:viewModels="clr-namespace:MyCookbook.App.ViewModels"
     x:Class="MyCookbook.App.Views.RecipePage"
     x:Name="Root"
     Shell.NavBarIsVisible="True"
     Shell.PresentationMode="Animated"
-    Title="{Binding Recipe.Name}">
+    Title="{Binding Recipe.Name}"
+    x:DataType="viewModels:RecipeViewModel">
     <AbsoluteLayout>
         <ActivityIndicator
             IsVisible="{Binding IsBusy}"
@@ -26,15 +28,16 @@
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             IsVisible="{Binding IsNotBusy}">
             <VerticalStackLayout
-                Margin="0,150,0,0">
-                <Frame
-                    CornerRadius="50"
+                Margin="0,175,0,0"
+                BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}">
+                <Border
                     MinimumHeightRequest="100"
                     HorizontalOptions="Fill"
-                    BorderColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Black}}"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Black}}">
+                    Stroke="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
+                    StrokeThickness="0">
                     <Grid
-                        Margin="0,20,0,0"
+                        Margin="20"
                         RowDefinitions="Auto,Auto"
                         ColumnDefinitions="*">
                         <Label
@@ -44,8 +47,8 @@
                             HorizontalOptions="Start">
                             <Label.Text>
                                 <MultiBinding StringFormat="{}Total time: {0}h {1}m">
-                                    <Binding Path="Recipe.TotalTimeSpan.Hours" />
-                                    <Binding Path="Recipe.TotalTimeSpan.Minutes" />
+                                    <Binding Path="Recipe.TotalTime.Hours" />
+                                    <Binding Path="Recipe.TotalTime.Minutes" />
                                 </MultiBinding>
                             </Label.Text>
                         </Label>
@@ -65,22 +68,15 @@
                             Grid.Column="0"
                             Text="{Binding Recipe.Description}" />
                     </Grid>
-                </Frame>
-                <Label
-                    Margin="10"
-                    HorizontalOptions="Fill"
-                    HorizontalTextAlignment="Start"
-                    Text="{Binding Recipe.Description}" />
+                </Border>
                 <toolkit:Expander
                     IsExpanded="True"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Black}}">
+                    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}">
                     <toolkit:Expander.Header>
-                        <Frame
+                        <Border
                             Padding="10"
                             Margin="-3,0"
-                            CornerRadius="0"
-                            BackgroundColor="{AppThemeBinding Light=White, Dark=Black}"
-                            BorderColor="LightGray">
+                            BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}">
                             <HorizontalStackLayout>
                                 <Image
                                     Source="arrow_down"
@@ -97,9 +93,9 @@
                                     FontSize="18"
                                     VerticalTextAlignment="Center" />
                             </HorizontalStackLayout>
-                        </Frame>
+                        </Border>
                     </toolkit:Expander.Header>
-                    <!--<CollectionView
+                    <CollectionView
                         ItemsSource="{Binding Recipe.RecipeIngredients}"
                         ItemsLayout="VerticalList">
                         <CollectionView.ItemTemplate>
@@ -125,7 +121,7 @@
                                         <Image
                                             Grid.Row="0"
                                             Grid.Column="2"
-                                            Source="{Binding ImageUri, TargetNullValue=profile}"
+                                            Source="{Binding ImageUri, TargetNullValue=carrot}"
                                             Aspect="AspectFill"
                                             HeightRequest="50"
                                             WidthRequest="150" />
@@ -153,7 +149,7 @@
                                 </VerticalStackLayout>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
-                    </CollectionView>-->
+                    </CollectionView>
                 </toolkit:Expander>
                 <!--<toolkit:Expander
                     IsVisible="{Binding Recipe.HasPrep}"
@@ -277,14 +273,12 @@
                 <toolkit:Expander
                     Margin="0,15,0,0"
                     IsExpanded="True"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Black}}">
+                    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}">
                     <toolkit:Expander.Header>
-                        <Frame
+                        <Border
                             Padding="10"
                             Margin="-3,0"
-                            CornerRadius="0"
-                            BackgroundColor="{AppThemeBinding Light=White, Dark=Black}"
-                            BorderColor="LightGray">
+                            BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}">
                             <HorizontalStackLayout>
                                 <Image
                                     Source="arrow_down"
@@ -301,7 +295,7 @@
                                     FontSize="18"
                                     VerticalTextAlignment="Center" />
                             </HorizontalStackLayout>
-                        </Frame>
+                        </Border>
                     </toolkit:Expander.Header>
                     <CollectionView
                         ItemsSource="{Binding Recipe.CookingSteps}"
@@ -319,7 +313,7 @@
                                             Grid.ColumnSpan="3"
                                             Source="{Binding ImageUri}"
                                             Aspect="AspectFill" />
-                                        <Ellipse 
+                                        <Ellipse
                                             Grid.Row="1"
                                             Grid.Column="1"
                                             Fill="{DynamicResource Tertiary}"

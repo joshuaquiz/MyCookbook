@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
-using MyCookbook.Common;
+using MyCookbook.Common.ApiModels;
 
 namespace MyCookbook.App.Interfaces;
 
@@ -13,7 +13,7 @@ public interface ICookbookStorage
 
     public Task Empty();
 
-    public Task SetUser(UserProfile user);
+    public Task SetUser(UserProfileModel user);
 
-    public ValueTask<UserProfile?> GetUser();
+    public ValueTask<UserProfileModel?> GetUser();
 }

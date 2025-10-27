@@ -1,5 +1,6 @@
 using Microsoft.Maui.Controls;
-using MyCookbook.Common;
+using MyCookbook.Common.ApiModels;
+using MyCookbook.Common.Database;
 
 namespace MyCookbook.App.Views.MyCookbook;
 
@@ -10,9 +11,9 @@ public partial class CookbookRecipeItem
         typeof(Recipe),
         typeof(CookbookRecipeItem));
 
-    public Recipe Item
+    public RecipeModel Item
     {
-        get => (Recipe)GetValue(ItemProperty);
+        get => (RecipeModel)GetValue(ItemProperty);
         set => SetValue(ItemProperty, value);
     }
 

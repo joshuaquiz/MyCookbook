@@ -8,8 +8,11 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MyCookbook.API.Interfaces;
 using MyCookbook.API.Models;
-using MyCookbook.Common;
+using MyCookbook.Common.Database;
+using MyCookbook.Common.Enums;
 using Schema.NET;
+using Recipe = MyCookbook.Common.Database.Recipe;
+using RecipeStepIngredient = MyCookbook.Common.Database.RecipeStepIngredient;
 
 namespace MyCookbook.API.Implementations;
 
@@ -90,15 +93,17 @@ public sealed class RecipeWebSiteWrapperProcessor(
                     cancellationToken);
         }
 
-        recipe ??= new Recipe();
+        recipe ??= new Recipe
+        {
+            Name = wrapper.Recipe!.Name!
+        };
         recipe.RecipeUrl = recipeUrl;
-        recipe.Name = wrapper.Recipe!.Name!;
         recipe.Description = wrapper.Recipe!.Description!;
         recipe.Author = author;
         recipe.Image = wrapper.Recipe.Image;
         recipe.TotalTime = wrapper.Recipe.TotalTime.ToArray().FirstOrDefault() ?? TimeSpan.Zero;
         recipe.RecipeSteps = recipeSteps;
-        if (recipe.Image != null
+        if (recipe.Image == null
             && wrapper.ImageUrl != null)
         {
             recipe.Image = new Uri(
@@ -118,7 +123,9 @@ public sealed class RecipeWebSiteWrapperProcessor(
         RecipeWebSiteWrapper wrapper,
         CancellationToken cancellationToken)
     {
-        var author = new Author();
+        string? name;
+        Uri? image = null;
+        Uri? backgroundImage = null;
         var recipeAuthor = wrapper.Recipe?.Author;
         if (!recipeAuthor.HasValue
             || !recipeAuthor.Value.Any())
@@ -129,16 +136,16 @@ public sealed class RecipeWebSiteWrapperProcessor(
         if (recipeAuthor?.HasValue1 == true)
         {
             var org = recipeAuthor.Value.Value1.FirstOrDefault();
-            author.Name = org?.Name.FirstOrDefault()
+            name = org?.Name.FirstOrDefault()
                           ?? string.Empty;
-            author.Image = org?.Logo;
-            author.BackgroundImage = org?.Image;
+            image = org?.Logo;
+            backgroundImage = org?.Image;
         }
         else if (recipeAuthor?.HasValue2 == true)
         {
             var person = recipeAuthor.Value.Value2.FirstOrDefault();
-            author.Name = string.Join(' ', person?.Name ?? Enumerable.Empty<string>());
-            author.Name = author.Name
+            name = string.Join(' ', person?.Name ?? Enumerable.Empty<string>());
+            name = name
                 .Split(
                     ':',
                     '|',
@@ -173,21 +180,26 @@ public sealed class RecipeWebSiteWrapperProcessor(
             }
             else
             {
-                author.Image = person?.Image;
+                image = person?.Image;
             }
         }
         else if (wrapper.Person != null)
         {
-            author.Name = wrapper.Person.Name.FirstOrDefault()
+            name = wrapper.Person.Name.FirstOrDefault()
                           ?? string.Empty;
-            author.Image = wrapper.Person.Image;
+            image = wrapper.Person.Image;
         }
         else
         {
             throw new Exception("Unable to parse an author");
         }
 
-        return author;
+        return new Author
+        {
+            Name = name,
+            Image = image,
+            BackgroundImage = backgroundImage
+        };
     }
 
     private static List<RecipeStepIngredient> GenerateIngredients(

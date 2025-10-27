@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MyCookbook.App.Implementations;
-using MyCookbook.Common;
+using MyCookbook.Common.ApiModels;
 
 namespace MyCookbook.App.ViewModels;
 
@@ -19,10 +19,10 @@ public partial class MyCookbookViewModel : BaseViewModel
     private bool _isRefreshing;
 
     [ObservableProperty]
-    private List<Recipe>? _recipes;
+    private List<RecipeModel>? _recipes;
 
     [ObservableProperty]
-    private ObservableCollection<Recipe>? _recipesToDisplay;
+    private ObservableCollection<RecipeModel>? _recipesToDisplay;
 
     public MyCookbookViewModel(
         CookbookHttpClient httpClient)
@@ -37,15 +37,15 @@ public partial class MyCookbookViewModel : BaseViewModel
     {
         IsRefreshing = true;
         IsBusy = true;
-        var data = await _httpClient.GetFromJsonAsync<List<Recipe>>(
+        var data = await _httpClient.GetFromJsonAsync<List<RecipeModel>>(
                        "/api/Personal/Cookbook")
-                   ?? new List<Recipe>();
+                   ?? [];
         foreach (var recipe in data)
         {
             Recipes?.Add(recipe);
         }
 
-        RecipesToDisplay = new ObservableCollection<Recipe>(Recipes ?? []);
+        RecipesToDisplay = new ObservableCollection<RecipeModel>(Recipes ?? []);
         IsRefreshing = false;
         IsBusy = false;
     }
@@ -64,7 +64,7 @@ public partial class MyCookbookViewModel : BaseViewModel
             return;
         }
 
-        var recipes = new HashSet<Recipe>();
+        var recipes = new HashSet<RecipeModel>();
         var terms = text
             .Split(',', StringSplitOptions.RemoveEmptyEntries)
             .Select(x => x.Trim())
@@ -86,9 +86,11 @@ public partial class MyCookbookViewModel : BaseViewModel
                          Recipes
                              ?.Where(
                                  x =>
-                                     x.RecipeStepIngredients.Any(
+                                     x.RecipeIngredients.Any(
                                          i =>
-                                             i.Ingredient
+                                             i.Ingredient.HasValue
+                                             && i.Ingredient
+                                                 .Value
                                                  .Name
                                                  .Contains(
                                                      term)))
@@ -110,24 +112,6 @@ public partial class MyCookbookViewModel : BaseViewModel
                                          x.Name
                                              .Contains(
                                                  term))
-                             ?? []))
-        {
-            recipes.Add(recipe);
-        }
-
-        foreach (var recipe in terms
-                     .SelectMany(
-                         term =>
-                             Recipes
-                                 ?.Where(
-                                     x =>
-                                         x.RecipeStepIngredients
-                                             .Any(
-                                                 i =>
-                                                     i.Ingredient
-                                                         .Name
-                                                         .Contains(
-                                                             term)))
                              ?? []))
         {
             recipes.Add(recipe);

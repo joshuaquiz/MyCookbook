@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MyCookbook.App.Implementations;
 using MyCookbook.App.Interfaces;
-using MyCookbook.Common;
+using MyCookbook.Common.ApiModels;
 
 namespace MyCookbook.App.ViewModels;
 
@@ -27,7 +27,7 @@ public partial class LoginViewModel : BaseViewModel
         IsBusy = true;
         try
         {
-            var user = await _httpClient.Post<UserProfile, object>(
+            var user = await _httpClient.Post<UserProfileModel, object>(
                 new Uri(
                     "/api/Account/LogIn",
                     UriKind.Absolute),

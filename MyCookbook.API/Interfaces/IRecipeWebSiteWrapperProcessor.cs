@@ -1,6 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MyCookbook.API.Models;
+using MyCookbook.Common.Database;
 
 namespace MyCookbook.API.Interfaces;
 

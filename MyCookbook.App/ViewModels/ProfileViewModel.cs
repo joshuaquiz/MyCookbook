@@ -4,7 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.Controls;
 using MyCookbook.App.Interfaces;
-using MyCookbook.Common;
+using MyCookbook.Common.ApiModels;
 
 namespace MyCookbook.App.ViewModels;
 
@@ -15,7 +15,7 @@ public partial class ProfileViewModel(
     : BaseViewModel
 {
     [ObservableProperty]
-    private UserProfile? _userProfile;
+    private UserProfileModel? _userProfile;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(GetUserProfileCommand))]

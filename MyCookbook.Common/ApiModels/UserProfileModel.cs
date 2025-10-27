@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace MyCookbook.Common;
+namespace MyCookbook.Common.ApiModels;
 
-public sealed record UserProfile(
+public readonly record struct UserProfileModel(
     Guid Guid,
-    Uri BackgroundImageUri,
-    Uri ProfileImageUri,
+    Uri? BackgroundImageUri,
+    Uri? ProfileImageUri,
     string FirstName,
     string LastName,
     string Country,
@@ -16,4 +16,4 @@ public sealed record UserProfile(
     string? Description,
     bool IsPremium,
     bool IsFollowed,
-    List<PopularItem> RecentRecipes);
+    IReadOnlyList<PopularItem> RecentRecipes);

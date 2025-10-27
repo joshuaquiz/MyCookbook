@@ -4,7 +4,7 @@ using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Storage;
 using MyCookbook.App.Interfaces;
-using MyCookbook.Common;
+using MyCookbook.Common.ApiModels;
 
 namespace MyCookbook.App.Implementations;
 
@@ -42,13 +42,13 @@ public sealed class CookbookStorage(
     }
 
     public async Task SetUser(
-        UserProfile user) =>
+        UserProfileModel user) =>
         await secureStorage.SetAsync(
             "UserProfile",
             JsonSerializer.Serialize(
                 user));
 
-    public async ValueTask<UserProfile?> GetUser()
+    public async ValueTask<UserProfileModel?> GetUser()
     {
         var profileAsString = secureStorage.GetAsync(
                 "UserProfile")
@@ -56,7 +56,7 @@ public sealed class CookbookStorage(
             .GetResult();
         return profileAsString == null
             ? null
-            : JsonSerializer.Deserialize<UserProfile>(
+            : JsonSerializer.Deserialize<UserProfileModel>(
                 profileAsString);
     }
 }

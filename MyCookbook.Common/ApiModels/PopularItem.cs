@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace MyCookbook.Common;
+namespace MyCookbook.Common.ApiModels;
 
-public sealed record PopularItem(
+public readonly record struct PopularItem(
     Guid Guid,
     Uri? ImageUrl,
     string Name,

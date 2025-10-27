@@ -6,123 +6,19 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using G3.Maui.Core.Models;
+using Microsoft.EntityFrameworkCore;
 using MyCookbook.App.Components.RecipeSummary;
 using MyCookbook.App.Implementations.Models;
-using MyCookbook.Common;
+using MyCookbook.Common.ApiModels;
+using MyCookbook.Common.Database;
+using MyCookbook.Common.Enums;
 using SQLite;
 
 namespace MyCookbook.App.Implementations;
 
-[Table("Recipes")]
-public class Recipe1
-{
-    private readonly TimeSpan? _totalTime;
-
-    public List<RecipeIngredient1> RecipeIngredients =>
-        PrepSteps
-            ?.SelectMany(x => x.Ingredients ?? [])
-            .Concat(
-                CookingSteps
-                    ?.SelectMany(x => x.Ingredients ?? [])
-                ?? [])
-            .ToList()
-        ?? [];
-
-    public bool HasPrep =>
-        PrepSteps
-            ?.Any() == true;
-
-    public string? Guid { get; init; }
-
-    public string? Image { get; init; }
-
-    public string? TotalTime
-    {
-        get => _totalTime?.ToString("g");
-        init => _totalTime = value == null ? null : TimeSpan.Parse(value);
-    }
-
-    public TimeSpan? TotalTimeSpan => _totalTime;
-
-    public string? Name { get; init; }
-
-    public TimeSpan PrepTime { get; init; }
-
-    public TimeSpan CookTime { get; init; }
-
-    public int Servings { get; init; }
-
-    public string? Description { get; init; }
-
-    public UserProfile? UserProfile { get; init; }
-
-    public List<Step1>? PrepSteps { get; init; }
-
-    public List<Step1>? CookingSteps { get; init; }
-}
-
-[Table("Steps")]
-public class Step1
-{
-    public Guid Guid { get; init; }
-
-    public int StepNumber { get; init; }
-
-    public Uri? ImageUri { get; init; }
-
-    public string? Description { get; init; }
-
-    public List<RecipeIngredient1>? Ingredients { get; init; }
-}
-
-[Table("RecipeIngredients")]
-public class RecipeIngredient1
-{
-    public Uri? ImageUri =>
-        Ingredient?.ImageUri;
-
-    public Guid Guid { get; init; }
-
-    public required string IngredientGuid { get; init; }
-
-    public required string RecipeGuid { get; init; }
-
-    public Ingredient1? Ingredient { get; init; }
-
-    public string? Quantity { get; init; }
-
-    public Measurement1 Measurement { get; init; }
-
-    public string? Notes { get; init; }
-}
-
-public enum Measurement1
-{
-    Unit,
-    Piece,
-    Slice,
-    Clove,
-    Bunch,
-    Cup,
-    TableSpoon,
-    TeaSpoon,
-    Ounce,
-    Fillet,
-    Inch,
-    Can
-}
-
-[Table("Ingredients")]
-public class Ingredient1
-{
-    public Guid Guid { get; init; }
-    public Uri? ImageUri { get; init; }
-    public required string Name { get; init; }
-}
-
 public sealed partial class CookbookDelegatingHandler : BaseDelegatingHandler
 {
-    [GeneratedRegex("^/Account/LogIn$")]
+    [GeneratedRegex("^/api/Account/LogIn$")]
     private static partial Regex AccountLogInRegex();
 
     [GeneratedRegex("^/api/Home/Popular.*$")]
@@ -141,7 +37,7 @@ public sealed partial class CookbookDelegatingHandler : BaseDelegatingHandler
     private static partial Regex GlobalSearch();
 
     private static List<MockedHttpRequest> GenerateFakeRequests(
-        SQLiteAsyncConnection context)
+        SQLiteAsyncConnection connection)
     {
         var serializeUser = JsonSerializer.Serialize(
             CookbookFakeData.GetAppUsersProfile());
@@ -153,9 +49,9 @@ public sealed partial class CookbookDelegatingHandler : BaseDelegatingHandler
                     new MockedHttpRequestMethodActions(
                         HttpMethod.Post,
                         (_, _) =>
-                            ValueTask.FromResult(
+                            ValueTask.FromResult<HttpContent>(
                                 CreateStringContent(
-                                    serializeUser) as HttpContent))
+                                    serializeUser)))
                 ]),
             new MockedHttpRequest(
                 HomePopularRegex(),
@@ -186,8 +82,27 @@ public sealed partial class CookbookDelegatingHandler : BaseDelegatingHandler
                                             x[1]));
                             var take = queryParams["take"];
                             var skip = queryParams["skip"];
-                            var popularRecipeItems = await context.QueryAsync<RecipeSummaryViewModel>(
-                                "SELECT r.Guid AS Guid, r.Image AS ImageUrl, r.Name AS Name, a.Image AS AuthorImageUrl, a.Name AS AuthorName, r.TotalTime AS TotalTime, u.Uri AS ItemUrl FROM Recipes AS r INNER JOIN Authors AS a ON a.Guid = r.AuthorGuid INNER JOIN RecipeUrls AS u ON u.Guid = r.RecipeUrlGuid LIMIT ? OFFSET ?",
+                            var popularRecipeItems = await connection.QueryAsync<RecipeSummaryViewModel>(
+                                """
+                                SELECT
+                                    r.Guid AS Guid,
+                                    COALESCE(r.Image, a.BackgroundImage) AS ImageUrlRaw,
+                                    r.Name AS Name,
+                                    a.Image AS AuthorImageUrlRaw,
+                                    a.Name AS AuthorName,
+                                    CAST(r.TotalTime AS BIGINT) AS TotalTimeSeconds,
+                                    u.Uri AS ItemUrlRaw
+                                FROM
+                                    Recipes AS r
+                                INNER JOIN
+                                    Authors AS a ON a.Guid = r.AuthorGuid
+                                INNER JOIN
+                                    RecipeUrls AS u ON u.Guid = r.RecipeUrlGuid
+                                LIMIT
+                                    ?
+                                OFFSET
+                                    ?
+                                """,
                                 take,
                                 skip);
                             return CreateStringContent(
@@ -205,7 +120,7 @@ public sealed partial class CookbookDelegatingHandler : BaseDelegatingHandler
                         HttpMethod.Get,
                         async (_, _) =>
                         {
-                            var popularRecipeItems = await context.QueryAsync<SearchCategoryItem>(
+                            var popularRecipeItems = await connection.QueryAsync<SearchCategoryItem>(
                                 "SELECT \"#\" || SUBSTRING(HEX(ROUND(RANDOM() * 10000000)), 0, 7) AS ColorHex, i.Name AS Name FROM Ingredients AS i");
                             return CreateStringContent(
                                 JsonSerializer.Serialize(
@@ -255,8 +170,40 @@ public sealed partial class CookbookDelegatingHandler : BaseDelegatingHandler
                             var ingredientQuery = string.IsNullOrEmpty(ingredient)
                                 ? string.Empty
                                 : $" AND i.Name = '{ingredient}'";
-                            var popularRecipeItems = await context.QueryAsync<RecipeSummaryViewModel>(
-                                $"SELECT r.Guid AS Guid, r.Image AS ImageUrl, r.Name AS Name, a.Image AS AuthorImageUrl, a.Name AS AuthorName, r.TotalTime AS TotalTime, u.Uri AS ItemUrl FROM Recipes AS r INNER JOIN Authors AS a ON a.Guid = r.AuthorGuid INNER JOIN RecipeUrls AS u ON u.Guid = r.RecipeUrlGuid INNER JOIN RecipeIngredients AS ri ON ri.RecipeGuid = r.Guid INNER JOIN Ingredients AS i ON i.Guid = ri.IngredientGuid WHERE {termQuery}{categoryQuery}{ingredientQuery} LIMIT ? OFFSET ?",
+                            var popularRecipeItems = await connection.QueryAsync<RecipeSummaryViewModel>(
+                                $"""
+                                SELECT
+                                    r.Guid AS Guid,
+                                    r.Image AS ImageUrl,
+                                    r.Name AS Name,
+                                    a.Image AS AuthorImageUrl,
+                                    a.Name AS AuthorName,
+                                    r.TotalTime AS TotalTime,
+                                    u.Uri AS ItemUrl
+                                FROM
+                                    Recipes AS r
+                                INNER JOIN
+                                    Authors AS a
+                                        ON a.Guid = r.AuthorGuid
+                                INNER JOIN
+                                    RecipeUrls AS u
+                                        ON u.Guid = r.RecipeUrlGuid
+                                INNER JOIN
+                                    RecipeSteps AS rs
+                                        ON rs.RecipeGuid = r.Guid
+                                INNER JOIN
+                                    RecipeStepIngredients AS ri
+                                        ON ri.RecipeStepGuid = rs.Guid
+                                INNER JOIN
+                                    Ingredients AS i
+                                        ON i.Guid = ri.IngredientGuid
+                                WHERE
+                                    {termQuery}{categoryQuery}{ingredientQuery}
+                                LIMIT
+                                    ?
+                                OFFSET
+                                    ?;
+                                """,
                                 take,
                                 skip);
                             return CreateStringContent(
@@ -308,7 +255,7 @@ public sealed partial class CookbookDelegatingHandler : BaseDelegatingHandler
                                     "/Cookbook",
                                     string.Empty)
                                 .ToUpperInvariant();
-                            var popularRecipeItems = await context.QueryAsync<RecipeSummaryViewModel>(
+                            var popularRecipeItems = await connection.QueryAsync<RecipeSummaryViewModel>(
                                 $"SELECT r.Guid AS Guid, r.Image AS ImageUrl, r.Name AS Name, a.Image AS AuthorImageUrl, a.Name AS AuthorName, r.TotalTime AS TotalTime, u.Uri AS ItemUrl FROM Recipes AS r INNER JOIN Authors AS a ON a.Guid = r.AuthorGuid INNER JOIN RecipeUrls AS u ON u.Guid = r.RecipeUrlGuid WHERE a.Guid = '{authorGuid}' LIMIT ? OFFSET ?",
                                 take,
                                 skip);
@@ -325,26 +272,110 @@ public sealed partial class CookbookDelegatingHandler : BaseDelegatingHandler
                 [
                     new MockedHttpRequestMethodActions(
                         HttpMethod.Get,
-                        async (httpRequestMessage, _) =>
+                        async (httpRequestMessage, cancellationToken) =>
                         {
-                            var guid = httpRequestMessage
-                                .RequestUri
-                                !.PathAndQuery
-                                .Replace(
-                                    "/api/Recipe/",
-                                    string.Empty)
-                                .ToUpperInvariant();
-                            var recipeItem = await context
-                                .Table<Recipe1>()
-                                .FirstAsync(
-                                    x =>
-                                        x.Guid == guid);
+                            var guid = Guid.Parse(
+                                httpRequestMessage
+                                    .RequestUri
+                                    !.PathAndQuery
+                                    .Replace(
+                                        "/api/Recipe/",
+                                        string.Empty));
+                            var context = CreateNewContext(
+                                connection.DatabasePath);
+                            var recipe = await context.Recipes
+                                .Include(x => x.Author)
+                                .Include(x => x.RecipeSteps).ThenInclude(x => x.RecipeStepIngredients).ThenInclude(x => x.Ingredient)
+                                .FirstAsync(x => x.Guid == guid, cancellationToken);
+                            var stepNumber = 1;
+                            var recipeItem = new RecipeModel(
+                                recipe.Guid,
+                                recipe.ImageUri,
+                                recipe.Name,
+                                recipe.TotalTimeSpan / 2,
+                                recipe.TotalTimeSpan / 2,
+                                4,
+                                recipe.Description,
+                                new UserProfileModel(
+                                    recipe.Author.Guid,
+                                    recipe.Author.BackgroundImageUri,
+                                    recipe.Author.ImageUri,
+                                    recipe.Author.Name,
+                                    recipe.Author.Name,
+                                    string.Empty,
+                                    string.Empty,
+                                    5,
+                                    0,
+                                    string.Empty,
+                                    false,
+                                    false,
+                                    []),
+                                recipe.RecipeSteps
+                                    .Where(
+                                        x =>
+                                            x.RecipeStepType == RecipeStepType.PrepStep)
+                                    .Select(
+                                        x =>
+                                            new StepModel(
+                                                x.Guid,
+                                                stepNumber++,//x.StepNumber,
+                                                null,
+                                                string.Empty,
+                                                x.RecipeStepIngredients
+                                                    .Select(
+                                                        y =>
+                                                            new RecipeIngredientModel(
+                                                                y.Guid,
+                                                                new IngredientModel(
+                                                                    y.Ingredient.Guid,
+                                                                    y.Ingredient.ImageUri,
+                                                                    y.Ingredient.Name),
+                                                                y.Quantity,
+                                                                y.Measurement,
+                                                                y.Notes))
+                                                    .ToList()))
+                                    .ToList(),
+                                recipe.RecipeSteps
+                                    .Where(
+                                        x =>
+                                            x.RecipeStepType == RecipeStepType.CookingStep)
+                                    .Select(
+                                        x =>
+                                            new StepModel(
+                                                x.Guid,
+                                                stepNumber++,//x.StepNumber,
+                                                null,
+                                                string.Empty,
+                                                x.RecipeStepIngredients
+                                                    .Select(
+                                                        y =>
+                                                            new RecipeIngredientModel(
+                                                                y.Guid,
+                                                                new IngredientModel(
+                                                                    y.Ingredient.Guid,
+                                                                    y.Ingredient.ImageUri,
+                                                                    y.Ingredient.Name),
+                                                                y.Quantity,
+                                                                y.Measurement,
+                                                                y.Notes))
+                                                    .ToList()))
+                                    .ToList());
                             return CreateStringContent(
                                 JsonSerializer.Serialize(
                                     recipeItem));
                         })
                 ])
         ];
+    }
+
+    private static MyCookbookContext CreateNewContext(
+        string path)
+    {
+        var optionsBuilder = new DbContextOptionsBuilder<MyCookbookContext>();
+        optionsBuilder.UseSqlite(
+            $"Data Source={path}");
+        return new MyCookbookContext(
+            optionsBuilder.Options);
     }
 
     /// <summary>

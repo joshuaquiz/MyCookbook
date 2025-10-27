@@ -100,12 +100,19 @@ public partial class RecipeSummaryListControl
 
         IsBusy = true;
         var scrollToTop = !Items.Any();
+        const int maxItems = 250;
         try
         {
             await foreach (var item in GetData(_pageNumber, cancellationToken).WithCancellation(cancellationToken))
             {
                 Items.Add(item);
                 Count++;
+            }
+
+            while (Items.Count > maxItems)
+            {
+                Items.RemoveAt(0);
+                Count--;
             }
         }
         catch (TaskCanceledException)

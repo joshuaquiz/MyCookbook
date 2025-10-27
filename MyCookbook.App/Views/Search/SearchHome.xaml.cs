@@ -5,7 +5,6 @@ using System;
 using MyCookbook.App.Components.RecipeSummary;
 using MyCookbook.App.Implementations;
 using System.Windows.Input;
-using Microsoft.Maui.Controls;
 using System.Collections.ObjectModel;
 using MyCookbook.App.Implementations.Models;
 using System.Threading.Tasks;
@@ -56,8 +55,8 @@ public partial class SearchHome
             {
                 await ResetCancellationTokenSource();
                 _term = term;
-                await RecipeSummaryListControl?.RefreshData(
-                    _cts.Token)!;
+                /*await RecipeSummaryListControl?.RefreshData(
+                    _cts.Token)!;*/
             });
 
     private async IAsyncEnumerable<RecipeSummaryViewModel> RecipeSummaryListComponent_OnGetData(
@@ -182,9 +181,9 @@ public partial class SearchHome
         _category = _category == categoryName
             ? null
             : categoryName;
-        await RecipeSummaryListControl
+        /*await RecipeSummaryListControl
             ?.RefreshData(
-                _cts.Token)!;
+                _cts.Token)!;*/
     }
 
     public ICommand IngredientSelectedCommand =>
@@ -198,8 +197,8 @@ public partial class SearchHome
         _ingredient = _ingredient == ingredientName
             ? null
             : ingredientName;
-        await RecipeSummaryListControl
+        /*await RecipeSummaryListControl
             ?.RefreshData(
-                _cts.Token)!;
+                _cts.Token)!;*/
     }
 }

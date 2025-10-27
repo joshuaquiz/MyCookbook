@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using MyCookbook.API.Interfaces;
 using MyCookbook.API.Implementations;
 using MyCookbook.API.BackgroundJobs;
+using MyCookbook.Common.Database;
 
 namespace MyCookbook.API;
 

@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.Controls;
 using MyCookbook.App.Implementations;
+using MyCookbook.Common.ApiModels;
 
 namespace MyCookbook.App.ViewModels;
 
@@ -15,7 +16,7 @@ public partial class RecipeViewModel(
     : BaseViewModel
 {
     [ObservableProperty]
-    private Recipe1? _recipe;
+    private RecipeModel? _recipe;
 
     [ObservableProperty]
     private string? _guid;
@@ -29,7 +30,7 @@ public partial class RecipeViewModel(
     private async Task GetRecipe()
     {
         IsBusy = true;
-        Recipe = await httpClient.Get<Recipe1>(
+        Recipe = await httpClient.Get<RecipeModel>(
             new Uri(
                 $"/api/Recipe/{Guid}",
                 UriKind.Absolute),

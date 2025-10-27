@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MyCookbook.API.Interfaces;
+using MyCookbook.Common.Database;
 
 namespace MyCookbook.API.BackgroundJobs;
 

@@ -399,3 +399,4 @@ FodyWeavers.xsd
 
 **/*.db-shm
 **/*.db-wal
+/MyCookbook.App/appsettings.local.json

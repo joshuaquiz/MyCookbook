@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+    xmlns:viewModels="clr-namespace:MyCookbook.App.ViewModels"
+    x:Class="MyCookbook.App.Views.LoadingScreen"
+    Shell.NavBarIsVisible="False"
+    Shell.PresentationMode="NotAnimated"
+    BackgroundColor="#F5F5F5"
+    x:DataType="viewModels:LoadingViewModel">
+    <Grid
+        HorizontalOptions="Fill"
+        VerticalOptions="Fill"
+        RowDefinitions="*,20,10,20,10,20,*"
+        ColumnDefinitions="20,*,20">
+        <Image
+            Grid.Row="0"
+            Grid.RowSpan="7"
+            Grid.Column="0"
+            Grid.ColumnSpan="3"
+            Aspect="AspectFill"
+            Source="main_background" />
+        <Label
+            Grid.Row="1"
+            Grid.Column="1"
+            Text="{Binding LoadingMessage}"
+            FontSize="18"
+            FontAttributes="Bold"
+            TextColor="Black"
+            HorizontalTextAlignment="Center" />
+        <Border
+            Grid.Row="3"
+            Grid.Column="1"
+            StrokeShape="RoundRectangle 6"
+            StrokeThickness="0"
+            BackgroundColor="#E0E0E0"
+            HeightRequest="12">
+            <ProgressBar
+                Progress="{Binding LoadingProgress}"
+                ProgressColor="#2196F3"
+                BackgroundColor="Transparent"
+                HeightRequest="12" />
+        </Border>
+        <Label
+            Grid.Row="5"
+            Grid.Column="1"
+            Text="{Binding LoadingProgress, StringFormat='{0:P0}'}"
+            FontSize="14"
+            TextColor="Black"
+            HorizontalTextAlignment="Center"
+            VerticalTextAlignment="Center" />
+    </Grid>
+</ContentPage>

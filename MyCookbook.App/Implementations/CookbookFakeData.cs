@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using MyCookbook.Common;
+using MyCookbook.Common.ApiModels;
+using MyCookbook.Common.Enums;
 
 namespace MyCookbook.App.Implementations;
 
 public static class CookbookFakeData
 {
     public static PopularItem GetPopularItem(
-        UserProfile? userProfile = null)
+        UserProfileModel? userProfile = null)
     {
         var popularItems = new List<PopularItem>
         {
@@ -43,13 +44,13 @@ public static class CookbookFakeData
         {
             AuthorName = userProfile is null
                 ? "FoodNetwork"
-                : userProfile.FirstName + " " + userProfile.LastName
+                : userProfile.Value.FirstName + " " + userProfile.Value.LastName
         };
     }
 
-    public static UserProfile GetAppUsersProfile()
+    public static UserProfileModel GetAppUsersProfile()
     {
-        var userProfile = new UserProfile(
+        var userProfile = new UserProfileModel(
             Guid.NewGuid(),
             new Uri(
                 "https://www.allrecipes.com/thmb/SpLbvOKqRtr6U3iodmNcJ5FgnAw=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/49943-grilled-peanut-butter-and-jelly-sandwich-4x3-0309-085648b2dc5f421da0fbef9292a89ff0.jpg",
@@ -74,9 +75,9 @@ public static class CookbookFakeData
         };
     }
 
-    public static Recipe GetRecipe()
+    public static RecipeModel GetRecipe()
     {
-        return new Recipe(
+        return new RecipeModel(
             Guid.NewGuid(),
             new Uri(
                 "https://www.foodandwine.com/thmb/dMG6keGBcEF7XF8LZdR2y5dPrxc=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/jamaican-jerk-chicken-FT-RECIPE0918-eabbd55da31f4fa9b74367ef47464351.jpg",
@@ -86,7 +87,7 @@ public static class CookbookFakeData
             TimeSpan.FromSeconds(86),
             1,
             "A yummy sandwhich",
-            new UserProfile(
+            new UserProfileModel(
                 Guid.NewGuid(),
                 new Uri(
                     "https://www.allrecipes.com/thmb/SpLbvOKqRtr6U3iodmNcJ5FgnAw=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/49943-grilled-peanut-butter-and-jelly-sandwich-4x3-0309-085648b2dc5f421da0fbef9292a89ff0.jpg",
@@ -115,7 +116,7 @@ public static class CookbookFakeData
                     [
                         new(
                             Guid.NewGuid(),
-                            new Ingredient(
+                            new IngredientModel(
                                 Guid.NewGuid(),
                                 new Uri(
                                     "https://i.guim.co.uk/img/media/680e32cbca5c3ef1b8570dab45baa9272972acbb/0_231_5760_3456/master/5760.jpg?width=1200&quality=85&auto=format&fit=max&s=8fd7c391da7edc664eec28db8163a806",
@@ -127,7 +128,7 @@ public static class CookbookFakeData
 
                         new(
                             Guid.NewGuid(),
-                            new Ingredient(
+                            new IngredientModel(
                                 Guid.NewGuid(),
                                 new Uri(
                                     "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/PeanutButter.jpg/640px-PeanutButter.jpg",
@@ -139,7 +140,7 @@ public static class CookbookFakeData
 
                         new(
                             Guid.NewGuid(),
-                            new Ingredient(
+                            new IngredientModel(
                                 Guid.NewGuid(),
                                 new Uri(
                                     "https://i2.wp.com/practicalselfreliance.com/wp-content/uploads/2019/01/grape-jam-4.jpg?resize=480%2C360&ssl=1",
@@ -160,7 +161,7 @@ public static class CookbookFakeData
                     [
                         new(
                             Guid.NewGuid(),
-                            new Ingredient(
+                            new IngredientModel(
                                 Guid.NewGuid(),
                                 new Uri(
                                     "https://www.sumptuousspoonfuls.com/wp-content/uploads/2020/04/Homemade-Spreadable-Butter-3.jpg",

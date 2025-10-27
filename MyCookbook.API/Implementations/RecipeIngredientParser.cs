@@ -5,7 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Humanizer;
-using MyCookbook.Common;
+using MyCookbook.Common.Enums;
+using Ingredient = MyCookbook.Common.Database.Ingredient;
+using RecipeStepIngredient = MyCookbook.Common.Database.RecipeStepIngredient;
 
 namespace MyCookbook.API.Implementations;
 

@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using MyCookbook.API.Interfaces;
 using MyCookbook.API.Models;
+using MyCookbook.Common.Database;
 using Schema.NET;
 
 namespace MyCookbook.API.Implementations;
