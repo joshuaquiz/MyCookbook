@@ -11,8 +11,7 @@
         <Grid
             HorizontalOptions="Fill"
             ColumnDefinitions="*"
-            RowDefinitions="*"
-            BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Black}}">
+            RowDefinitions="*">
             <RefreshView
                 Grid.Row="0"
                 Grid.Column="0"

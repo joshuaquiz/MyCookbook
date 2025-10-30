@@ -318,9 +318,9 @@ public sealed partial class CookbookDelegatingHandler : BaseDelegatingHandler
                                         x =>
                                             new StepModel(
                                                 x.Guid,
-                                                stepNumber++,//x.StepNumber,
+                                                x.StepNumber,
                                                 null,
-                                                string.Empty,
+                                                x.Instructions,
                                                 x.RecipeStepIngredients
                                                     .Select(
                                                         y =>
@@ -343,9 +343,9 @@ public sealed partial class CookbookDelegatingHandler : BaseDelegatingHandler
                                         x =>
                                             new StepModel(
                                                 x.Guid,
-                                                stepNumber++,//x.StepNumber,
+                                                x.StepNumber,
                                                 null,
-                                                string.Empty,
+                                                x.Instructions,
                                                 x.RecipeStepIngredients
                                                     .Select(
                                                         y =>

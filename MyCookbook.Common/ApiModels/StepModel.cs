@@ -7,5 +7,5 @@ public readonly record struct StepModel(
     Guid Guid,
     int StepNumber,
     Uri? ImageUri,
-    string? Description,
+    string? Instructions,
     IReadOnlyList<RecipeIngredientModel> Ingredients);

@@ -1,0 +1,18 @@
+﻿using System;
+using System.Globalization;
+using Microsoft.Maui.Controls;
+
+namespace MyCookbook.App.Converters;
+
+public sealed class NullToBooleanConverter : IValueConverter
+{
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        return value is null;
+    }
+
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
+    }
+}

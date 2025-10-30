@@ -3,17 +3,22 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:recipeSummary="clr-namespace:MyCookbook.App.Components.RecipeSummary"
+    xmlns:converters="clr-namespace:MyCookbook.App.Converters"
     x:Class="MyCookbook.App.Components.RecipeSummary.RecipeSummaryComponent"
     x:Name="Root"
     HorizontalOptions="Fill"
     VerticalOptions="End"
-    Padding="5"
+    Padding="10"
     BindingContext="{recipeSummary:RecipeSummaryViewModel}">
+    <ContentView.Resources>
+        <converters:NullToBooleanConverter x:Key="NullToBooleanConverter" />
+        <converters:DefaultValueConverter x:Key="DefaultValueConverter" />
+    </ContentView.Resources>
     <ContentView.Shadow>
         <Shadow
             Brush="{StaticResource Black}"
             Offset="0,3"
-            Radius="10"
+            Radius="7"
             Opacity="0.6" />
     </ContentView.Shadow>
     <Border
@@ -38,14 +43,34 @@
                 Grid.Column="0"
                 Grid.ColumnSpan="7"
                 StrokeShape="RoundRectangle 5"
-                StrokeThickness="0"
-                Margin="2,0">
+                StrokeThickness="-15"
+                BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray900}}">
                 <Image
-                    Source="{Binding ImageUrl}"
-                    Aspect="AspectFill"
+                    x:Name="RecipeImage"
+                    Source="{Binding ImageUrl, TargetNullValue=apple}"
                     HorizontalOptions="Fill"
-                    VerticalOptions="Fill"
-                    HeightRequest="220" />
+                    VerticalOptions="Fill">
+                    <Image.Triggers>
+                        <DataTrigger
+                            TargetType="Image"
+                            Binding="{Binding ImageUrl, Converter={StaticResource NullToBooleanConverter}}"
+                            Value="True">
+                            <DataTrigger.Setters>
+                                <Setter Property="Source" Value="apple" />
+                                <Setter Property="Aspect" Value="AspectFit" />
+                            </DataTrigger.Setters>
+                        </DataTrigger>
+                        <DataTrigger
+                            TargetType="Image"
+                            Binding="{Binding ImageUrl, Converter={StaticResource NullToBooleanConverter}}"
+                            Value="False">
+                            <DataTrigger.Setters>
+                                <Setter Property="Source" Value="{Binding ImageUrl}" />
+                                <Setter Property="Aspect" Value="AspectFill" />
+                            </DataTrigger.Setters>
+                        </DataTrigger>
+                    </Image.Triggers>
+                </Image>
             </Border>
             <Border
                 Grid.Row="2"
@@ -53,20 +78,17 @@
                 Grid.Column="0"
                 Grid.ColumnSpan="7"
                 HeightRequest="110"
-                StrokeShape="RoundRectangle 5"
-                StrokeThickness="0">
+                StrokeThickness="0"
+                BackgroundColor="Transparent"
+                Margin="-1, 0, -1, -1">
                 <Rectangle
-                    HeightRequest="110"
+                    VerticalOptions="Start"
+                    HeightRequest="112"
                     HorizontalOptions="Fill">
                     <Rectangle.Background>
-                        <LinearGradientBrush
-                            EndPoint="0,1">
-                            <GradientStop
-                                Color="Transparent"
-                                Offset="0.1" />
-                            <GradientStop
-                                Color="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
-                                Offset=".55" />
+                        <LinearGradientBrush EndPoint="0,1">
+                            <GradientStop Color="Transparent" Offset="0.1" />
+                            <GradientStop Color="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}" Offset=".55" />
                         </LinearGradientBrush>
                     </Rectangle.Background>
                 </Rectangle>
@@ -75,12 +97,34 @@
                 Grid.Row="3"
                 Grid.Column="1"
                 StrokeShape="RoundRectangle 5"
-                StrokeThickness="0">
+                StrokeThickness="0"
+                BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}">
                 <Image
-                    Source="{Binding AuthorImageUrl, TargetNullValue=profile}"
-                    HeightRequest="50"
-                    WidthRequest="50"
-                    Aspect="AspectFill" />
+                    Aspect="AspectFill"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}">
+                    <Image.Triggers>
+                        <DataTrigger
+                            TargetType="Image"
+                            Binding="{Binding AuthorImageUrl, Converter={StaticResource NullToBooleanConverter}}"
+                            Value="True">
+                            <DataTrigger.Setters>
+                                <Setter Property="Source" Value="profile" />
+                                <Setter Property="HeightRequest" Value="40" />
+                                <Setter Property="WidthRequest" Value="40" />
+                            </DataTrigger.Setters>
+                        </DataTrigger>
+                        <DataTrigger
+                            TargetType="Image"
+                            Binding="{Binding AuthorImageUrl, Converter={StaticResource NullToBooleanConverter}}"
+                            Value="False">
+                            <DataTrigger.Setters>
+                                <Setter Property="Source" Value="{Binding AuthorImageUrl}" />
+                                <Setter Property="HeightRequest" Value="50" />
+                                <Setter Property="WidthRequest" Value="50" />
+                            </DataTrigger.Setters>
+                        </DataTrigger>
+                    </Image.Triggers>
+                </Image>
             </Border>
             <Label
                 Grid.Row="3"
@@ -94,7 +138,7 @@
                 Grid.Row="3"
                 Grid.Column="5"
                 Margin="0,15,0,0"
-                VerticalOptions="Start" 
+                VerticalOptions="Start"
                 HorizontalOptions="End">
                 <Label.Text>
                     <MultiBinding StringFormat="{}{0}h {1}m">
@@ -102,17 +146,33 @@
                         <Binding Path="TotalTime.Minutes"/>
                     </MultiBinding>
                 </Label.Text>
+                <Label.Triggers>
+                    <DataTrigger
+                        TargetType="Label"
+                        Binding="{Binding TotalTime, Converter={StaticResource DefaultValueConverter}, ConverterParameter=59}"
+                        Value="True">
+                        <Setter Property="IsVisible" Value="False" />
+                    </DataTrigger>
+                </Label.Triggers>
             </Label>
             <Label
                 Grid.Row="3"
                 Grid.Column="5"
-                VerticalOptions="End" 
+                VerticalOptions="End"
                 HorizontalOptions="End">
                 <Label.Text>
                     <MultiBinding StringFormat="{}{0} Servings">
                         <Binding Path="Servings"></Binding>
                     </MultiBinding>
                 </Label.Text>
+                <Label.Triggers>
+                    <DataTrigger
+                        TargetType="Label"
+                            Binding="{Binding Servings, Converter={StaticResource DefaultValueConverter}}"
+                            Value="True">
+                        <Setter Property="IsVisible" Value="False" />
+                    </DataTrigger>
+                </Label.Triggers>
             </Label>
         </Grid>
     </Border>

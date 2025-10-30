@@ -8,8 +8,4 @@ public readonly record struct RecipeIngredientModel(
     IngredientModel? Ingredient,
     string? Quantity,
     Measurement Measurement,
-    string? Notes)
-{
-    public Uri? ImageUri =>
-        Ingredient?.ImageUri;
-}
+    string? Notes);

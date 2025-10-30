@@ -5,23 +5,124 @@
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:views="using:MyCookbook.App.Views"
     xmlns:viewModels="clr-namespace:MyCookbook.App.ViewModels"
+    xmlns:converters="clr-namespace:MyCookbook.App.Converters"
     x:Class="MyCookbook.App.Views.RecipePage"
+    x:DataType="viewModels:RecipeViewModel"
     x:Name="Root"
     Shell.NavBarIsVisible="True"
     Shell.PresentationMode="Animated"
-    Title="{Binding Recipe.Name}"
-    x:DataType="viewModels:RecipeViewModel">
+    Title="{Binding Name}">
+    <ContentPage.Resources>
+        <converters:MeasurementToStringConverter x:Key="MeasurementToStringConverter" />
+        <converters:TimeSpanToStringConverter x:Key="TimeSpanToStringConverter" />
+        <DataTemplate 
+            x:Key="RecipeIngredientTemplate"
+            x:DataType="viewModels:RecipeIngredientViewModel">
+            <VerticalStackLayout>
+                <Grid
+                    RowDefinitions="50"
+                    ColumnDefinitions="*,150">
+                    <HorizontalStackLayout
+                        Grid.Row="0"
+                        Grid.Column="0">
+                        <Label
+                            VerticalOptions="Fill"
+                            VerticalTextAlignment="Center"
+                            Margin="10,0,3,0"
+                            Text="{Binding GeneratedQuantity}" />
+                        <Label
+                            VerticalOptions="Fill"
+                            VerticalTextAlignment="Center"
+                            Text="{Binding Measurement, Converter={StaticResource MeasurementToStringConverter}}" />
+                        <Label
+                            VerticalOptions="Fill"
+                            VerticalTextAlignment="Center"
+                            Margin="3,0,0,0"
+                            Text="{Binding Name}" />
+                    </HorizontalStackLayout>
+                    <Image
+                        Grid.Row="0"
+                        Grid.Column="2"
+                        Source="{Binding ImageUri, TargetNullValue=carrot}"
+                        Aspect="AspectFill"
+                        HeightRequest="50"
+                        WidthRequest="150" />
+                    <Rectangle
+                        Grid.Row="0"
+                        Grid.Column="2">
+                        <Rectangle.Background>
+                            <LinearGradientBrush
+                                StartPoint="1,1"
+                                EndPoint="0,1">
+                                <GradientStop
+                                    Color="Transparent"
+                                    Offset="0.7" />
+                                <GradientStop
+                                    Color="{AppThemeBinding Light=White, Dark=Black}"
+                                    Offset="1" />
+                            </LinearGradientBrush>
+                        </Rectangle.Background>
+                    </Rectangle>
+                </Grid>
+                <Rectangle
+                    Fill="LightGray"
+                    HeightRequest="2"
+                    HorizontalOptions="Fill" />
+            </VerticalStackLayout>
+        </DataTemplate>
+        <DataTemplate
+            x:Key="RecipeStepTemplate"
+            x:DataType="viewModels:StepViewModel">
+            <VerticalStackLayout>
+                <Grid
+                    RowDefinitions="10,100,10"
+                    ColumnDefinitions="10,80,*">
+                    <Image
+                        Grid.Row="0"
+                        Grid.RowSpan="3"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="3"
+                        Source="{Binding ImageUri}"
+                        Aspect="AspectFill" />
+                    <Ellipse
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Fill="{DynamicResource Tertiary}"
+                        WidthRequest="80"
+                        HeightRequest="80"
+                        HorizontalOptions="Fill"
+                        VerticalOptions="Fill" />
+                    <Label
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        VerticalTextAlignment="Center"
+                        HorizontalTextAlignment="Center"
+                        Text="{Binding StepNumber}"
+                        FontSize="30" />
+                </Grid>
+                <Label
+                    Margin="20"
+                    FontSize="18"
+                    Text="{Binding Description}" />
+                <!--<Label
+                    Margin="10"
+                    Text="Ingredients for this step:" />
+                <CollectionView
+                    ItemsSource="{Binding Ingredients}"
+                    ItemsLayout="VerticalList"
+                    ItemTemplate="{StaticResource RecipeIngredientTemplate}" />-->
+            </VerticalStackLayout>
+        </DataTemplate>
+    </ContentPage.Resources>
     <AbsoluteLayout>
         <ActivityIndicator
             IsVisible="{Binding IsBusy}"
             IsEnabled="{Binding IsBusy}" />
-        <Label
-            Text="{Binding Recipe.Image}"/>
         <Image
             AbsoluteLayout.LayoutFlags="XProportional,YProportional,WidthProportional"
             AbsoluteLayout.LayoutBounds="0,0,1,200"
             IsVisible="{Binding IsNotBusy}"
-            Source="{Binding Recipe.Image}"
+            Source="{Binding Image}"
             Aspect="AspectFill" />
         <ScrollView
             AbsoluteLayout.LayoutFlags="XProportional,YProportional,WidthProportional,HeightProportional"
@@ -44,39 +145,58 @@
                             Grid.Row="0"
                             Grid.Column="0"
                             VerticalOptions="End"
-                            HorizontalOptions="Start">
-                            <Label.Text>
-                                <MultiBinding StringFormat="{}Total time: {0}h {1}m">
-                                    <Binding Path="Recipe.TotalTime.Hours" />
-                                    <Binding Path="Recipe.TotalTime.Minutes" />
-                                </MultiBinding>
-                            </Label.Text>
-                        </Label>
-                        <Label
+                            HorizontalOptions="Start"
+                            Text="{Binding TotalTime, Converter={StaticResource TimeSpanToStringConverter}}" />
+                        <HorizontalStackLayout
                             Grid.Row="0"
                             Grid.Column="0"
                             VerticalOptions="End"
-                            HorizontalOptions="End">
-                            <Label.Text>
-                                <MultiBinding StringFormat="{}Servings: {0}">
-                                    <Binding Path="Recipe.Servings" />
-                                </MultiBinding>
-                            </Label.Text>
-                        </Label>
+                            HorizontalOptions="End"
+                            Spacing="5">
+                            <Label
+                                Text="Servings:"
+                                VerticalTextAlignment="Center" />
+                            <Picker
+                                x:Name="ServingsPicker"
+                                SelectedItem="{Binding Servings, StringFormat='{0}'}"
+                                SelectedIndexChanged="ServingsPicker_SelectedIndexChanged"
+                                WidthRequest="30"
+                                HorizontalOptions="End"
+                                IsEnabled="True"
+                                BackgroundColor="Transparent">
+                                <Picker.Items>
+                                    <x:String>1</x:String>
+                                    <x:String>2</x:String>
+                                    <x:String>3</x:String>
+                                    <x:String>4</x:String>
+                                    <x:String>5</x:String>
+                                    <x:String>6</x:String>
+                                    <x:String>7</x:String>
+                                    <x:String>8</x:String>
+                                    <x:String>9</x:String>
+                                    <x:String>10</x:String>
+                                    <x:String>12</x:String>
+                                    <x:String>15</x:String>
+                                    <x:String>20</x:String>
+                                    <x:String>25</x:String>
+                                    <x:String>30</x:String>
+                                    <x:String>40</x:String>
+                                    <x:String>50</x:String>
+                                </Picker.Items>
+                            </Picker>
+                        </HorizontalStackLayout>
                         <Label
                             Grid.Row="1"
                             Grid.Column="0"
-                            Text="{Binding Recipe.Description}" />
+                            Text="{Binding Description}" />
                     </Grid>
                 </Border>
                 <toolkit:Expander
-                    IsExpanded="True"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}">
+                    IsExpanded="True">
                     <toolkit:Expander.Header>
                         <Border
                             Padding="10"
-                            Margin="-3,0"
-                            BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}">
+                            Margin="-3,0">
                             <HorizontalStackLayout>
                                 <Image
                                     Source="arrow_down"
@@ -96,73 +216,20 @@
                         </Border>
                     </toolkit:Expander.Header>
                     <CollectionView
-                        ItemsSource="{Binding Recipe.RecipeIngredients}"
-                        ItemsLayout="VerticalList">
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate>
-                                <VerticalStackLayout>
-                                    <Grid
-                                        RowDefinitions="50"
-                                        ColumnDefinitions="*,150">
-                                        <Label
-                                            Grid.Row="0"
-                                            Grid.Column="0"
-                                            VerticalOptions="Fill"
-                                            VerticalTextAlignment="Center"
-                                            Margin="15,0,0,0">
-                                            <Label.Text>
-                                                <MultiBinding StringFormat="{}{0} {1} - {2}">
-                                                    <Binding Path="Quantity" />
-                                                    <Binding Path="Measurement" />
-                                                    <Binding Path="Ingredient.Name" />
-                                                </MultiBinding>
-                                            </Label.Text>
-                                        </Label>
-                                        <Image
-                                            Grid.Row="0"
-                                            Grid.Column="2"
-                                            Source="{Binding ImageUri, TargetNullValue=carrot}"
-                                            Aspect="AspectFill"
-                                            HeightRequest="50"
-                                            WidthRequest="150" />
-                                        <Rectangle
-                                            Grid.Row="0"
-                                            Grid.Column="2">
-                                            <Rectangle.Background>
-                                                <LinearGradientBrush
-                                                    StartPoint="1,1"
-                                                    EndPoint="0,1">
-                                                    <GradientStop
-                                                        Color="Transparent"
-                                                        Offset="0.7" />
-                                                    <GradientStop
-                                                        Color="{AppThemeBinding Light=White, Dark=Black}"
-                                                        Offset="1" />
-                                                </LinearGradientBrush>
-                                            </Rectangle.Background>
-                                        </Rectangle>
-                                    </Grid>
-                                    <Rectangle
-                                        Fill="LightGray"
-                                        HeightRequest="2"
-                                        HorizontalOptions="Fill" />
-                                </VerticalStackLayout>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
+                        ItemsSource="{Binding RecipeIngredients}"
+                        ItemsLayout="VerticalList"
+                        ItemTemplate="{StaticResource RecipeIngredientTemplate}" />
                 </toolkit:Expander>
-                <!--<toolkit:Expander
+                <toolkit:Expander
                     IsVisible="{Binding Recipe.HasPrep}"
                     Margin="0,15,0,0"
                     IsExpanded="True"
                     BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Black}}">
                     <toolkit:Expander.Header>
-                        <Frame
+                        <Border
                             Padding="10"
                             Margin="-3,0"
-                            CornerRadius="0"
-                            BackgroundColor="{AppThemeBinding Light=White, Dark=Black}"
-                            BorderColor="LightGray">
+                            BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}">
                             <HorizontalStackLayout>
                                 <Image
                                     Source="arrow_down"
@@ -179,97 +246,13 @@
                                     FontSize="18"
                                     VerticalTextAlignment="Center" />
                             </HorizontalStackLayout>
-                        </Frame>
+                        </Border>
                     </toolkit:Expander.Header>
                     <CollectionView
-                        ItemsSource="{Binding Recipe.PrepSteps}"
-                        ItemsLayout="VerticalList">
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate>
-                                <VerticalStackLayout>
-                                    <Grid
-                                        RowDefinitions="10,80,20,10"
-                                        ColumnDefinitions="10,80,*">
-                                        <Image
-                                            Grid.Row="0"
-                                            Grid.RowSpan="4"
-                                            Grid.Column="0"
-                                            Grid.ColumnSpan="3"
-                                            Source="{Binding ImageUri}"
-                                            Aspect="AspectFill" />
-                                        <Ellipse
-                                            Grid.Row="1"
-                                            Grid.RowSpan="4"
-                                            Grid.Column="1"
-                                            BackgroundColor="{DynamicResource Tertiary}"
-                                            WidthRequest="80"
-                                            HeightRequest="80"
-                                            HorizontalOptions="Center"
-                                            VerticalOptions="Center" />
-                                        <Label
-                                            Grid.Row="1"
-                                            Grid.Column="1"
-                                            WidthRequest="80"
-                                            HeightRequest="80"
-                                            HorizontalOptions="Center"
-                                            VerticalOptions="Center"
-                                            Text="{Binding StepNumber}"
-                                            FontSize="30" />
-                                        <Rectangle
-                                            Grid.Row="3"
-                                            Grid.RowSpan="2"
-                                            Grid.Column="0"
-                                            Grid.ColumnSpan="3"
-                                            HeightRequest="30">
-                                            <Rectangle.Background>
-                                                <LinearGradientBrush
-                                                    EndPoint="0,1">
-                                                    <GradientStop
-                                                        Color="Transparent"
-                                                        Offset="0.1" />
-                                                    <GradientStop
-                                                        Color="{AppThemeBinding Light=White, Dark=Black}"
-                                                        Offset=".9" />
-                                                </LinearGradientBrush>
-                                            </Rectangle.Background>
-                                        </Rectangle>
-                                    </Grid>
-                                    <Label
-                                        Margin="20"
-                                        Text="{Binding Description}" />
-                                    <CollectionView
-                                        ItemsSource="{Binding Ingredients}"
-                                        ItemsLayout="VerticalList">
-                                        <CollectionView.ItemTemplate>
-                                            <DataTemplate>
-                                                <Grid
-                                                    RowDefinitions="50"
-                                                    ColumnDefinitions="*">
-                                                    <Image
-                                                        Grid.Row="0"
-                                                        Grid.Column="0"
-                                                        Source="{Binding ImageUri}"
-                                                        Aspect="AspectFill" />
-                                                    <Label
-                                                        Grid.Row="0"
-                                                        Grid.Column="0">
-                                                        <Label.Text>
-                                                            <MultiBinding StringFormat="{}{0} {1} - {2}">
-                                                                <Binding Path="Quantity" />
-                                                                <Binding Path="Measurement" />
-                                                                <Binding Path="Ingredient.Name" />
-                                                            </MultiBinding>
-                                                        </Label.Text>
-                                                    </Label>
-                                                </Grid>
-                                            </DataTemplate>
-                                        </CollectionView.ItemTemplate>
-                                    </CollectionView>
-                                </VerticalStackLayout>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
-                </toolkit:Expander>-->
+                        ItemsSource="{Binding PrepSteps}"
+                        ItemsLayout="VerticalList"
+                        ItemTemplate="{StaticResource RecipeStepTemplate}" />
+                </toolkit:Expander>
                 <toolkit:Expander
                     Margin="0,15,0,0"
                     IsExpanded="True"
@@ -290,7 +273,7 @@
                                     </Image.Behaviors>
                                 </Image>
                                 <Label
-                                    Text="Steps"
+                                    Text="Cook"
                                     FontAttributes="Bold"
                                     FontSize="18"
                                     VerticalTextAlignment="Center" />
@@ -298,72 +281,9 @@
                         </Border>
                     </toolkit:Expander.Header>
                     <CollectionView
-                        ItemsSource="{Binding Recipe.CookingSteps}"
-                        ItemsLayout="VerticalList">
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate>
-                                <VerticalStackLayout>
-                                    <Grid
-                                        RowDefinitions="10,100,10"
-                                        ColumnDefinitions="10,80,*">
-                                        <Image
-                                            Grid.Row="0"
-                                            Grid.RowSpan="3"
-                                            Grid.Column="0"
-                                            Grid.ColumnSpan="3"
-                                            Source="{Binding ImageUri}"
-                                            Aspect="AspectFill" />
-                                        <Ellipse
-                                            Grid.Row="1"
-                                            Grid.Column="1"
-                                            Fill="{DynamicResource Tertiary}"
-                                            WidthRequest="80"
-                                            HeightRequest="80"
-                                            HorizontalOptions="Fill"
-                                            VerticalOptions="Fill" />
-                                        <Label
-                                            Grid.Row="1"
-                                            Grid.Column="1"
-                                            VerticalTextAlignment="Center"
-                                            HorizontalTextAlignment="Center"
-                                            Text="{Binding StepNumber}"
-                                            FontSize="30" />
-                                    </Grid>
-                                    <Label
-                                        Margin="20"
-                                        FontSize="18"
-                                        Text="{Binding Description}" />
-                                    <Label
-                                        Margin="10"
-                                        Text="Ingredients for this step:" />
-                                    <CollectionView
-                                        ItemsSource="{Binding Ingredients}"
-                                        ItemsLayout="VerticalList">
-                                        <CollectionView.ItemTemplate>
-                                            <DataTemplate>
-                                                <VerticalStackLayout>
-                                                    <Rectangle
-                                                        Fill="LightGray"
-                                                        HeightRequest="2"
-                                                        HorizontalOptions="Fill" />
-                                                    <Label
-                                                        Margin="10">
-                                                        <Label.Text>
-                                                            <MultiBinding StringFormat="{}{0} {1} - {2}">
-                                                                <Binding Path="Quantity" />
-                                                                <Binding Path="Measurement" />
-                                                                <Binding Path="Ingredient.Name" />
-                                                            </MultiBinding>
-                                                        </Label.Text>
-                                                    </Label>
-                                                </VerticalStackLayout>
-                                            </DataTemplate>
-                                        </CollectionView.ItemTemplate>
-                                    </CollectionView>
-                                </VerticalStackLayout>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
+                        ItemsSource="{Binding CookingSteps}"
+                        ItemsLayout="VerticalList"
+                        ItemTemplate="{StaticResource RecipeStepTemplate}" />
                 </toolkit:Expander>
             </VerticalStackLayout>
         </ScrollView>

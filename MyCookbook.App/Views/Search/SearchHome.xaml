@@ -10,7 +10,8 @@
     Title="Search"
     Shell.NavBarIsVisible="False"
     Shell.PresentationMode="ModalAnimated"
-    Loaded="OnLoaded">
+    Loaded="OnLoaded"
+    BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Black}}">
     <VerticalStackLayout>
         <SearchBar
             x:Name="TextSearchBar"

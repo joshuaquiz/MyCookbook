@@ -9,11 +9,11 @@
     x:Name="Root"
     Title="Home"
     Shell.NavBarIsVisible="False"
-    Shell.PresentationMode="NotAnimated">
+    Shell.PresentationMode="NotAnimated"
+    BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Black}}">
     <Grid
         ColumnDefinitions="*"
-        RowDefinitions="*,50"
-        BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Black}}">
+        RowDefinitions="*,50">
         <recipeSummaryList:RecipeSummaryListControl
             Grid.Row="0"
             Grid.Column="0"

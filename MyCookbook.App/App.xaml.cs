@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Maui.ApplicationModel;
 using MyCookbook.App.Interfaces;
 using MyCookbook.App.ViewModels;
 using MyCookbook.App.Views;
@@ -38,7 +39,7 @@ public partial class App
         //CrossMauiMTAdmob.Current.MaxAdContentRating = MTMaxAdContentRating.MaxAdContentRatingG;
         //CrossMauiMTAdmob.Current.AdChoicesCorner = AdChoicesCorner.ADCHOICES_BOTTOM_LEFT;
         //CrossMauiMTAdmob.Current.MaximumNumberOfAdsCached = 3;
-        UserAppTheme = cookbookStorage.GetCurrentAppTheme(this).GetAwaiter().GetResult();
+        UserAppTheme = AppTheme.Light;//cookbookStorage.GetCurrentAppTheme(this).GetAwaiter().GetResult();
 
         // Start the initialization process
         InitializeAppAsync();
