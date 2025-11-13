@@ -33,7 +33,7 @@
                         <Label
                             VerticalOptions="Fill"
                             VerticalTextAlignment="Center"
-                            Text="{Binding Measurement, Converter={StaticResource MeasurementToStringConverter}}" />
+                            Text="{Binding MeasurementUnit, Converter={StaticResource MeasurementToStringConverter}}" />
                         <Label
                             VerticalOptions="Fill"
                             VerticalTextAlignment="Center"

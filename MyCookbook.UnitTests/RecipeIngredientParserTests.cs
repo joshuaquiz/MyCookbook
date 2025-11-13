@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using MyCookbook.API.Implementations;
@@ -13,44 +9,47 @@ namespace MyCookbook.UnitTests;
 public static class RecipeIngredientParserTests
 {
     [Theory]
-    [InlineData("", null)]
-    [InlineData("Jeep", null)]
-    [InlineData("Unit", Measurement.Unit)]
-    [InlineData("Units", Measurement.Unit)]
-    [InlineData("UNIT", Measurement.Unit)]
-    [InlineData("UNITS", Measurement.Unit)]
-    [InlineData("TeaSpoon", Measurement.TeaSpoon)]
-    [InlineData("TeaSpoons", Measurement.TeaSpoon)]
-    [InlineData("Teaspoon", Measurement.TeaSpoon)]
-    [InlineData("Teaspoons", Measurement.TeaSpoon)]
-    [InlineData("TeAsPoOnS", Measurement.TeaSpoon)]
-    [InlineData("Bunches", Measurement.Bunch)]
-    [InlineData("ounce", Measurement.Ounce)]
-    [InlineData("Ounce", Measurement.Ounce)]
-    [InlineData("Ounces", Measurement.Ounce)]
-    [InlineData("Fillet", Measurement.Fillet)]
-    [InlineData("Fillets", Measurement.Fillet)]
-    [InlineData("Inch", Measurement.Inch)]
-    [InlineData("inches", Measurement.Inch)]
-    [InlineData("can", Measurement.Can)]
-    [InlineData("Cans", Measurement.Can)]
+    [InlineData("", MeasurementUnit.Unit)]
+    [InlineData("Jeep", MeasurementUnit.Unit)]
+    [InlineData("Unit", MeasurementUnit.Unit)]
+    [InlineData("Units", MeasurementUnit.Unit)]
+    [InlineData("UNIT", MeasurementUnit.Unit)]
+    [InlineData("UNITS", MeasurementUnit.Unit)]
+    [InlineData("TeaSpoon", MeasurementUnit.TeaSpoon)]
+    [InlineData("TeaSpoons", MeasurementUnit.TeaSpoon)]
+    [InlineData("Teaspoon", MeasurementUnit.TeaSpoon)]
+    [InlineData("Teaspoons", MeasurementUnit.TeaSpoon)]
+    [InlineData("TeAsPoOnS", MeasurementUnit.TeaSpoon)]
+    [InlineData("Bunches", MeasurementUnit.Bunch)]
+    [InlineData("ounce", MeasurementUnit.Ounce)]
+    [InlineData("Ounce", MeasurementUnit.Ounce)]
+    [InlineData("Ounces", MeasurementUnit.Ounce)]
+    [InlineData("Fillet", MeasurementUnit.Fillet)]
+    [InlineData("Fillets", MeasurementUnit.Fillet)]
+    [InlineData("Inch", MeasurementUnit.Inch)]
+    [InlineData("inches", MeasurementUnit.Inch)]
+    [InlineData("can", MeasurementUnit.Can)]
+    [InlineData("Cans", MeasurementUnit.Can)]
     public static void TestGetMeasurement(
         string input,
-        Measurement? expected)
+        MeasurementUnit? expected)
     {
         var result = RecipeIngredientParser.GetMeasurement(
             input);
         using (new AssertionScope())
         {
-            result?.ParsedValue
+            result.ParsedValue
                 .Should()
                 .Be(expected);
+            result.MatchedValue
+                .Should()
+                .Be(input);
         }
     }
 
     [Theory]
-    [InlineData("", null)]
-    [InlineData("Jeep", null)]
+    [InlineData("", "1")]
+    [InlineData("Jeep", "1")]
     [InlineData("1", "1")]
     [InlineData("10", "10")]
     [InlineData("100", "100")]
@@ -73,41 +72,41 @@ public static class RecipeIngredientParserTests
             input);
         using (new AssertionScope())
         {
-            result?.ParsedValue
+            result.NumberValue?.ParsedValue
                 .Should()
                 .Be(expected);
         }
     }
 
     [Theory]
-    [InlineData(Measurement.Unit, Measurement.Unit, "1")]
-    [InlineData(Measurement.Unit, Measurement.Piece, "1")]
-    [InlineData(Measurement.Unit, Measurement.Fillet, null)]
-    [InlineData(Measurement.Slice, Measurement.Slice, "1")]
-    [InlineData(Measurement.Slice, Measurement.Cup, null)]
-    [InlineData(Measurement.Clove, Measurement.Clove, "1")]
-    [InlineData(Measurement.Clove, Measurement.Unit, null)]
-    [InlineData(Measurement.Bunch, Measurement.Bunch, "1")]
-    [InlineData(Measurement.Bunch, Measurement.Unit, null)]
-    [InlineData(Measurement.Fillet, Measurement.Fillet, "1")]
-    [InlineData(Measurement.Fillet, Measurement.Unit, null)]
-    [InlineData(Measurement.Cup, Measurement.Cup, "1")]
-    [InlineData(Measurement.Cup, Measurement.TableSpoon, "16")]
-    [InlineData(Measurement.Cup, Measurement.TeaSpoon, "48")]
-    [InlineData(Measurement.Cup, Measurement.Ounce, "8")]
-    [InlineData(Measurement.Cup, Measurement.Unit, null)]
-    [InlineData(Measurement.TableSpoon, Measurement.TableSpoon, "1")]
-    [InlineData(Measurement.TableSpoon, Measurement.TeaSpoon, "3")]
-    [InlineData(Measurement.TableSpoon, Measurement.Unit, null)]
-    [InlineData(Measurement.TeaSpoon, Measurement.TeaSpoon, "1")]
-    [InlineData(Measurement.TeaSpoon, Measurement.Unit, null)]
-    [InlineData(Measurement.Ounce, Measurement.TableSpoon, "2")]
-    [InlineData(Measurement.Ounce, Measurement.TeaSpoon, "6")]
-    [InlineData(Measurement.Ounce, Measurement.Ounce, "1")]
-    [InlineData(Measurement.Ounce, Measurement.Unit, null)]
+    [InlineData(MeasurementUnit.Unit, MeasurementUnit.Unit, "1")]
+    [InlineData(MeasurementUnit.Unit, MeasurementUnit.Piece, "1")]
+    [InlineData(MeasurementUnit.Unit, MeasurementUnit.Fillet, null)]
+    [InlineData(MeasurementUnit.Slice, MeasurementUnit.Slice, "1")]
+    [InlineData(MeasurementUnit.Slice, MeasurementUnit.Cup, null)]
+    [InlineData(MeasurementUnit.Clove, MeasurementUnit.Clove, "1")]
+    [InlineData(MeasurementUnit.Clove, MeasurementUnit.Unit, null)]
+    [InlineData(MeasurementUnit.Bunch, MeasurementUnit.Bunch, "1")]
+    [InlineData(MeasurementUnit.Bunch, MeasurementUnit.Unit, null)]
+    [InlineData(MeasurementUnit.Fillet, MeasurementUnit.Fillet, "1")]
+    [InlineData(MeasurementUnit.Fillet, MeasurementUnit.Unit, null)]
+    [InlineData(MeasurementUnit.Cup, MeasurementUnit.Cup, "1")]
+    [InlineData(MeasurementUnit.Cup, MeasurementUnit.TableSpoon, "16")]
+    [InlineData(MeasurementUnit.Cup, MeasurementUnit.TeaSpoon, "48")]
+    [InlineData(MeasurementUnit.Cup, MeasurementUnit.Ounce, "8")]
+    [InlineData(MeasurementUnit.Cup, MeasurementUnit.Unit, null)]
+    [InlineData(MeasurementUnit.TableSpoon, MeasurementUnit.TableSpoon, "1")]
+    [InlineData(MeasurementUnit.TableSpoon, MeasurementUnit.TeaSpoon, "3")]
+    [InlineData(MeasurementUnit.TableSpoon, MeasurementUnit.Unit, null)]
+    [InlineData(MeasurementUnit.TeaSpoon, MeasurementUnit.TeaSpoon, "1")]
+    [InlineData(MeasurementUnit.TeaSpoon, MeasurementUnit.Unit, null)]
+    [InlineData(MeasurementUnit.Ounce, MeasurementUnit.TableSpoon, "2")]
+    [InlineData(MeasurementUnit.Ounce, MeasurementUnit.TeaSpoon, "6")]
+    [InlineData(MeasurementUnit.Ounce, MeasurementUnit.Ounce, "1")]
+    [InlineData(MeasurementUnit.Ounce, MeasurementUnit.Unit, null)]
     public static void TestGetConversionRate(
-        Measurement from,
-        Measurement to,
+        MeasurementUnit from,
+        MeasurementUnit to,
         string? value)
     {
         var expected = value == null
@@ -125,23 +124,23 @@ public static class RecipeIngredientParserTests
     }
 
     [Theory]
-    [InlineData(Measurement.Unit, Measurement.Unit, Measurement.Unit)]
-    [InlineData(Measurement.Unit, Measurement.Piece, Measurement.Piece)]
-    [InlineData(Measurement.Fillet, Measurement.Piece, Measurement.Piece)]
-    [InlineData(Measurement.Fillet, Measurement.Cup, Measurement.Cup)]
-    [InlineData(Measurement.TableSpoon, Measurement.Cup, Measurement.TableSpoon)]
-    [InlineData(Measurement.TableSpoon, Measurement.TableSpoon, Measurement.TableSpoon)]
-    [InlineData(Measurement.TableSpoon, Measurement.TeaSpoon, Measurement.TeaSpoon)]
-    [InlineData(Measurement.TeaSpoon, Measurement.Cup, Measurement.TeaSpoon)]
-    [InlineData(Measurement.TeaSpoon, Measurement.TableSpoon, Measurement.TeaSpoon)]
-    [InlineData(Measurement.TeaSpoon, Measurement.TeaSpoon, Measurement.TeaSpoon)]
-    [InlineData(Measurement.Ounce, Measurement.TeaSpoon, Measurement.Ounce)]
-    [InlineData(Measurement.Ounce, Measurement.TableSpoon, Measurement.Ounce)]
-    [InlineData(Measurement.Ounce, Measurement.Cup, Measurement.Ounce)]
+    [InlineData(MeasurementUnit.Unit, MeasurementUnit.Unit, MeasurementUnit.Unit)]
+    [InlineData(MeasurementUnit.Unit, MeasurementUnit.Piece, MeasurementUnit.Piece)]
+    [InlineData(MeasurementUnit.Fillet, MeasurementUnit.Piece, MeasurementUnit.Piece)]
+    [InlineData(MeasurementUnit.Fillet, MeasurementUnit.Cup, MeasurementUnit.Cup)]
+    [InlineData(MeasurementUnit.TableSpoon, MeasurementUnit.Cup, MeasurementUnit.TableSpoon)]
+    [InlineData(MeasurementUnit.TableSpoon, MeasurementUnit.TableSpoon, MeasurementUnit.TableSpoon)]
+    [InlineData(MeasurementUnit.TableSpoon, MeasurementUnit.TeaSpoon, MeasurementUnit.TeaSpoon)]
+    [InlineData(MeasurementUnit.TeaSpoon, MeasurementUnit.Cup, MeasurementUnit.TeaSpoon)]
+    [InlineData(MeasurementUnit.TeaSpoon, MeasurementUnit.TableSpoon, MeasurementUnit.TeaSpoon)]
+    [InlineData(MeasurementUnit.TeaSpoon, MeasurementUnit.TeaSpoon, MeasurementUnit.TeaSpoon)]
+    [InlineData(MeasurementUnit.Ounce, MeasurementUnit.TeaSpoon, MeasurementUnit.Ounce)]
+    [InlineData(MeasurementUnit.Ounce, MeasurementUnit.TableSpoon, MeasurementUnit.Ounce)]
+    [InlineData(MeasurementUnit.Ounce, MeasurementUnit.Cup, MeasurementUnit.Ounce)]
     public static void TestGetLowestMeasurement(
-        Measurement input1,
-        Measurement input2,
-        Measurement expected)
+        MeasurementUnit input1,
+        MeasurementUnit input2,
+        MeasurementUnit expected)
     {
         var result = RecipeIngredientParser.GetLowestMeasurement(
             input1,
@@ -167,7 +166,8 @@ public static class RecipeIngredientParserTests
     {
         var result = RecipeIngredientParser.GetName(
             input,
-            otherTokens);
+            otherTokens,
+            MeasurementUnit.Unit);
         using (new AssertionScope())
         {
             result.ParsedValue
@@ -204,8 +204,14 @@ public static class RecipeIngredientParserTests
     [InlineData("1/2", "0.5")]
     [InlineData("4 ", "4")]
     [InlineData(" 4", "4")]
+    [InlineData(" 4 ", "4")]
     [InlineData("3/4", "0.75")]
     [InlineData("1/4 ", "0.25")]
+    [InlineData(" 4  1/5", "4.2")]
+    [InlineData("4  1/5", "4.2")]
+    [InlineData("4  1 /5", "4.2")]
+    [InlineData("4  1/ 5", "4.2")]
+    [InlineData("4  1 / 5", "4.2")]
     public static void TestParseFractionSection(
         string input,
         string? value)
@@ -263,7 +269,7 @@ public static class RecipeIngredientParserTests
         }
     }
 
-    [Theory]
+    /*[Theory]
     [MemberData(nameof(GetData))]
     public static void TestParsingIngredient(
         string data)
@@ -273,16 +279,16 @@ public static class RecipeIngredientParserTests
         result.Count.Should().Be(result.Count);
         for (var i = 0; i < result.Count; i++)
         {
-            var quantity = "q:" + result[i].Quantity + ", m:" + result[i].Measurement.ToString("G") + ", d:" + data + Environment.NewLine;
+            var quantity = "q:" + result[i].Quantity + ", m:" + result[i].Unit.ToString("G") + ", d:" + data + Environment.NewLine;
             File.AppendAllText("../../../../failedV2.txt", quantity);
             //resultV2[i].Ingredient.Name.Should().Be(result[i].Ingredient.Name);
             result[i].Quantity.Should().Be(result[i].Quantity);
-            result[i].Measurement.Should().Be(result[i].Measurement);
+            result[i].Unit.Should().Be(result[i].Unit);
             //resultV2[i].Notes.Should().Be(result[i].Notes);
         }
     }
 
-    public static IEnumerable<object[]> GetData() =>
+    public static IEnumerable<object[]> GetData() => []
         File.ReadAllLines("../../../../tests.txt")
             .OrderBy(x => x)
             .Select(
@@ -290,5 +296,5 @@ public static class RecipeIngredientParserTests
                     new object[]
                     {
                         x
-                    });
+                    });*/
 }

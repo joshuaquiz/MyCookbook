@@ -35,7 +35,7 @@ namespace MyCookbook.API.Migrations
             migrationBuilder.DropPrimaryKey("PK_IngredientRecipe", "RecipeIngredients");
             migrationBuilder.AddColumn<Guid>("Guid", "RecipeIngredients", "TEXT", nullable: false);
             migrationBuilder.AddColumn<string>("Quantity", "RecipeIngredients", "TEXT", nullable: false);
-            migrationBuilder.AddColumn<int>("Measurement", "RecipeIngredients", "INTEGER", nullable: false);
+            migrationBuilder.AddColumn<int>("MeasurementUnit", "RecipeIngredients", "INTEGER", nullable: false);
             migrationBuilder.AddColumn<string>("Notes", "RecipeIngredients", "TEXT", nullable: false);
             migrationBuilder.AddPrimaryKey("PK_RecipeIngredients", "RecipeIngredients", "Guid");
 
@@ -64,7 +64,7 @@ namespace MyCookbook.API.Migrations
             migrationBuilder.DropPrimaryKey("PK_RecipeIngredients", "RecipeIngredients");
             migrationBuilder.DropColumn("Guid", "RecipeIngredients");
             migrationBuilder.DropColumn("Quantity", "RecipeIngredients");
-            migrationBuilder.DropColumn("Measurement", "RecipeIngredients");
+            migrationBuilder.DropColumn("MeasurementUnit", "RecipeIngredients");
             migrationBuilder.DropColumn("Notes", "RecipeIngredients");
             migrationBuilder.AddPrimaryKey("PK_IngredientRecipe", "RecipeIngredients", ["IngredientsGuid", "RecipesGuid"]);
             migrationBuilder.RenameTable("RecipeIngredients", newName: "IngredientRecipe");

@@ -1,4 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace MyCookbook.Common.Database;
 
@@ -7,17 +11,141 @@ public class MyCookbookContext(
     : DbContext(
         options)
 {
-    public DbSet<RecipeUrl> RecipeUrls { get; set; }
+    public DbSet<User> Users { get; set; }
+
+    public DbSet<Author> Authors { get; set; }
+
+    public DbSet<Recipe> Recipes { get; set; }
 
     public DbSet<Ingredient> Ingredients { get; set; }
 
     public DbSet<RecipeStep> RecipeSteps { get; set; }
 
-    public DbSet<RecipeStepIngredient> RecipeStepIngredients { get; set; }
+    public DbSet<RecipeStepIngredient> StepIngredients { get; set; }
 
-    public DbSet<Recipe> Recipes { get; set; }
+    public DbSet<Tag> Tags { get; set; }
 
-    public DbSet<User> Users { get; set; }
+    public DbSet<RecipeTag> RecipeTags { get; set; }
 
-    public DbSet<Author> Authors { get; set; }
+    public DbSet<RecipeHeart> RecipeHearts { get; set; }
+
+    public DbSet<Image> Images { get; set; }
+
+    public DbSet<EntityImage> EntityImages { get; set; }
+
+    public DbSet<RawDataSource> RawDataSources { get; set; }
+
+    public DbSet<Popularity> Popularities { get; set; }
+
+    public DbSet<AuthorLink> AuthorLinks { get; set; }
+
+    public async Task<List<Image>> GetImages(
+        Guid id,
+        ImageEntityType imageEntityType) =>
+        await EntityImages
+            .Where(ei => ei.EntityId == id && ei.ImageEntityType == imageEntityType)
+            .Select(ei => ei.Image)
+            .ToListAsync();
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // 1. Primary Keys (Defined on models, but confirming GUID text type)
+        // EF Core maps C# string PKs to TEXT in SQLite by default.
+
+        // 2. User & Author Constraints
+        modelBuilder.Entity<User>()
+            .HasIndex(u => u.AuthorId)
+            .IsUnique();
+
+        // One-to-one relationship between User and Author
+        modelBuilder.Entity<Author>()
+            .HasOne(a => a.User)
+            .WithOne(u => u.Author)
+            .HasForeignKey<User>(u => u.AuthorId);
+
+        // 3. Recipe Constraints
+        modelBuilder.Entity<Recipe>()
+            .HasOne(r => r.OriginalRecipe)
+            .WithMany(r => r.Copies)
+            .HasForeignKey(r => r.OriginalRecipeId)
+            .IsRequired(false); // Can be NULL for original recipes
+
+        modelBuilder.Entity<RecipeStepIngredient>()
+            .HasOne(r => r.RecipeStep)
+            .WithMany(r => r.StepIngredients)
+            .HasForeignKey(r => r.RecipeStepId);
+
+        modelBuilder.Entity<RecipeStep>()
+            .HasIndex(s => new { s.RecipeId, s.StepNumber })
+            .IsUnique(); // UNIQUE (recipe_id, step_number)
+
+        // 4. Junction Table Configuration
+
+        // RecipeTag (Many-to-Many setup with Composite Key)
+        modelBuilder.Entity<RecipeTag>()
+            .HasKey(rt => new { rt.RecipeId, rt.TagId });
+
+        // RecipeHeart (Many-to-Many setup with Composite Key)
+        modelBuilder.Entity<RecipeHeart>()
+            .HasKey(rh => new { rh.UserId, rh.RecipeId });
+
+        // Popularity (Unique Constraint)
+        modelBuilder.Entity<Popularity>()
+            .HasIndex(p => new { p.EntityType, p.EntityId, p.MetricType })
+            .IsUnique();
+
+        // 5. Polymorphic Image Mapping (EntityImage)
+        // This is the key structural link for images across different entity types.
+        modelBuilder.Entity<EntityImage>()
+            .HasOne(ei => ei.Image)
+            .WithMany(i => i.EntityImages)
+            .HasForeignKey(ei => ei.ImageId);
+
+        // We do NOT define direct FK relationships from EntityImage.EntityId 
+        // to Recipe/Author/RecipeStep/Ingredient here, as EF Core does not support
+        // polymorphic FKs directly. This link is managed at the application level
+        // using the EntityId (GUID) and EntityType fields.
+
+        // 6. RawDataSource (Unique constraint on URL)
+        modelBuilder.Entity<RawDataSource>()
+            .HasIndex(r => r.Url)
+            .IsUnique();
+
+        modelBuilder.Entity<AuthorLink>()
+            .HasOne(al => al.Author)
+            .WithMany(a => a.Links)
+            .HasForeignKey(al => al.AuthorId);
+
+        // --- 1. Author Images ---
+        modelBuilder.Entity<Author>()
+            .HasMany(a => a.EntityImages) // Author has many EntityImages
+            .WithOne()
+            .HasForeignKey(ei => ei.EntityId) // EntityImages joins on EntityId
+            .HasPrincipalKey(a => a.AuthorId) // Author joins on AuthorId (converted to string)
+            .IsRequired(false); // Use 'false' for optional relationships;
+
+        // --- 2. Recipe Images ---
+        modelBuilder.Entity<Recipe>()
+            .HasMany(r => r.EntityImages) // Recipe has many EntityImages
+            .WithOne()
+            .HasForeignKey(ei => ei.EntityId)
+            .HasPrincipalKey(r => r.RecipeId)
+            .IsRequired(false);
+
+        // --- 3. Ingredient Images ---
+        modelBuilder.Entity<Ingredient>()
+            .HasMany(i => i.EntityImages) // Ingredient has many EntityImages
+            .WithOne()
+            .HasForeignKey(ei => ei.EntityId)
+            .HasPrincipalKey(i => i.IngredientId)
+            .IsRequired(false);
+
+        // --- 4. RecipeSteps ---
+        modelBuilder.Entity<RecipeStep>()
+            .HasMany(i => i.EntityImages) // RecipeStep has many EntityImages
+            .WithOne()
+            .HasForeignKey(ei => ei.EntityId)
+            .HasPrincipalKey(i => i.StepId)
+            .IsRequired(false);
+    }
 }

@@ -21,15 +21,15 @@ public static class QuantityToFractionConverter
         { "0.875", "⅞" }
     };
 
-    private static readonly List<Measurement> MeasurementsToSkip =
+    private static readonly List<MeasurementUnit> MeasurementsToSkip =
     [
-        Measurement.Inch
+        MeasurementUnit.Inch
     ];
 
     public static object GetGeneratedQuantity(
         decimal quantity,
         decimal multiplier,
-        Measurement? measurement)
+        MeasurementUnit? measurement)
     {
         if (measurement == null
             || !MeasurementsToSkip.Contains(measurement.Value))

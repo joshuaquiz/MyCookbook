@@ -25,15 +25,21 @@ public sealed class HomeController(
             cancellationToken);
         return new JsonResult(
             await db.Recipes
+                .Include(x => x.EntityImages).ThenInclude(x => x.Image)
+                .Include(x => x.Author).ThenInclude(x => x.EntityImages).ThenInclude(x => x.Image)
                 .Select(x =>
                     new PopularItem(
-                        x.Guid,
-                        x.Image,
-                        x.Name,
-                        x.Author.Image,
+                        x.RecipeId,
+                        x.EntityImages.Any(y => y.Image.ImageType == ImageType.Main)
+                            ? x.EntityImages.First(y => y.Image.ImageType == ImageType.Main).Image.Url
+                            : null,
+                        x.Title,
+                        x.Author.EntityImages.Any(y => y.Image.ImageType == ImageType.Main)
+                            ? x.Author.EntityImages.First(y => y.Image.ImageType == ImageType.Main).Image.Url
+                            : null,
                         x.Author.Name,
-                        x.TotalTime,
-                        x.Image ?? new Uri("http://www.google.com")))
+                        TimeSpan.FromMinutes(x.PrepTimeMinutes ?? 0 + x.CookTimeMinutes ?? 0), 
+                        x.RawDataSource.Url))
                 .ToListAsync(
                     cancellationToken));
     }

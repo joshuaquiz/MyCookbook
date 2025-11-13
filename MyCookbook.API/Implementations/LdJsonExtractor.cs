@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,21 +12,22 @@ using MyCookbook.API.Models;
 
 namespace MyCookbook.API.Implementations;
 
-public sealed class LdJsonExtractor(
+public sealed partial class LdJsonExtractor(
     ILogger<LdJsonExtractor> logger)
     : ILdJsonExtractor
 {
+    [GeneratedRegex("[ \t\r\n]{2,}")]
+    private static partial Regex CollapseWhitespaceRegex();
+
     public async ValueTask<LdJsonAndRawPageData> ExtractLdJsonItems(
         Uri url,
         string? html,
-        bool isReprocessing,
         CancellationToken cancellationToken)
     {
         try
         {
             HtmlDocument? doc;
-            if (isReprocessing
-                && !string.IsNullOrWhiteSpace(
+            if (!string.IsNullOrWhiteSpace(
                     html))
             {
                 doc = new HtmlDocument();
@@ -37,17 +36,27 @@ public sealed class LdJsonExtractor(
             }
             else
             {
-                var web = new HtmlWeb();
-                doc = await web.LoadFromWebAsync(
+                var (htmlDoc, statusCode, exception) = await Helpers.HtmlDownloader.DownloadHtmlDocument(
                     url,
-                    Encoding.Default,
-                    new NetworkCredential(),
                     cancellationToken);
-                if (isReprocessing)
+                doc = htmlDoc;
+                if (exception != null)
                 {
-                    await Task.Delay(
-                        TimeSpan.FromSeconds(10),
-                        cancellationToken);
+                    logger.LogError(
+                        exception,
+                        exception.Message);
+                    return new LdJsonAndRawPageData(
+                        statusCode,
+                        string.Empty,
+                        new List<string>());
+                }
+
+                if (doc == null)
+                {
+                    return new LdJsonAndRawPageData(
+                        null,
+                        string.Empty,
+                        new List<string>());
                 }
             }
 
@@ -55,43 +64,52 @@ public sealed class LdJsonExtractor(
                 $"{url} {doc.Text}");
             var jsonSections = doc.DocumentNode
                 .SelectNodes("//script[@type='' or @type='application/ld+json']")
-                .Select(n => n.InnerText)
-                .ToList();
-            string? imageSrc = null;
-            if (url.ToString().Contains("foodnetwork")
-                || url.ToString().Contains("cookingchanneltv"))
+                ?.ToList()
+                ?? [];
+            var ldTextSections = new List<string>();
+            foreach (var section in jsonSections)
             {
-                imageSrc = "https:" + doc.DocumentNode
-                    .SelectNodes("//div[@class='recipeLead']//img")
-                    ?.FirstOrDefault()
-                    ?.Attributes
-                    .FirstOrDefault(
-                        x =>
-                            x.Name == "src")
-                    ?.Value;
+                if (section.InnerText.Contains("@context"))
+                {
+                    ldTextSections.Add(section.InnerText);
+                }
+                else
+                {
+                    section.Remove();
+                }
+            }
+
+            foreach (var node in doc.DocumentNode.DescendantsAndSelf().Where(n => n.NodeType == HtmlNodeType.Comment)
+                         .Concat(
+                             doc.DocumentNode.SelectNodes("//script[@type='text/javascript']")?.Nodes() ?? [])
+                         .Concat(
+                             doc.DocumentNode.SelectNodes("//script[@type='text/x-config']")?.Nodes() ?? [])
+                         .Concat(
+                             doc.DocumentNode.SelectNodes("//template")?.Nodes() ?? [])
+                         .Concat(
+                             doc.DocumentNode.SelectNodes("//svg")?.Nodes() ?? [])
+                         .Concat(
+                             doc.DocumentNode.SelectNodes("//noscript")?.Nodes() ?? [])
+                         .Concat(
+                             doc.DocumentNode.SelectNodes("//iframe")?.Nodes() ?? [])
+                         .Concat(
+                             doc.DocumentNode.SelectNodes("//form")?.Nodes() ?? [])
+                         .Concat(
+                             doc.DocumentNode.SelectNodes("//style")?.Nodes() ?? [])
+                         .Concat(
+                             doc.DocumentNode.SelectNodes("//ins")?.Nodes() ?? [])
+                         .Concat(
+                             doc.DocumentNode.SelectNodes("//amp-ad")?.Nodes() ?? [])
+                         .ToList())
+            {
+                node.Remove();
             }
 
             return new LdJsonAndRawPageData(
                 HttpStatusCode.OK,
-                Regex.Replace(
-                    doc.Text,
-                    "\\s{2,}",
-                    " "),
-                jsonSections,
-                imageSrc,
-                null);
-        }
-        catch (HttpRequestException e)
-        {
-            logger.LogError(
-                e,
-                e.Message);
-            return new LdJsonAndRawPageData(
-                e.StatusCode,
-                string.Empty,
-                new List<string>(),
-                null,
-                null);
+                CollapseWhitespaceRegex()
+                    .Replace(doc.DocumentNode.OuterHtml, " "),
+                ldTextSections);
         }
         catch (Exception e)
         {
@@ -101,9 +119,7 @@ public sealed class LdJsonExtractor(
             return new LdJsonAndRawPageData(
                 null,
                 string.Empty,
-                new List<string>(),
-                null,
-                null);
+                new List<string>());
         }
     }
 }

@@ -1,30 +1,46 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 using MyCookbook.Common.Enums;
 
 namespace MyCookbook.Common.Database;
 
+[PrimaryKey(nameof(StepIngredientId))]
 [Table("RecipeStepIngredients")]
 public class RecipeStepIngredient
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public Guid Guid { get; set; }
+    [Column("step_ingredient_id")]
+    public Guid StepIngredientId { get; set; } = Guid.NewGuid();
 
-    public string Quantity { get; set; }
+    [Column("measurement_type")]
+    public MeasurementUnit Unit { get; set; }
 
-    public Measurement Measurement { get; set; }
+    [Column("quantity_type")]
+    public QuantityType QuantityType { get; set; }
 
+    [Column("min_value")]
+    public decimal? MinValue { get; set; }
+
+    [Column("max_value")]
+    public decimal? MaxValue { get; set; }
+
+    [Column("number_value")]
+    public decimal? NumberValue { get; set; }
+
+    [Column("notes")]
     public string? Notes { get; set; }
 
-    public Guid IngredientGuid { get; set; }
+    [Column("raw_text")]
+    public string RawText { get; set; }
 
-    [ForeignKey(nameof(IngredientGuid))]
-    public virtual Ingredient Ingredient { get; set; }
+    // Foreign Keys
+    [Column("recipe_step_id")]
+    public Guid RecipeStepId { get; set; }
 
-    public Guid RecipeStepGuid { get; set; }
-
-    [ForeignKey(nameof(RecipeStepGuid))]
     public virtual RecipeStep RecipeStep { get; set; }
+
+    [Column("ingredient_id")]
+    public Guid IngredientId { get; set; }
+
+    public virtual Ingredient Ingredient { get; set; }
 }

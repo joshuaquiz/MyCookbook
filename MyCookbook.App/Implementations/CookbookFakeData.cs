@@ -123,7 +123,7 @@ public static class CookbookFakeData
                                     UriKind.Absolute),
                                 "Chicken"),
                             "2",
-                            Measurement.Piece,
+                            MeasurementUnit.Piece,
                             null),
 
                         new(
@@ -135,7 +135,7 @@ public static class CookbookFakeData
                                     UriKind.Absolute),
                                 "Water"),
                             "1/4",
-                            Measurement.Cup,
+                            MeasurementUnit.Cup,
                             null),
 
                         new(
@@ -147,7 +147,7 @@ public static class CookbookFakeData
                                     UriKind.Absolute),
                                 "Spices"),
                             "1/4",
-                            Measurement.Cup,
+                            MeasurementUnit.Cup,
                             null)
                     ]),
 
@@ -168,7 +168,7 @@ public static class CookbookFakeData
                                     UriKind.Absolute),
                                 "Spreadable butter"),
                             "1/8",
-                            Measurement.Cup,
+                            MeasurementUnit.Cup,
                             null)
                     ])
             ]);

@@ -7,10 +7,9 @@ namespace MyCookbook.API.Interfaces;
 
 public interface IRecipeWebSiteWrapperProcessor
 {
-    public ValueTask<Recipe> ProcessWrapper(
+    public ValueTask ProcessWrapper(
         MyCookbookContext db,
-        RecipeUrl recipeUrl,
-        RecipeWebSiteWrapper wrapper,
-        bool isReprocessing,
+        RawDataSource rawDataSource,
+        SiteWrapper wrapper,
         CancellationToken cancellationToken);
 }

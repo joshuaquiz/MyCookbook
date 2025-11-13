@@ -6,6 +6,6 @@ namespace MyCookbook.API.Interfaces;
 
 public interface IUrlQueuerFromJsonObjectMap
 {
-    public IReadOnlyCollection<Uri> QueueUrlsFromJsonObjectMap(
-        IReadOnlyDictionary<string, JsonObject> jsonObjects);
+    public IEnumerable<Uri> QueueUrlsFromJsonObjectMap(
+        IReadOnlyDictionary<string, List<JsonObject>> jsonObjects);
 }

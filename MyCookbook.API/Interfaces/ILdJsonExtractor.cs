@@ -10,6 +10,5 @@ public interface ILdJsonExtractor
     public ValueTask<LdJsonAndRawPageData> ExtractLdJsonItems(
         Uri url,
         string? html,
-        bool isReprocessing,
         CancellationToken cancellationToken);
 }

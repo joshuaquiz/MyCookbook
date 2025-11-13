@@ -30,7 +30,7 @@
                             <Label.Text>
                                 <MultiBinding StringFormat="{}{0} {1} - {2}">
                                     <Binding Path="Quantity" />
-                                    <Binding Path="Measurement" />
+                                    <Binding Path="MeasurementUnit" />
                                     <Binding Path="Ingredient.Name" />
                                 </MultiBinding>
                             </Label.Text>

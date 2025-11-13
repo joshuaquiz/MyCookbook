@@ -1,48 +1,65 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace MyCookbook.Common.Database;
 
+[PrimaryKey(nameof(RecipeId))]
 [Table("Recipes")]
 public class Recipe
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public Guid Guid { get; set; }
+    [Column("recipe_id")]
+    public Guid RecipeId { get; set; } = Guid.NewGuid();
 
-    public Guid RecipeUrlGuid { get; set; }
+    [Column("title")]
+    public string Title { get; set; }
 
-    [ForeignKey(nameof(RecipeUrlGuid))]
-    public virtual RecipeUrl RecipeUrl { get; set; }
-
-    public string? Image { get; set; }
-
-    [NotMapped]
-    public Uri? ImageUri
-    {
-        get => Image == null ? null : new Uri(Image);
-        set => Image = value?.AbsoluteUri;
-    }
-
-    public string Name { get; init; }
-
+    [Column("description")]
     public string? Description { get; set; }
 
-    public string? TotalTime { get; set; }
+    [Column("servings")]
+    public int? Servings { get; set; }
 
-    [NotMapped]
-    public TimeSpan TotalTimeSpan
-    {
-        get => TotalTime == null ? TimeSpan.Zero : TimeSpan.Parse(TotalTime);
-        set => TotalTime = value.ToString(@"hh\:mm\:ss");
-    }
+    [Column("prep_time")]
+    public int? PrepTimeMinutes { get; set; }
 
-    public Guid AuthorGuid { get; set; }
+    [Column("cook_time")]
+    public int? CookTimeMinutes { get; set; }
 
-    [ForeignKey(nameof(AuthorGuid))]
+    [Column("type")]
+    public RecipeType RecipeType { get; set; }
+
+    [Column("is_public")]
+    public bool IsPublic { get; set; }
+
+    [Column("created_at")]
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    // Foreign Keys
+    [Column("author_id")]
+    public Guid AuthorId { get; set; }
+
     public virtual Author Author { get; set; }
 
-    public virtual List<RecipeStep> RecipeSteps { get; set; }
+    [Column("recipe_url_id")]
+    public Guid RawDataSourceId { get; set; }
+
+    public virtual RawDataSource RawDataSource { get; set; }
+
+    [Column("original_recipe_id")]
+    public Guid? OriginalRecipeId { get; set; }
+
+    public virtual Recipe OriginalRecipe { get; set; }
+
+    public virtual ICollection<Recipe> Copies { get; set; }
+
+    // Navigation for Relationships
+    public virtual ICollection<RecipeTag> RecipeTags { get; set; }
+
+    public virtual ICollection<RecipeStep> Steps { get; set; }
+
+    public virtual ICollection<RecipeHeart> Hearts { get; set; }
+
+    public virtual ICollection<EntityImage> EntityImages { get; set; }
 }

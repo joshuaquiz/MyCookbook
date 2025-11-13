@@ -8,5 +8,7 @@ public enum ParserVersion
 
     V2 = 2,
 
-    V3 = 3
+    V3 = 3,
+
+    V4 = 4
 }

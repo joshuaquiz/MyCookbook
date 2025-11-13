@@ -8,20 +8,20 @@ namespace MyCookbook.App.Converters;
 
 public sealed class MeasurementToStringConverter : IValueConverter
 {
-    private static readonly Dictionary<Measurement, string> MeasurementMap = new()
+    private static readonly Dictionary<MeasurementUnit, string> MeasurementMap = new()
     {
-        { Measurement.Unit, string.Empty },
-        { Measurement.Piece, "piece" },
-        { Measurement.Slice, "slice" },
-        { Measurement.Clove, "clove" },
-        { Measurement.Bunch, "bunch" },
-        { Measurement.Cup, "cup" },
-        { Measurement.TableSpoon, "tbsp" },
-        { Measurement.TeaSpoon, "tsp" },
-        { Measurement.Ounce, "oz" },
-        { Measurement.Fillet, "fillet" },
-        { Measurement.Inch, "in" },
-        { Measurement.Can, "can" }
+        { MeasurementUnit.Unit, string.Empty },
+        { MeasurementUnit.Piece, "piece" },
+        { MeasurementUnit.Slice, "slice" },
+        { MeasurementUnit.Clove, "clove" },
+        { MeasurementUnit.Bunch, "bunch" },
+        { MeasurementUnit.Cup, "cup" },
+        { MeasurementUnit.TableSpoon, "tbsp" },
+        { MeasurementUnit.TeaSpoon, "tsp" },
+        { MeasurementUnit.Ounce, "oz" },
+        { MeasurementUnit.Fillet, "fillet" },
+        { MeasurementUnit.Inch, "in" },
+        { MeasurementUnit.Can, "can" }
     };
 
     public object Convert(
@@ -31,8 +31,8 @@ public sealed class MeasurementToStringConverter : IValueConverter
         CultureInfo culture) =>
         value != null && MeasurementMap.TryGetValue(
             value is string s
-                ? Enum.Parse<Measurement>(s)
-            : (Measurement)value,
+                ? Enum.Parse<MeasurementUnit>(s)
+            : (MeasurementUnit)value,
             out var str)
             ? str
             : string.Empty;

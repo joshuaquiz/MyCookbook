@@ -2,17 +2,19 @@ using System.Text.Json;
 
 namespace MyCookbook.API.Exceptions;
 
-public sealed class LdJsonProcessingException : MyCookBookException
+public sealed class LdJsonProcessingException(
+    string ldJsonSection,
+    JsonException? jsonException)
+    : MyCookBookException(
+        "Unable to process the ld+json section",
+        jsonException)
 {
-    public LdJsonProcessingException(
-        string ldJsonSection,
-        JsonException? jsonException)
-        : base(
-            "Unable to process the ld+json section",
-            jsonException)
-    {
-        LdJsonSection = ldJsonSection;
-    }
-
-    public string LdJsonSection { get; }
+    public string LdJsonSection { get; } = ldJsonSection;
+}
+public sealed class MultipleLdTypesFoundException(
+    string typeName)
+    : MyCookBookException(
+        $"Multiple {typeName} sections not supported at this time")
+{
+    public string LdSectionTypeName { get; } = typeName;
 }

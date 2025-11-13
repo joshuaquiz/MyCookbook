@@ -130,7 +130,7 @@ namespace MyCookbook.API.Migrations
                     b.Property<Guid>("IngredientGuid")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Measurement")
+                    b.Property<int>("MeasurementUnit")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Notes")

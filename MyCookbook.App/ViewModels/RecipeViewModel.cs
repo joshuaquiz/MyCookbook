@@ -121,7 +121,7 @@ public partial class RecipeViewModel(
                     QuantityToFractionConverter.GetGeneratedQuantity(
                             decimal.Parse(recipeIngredientViewModel.Quantity ?? "0"),
                             ServingsMultiplier,
-                            recipeIngredientViewModel.Measurement)
+                            recipeIngredientViewModel.MeasurementUnit)
                         .ToString();
             }
         }

@@ -1,16 +1,32 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace MyCookbook.Common.Database;
 
+[PrimaryKey(nameof(UserId))]
+[Table("Users")]
 public class User
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public Guid Guid { get; set; }
+    [Column("user_id")]
+    public Guid UserId { get; set; } = Guid.NewGuid();
 
-    public string Name { get; set; }
+    [Column("username")]
+    public string Username { get; set; }
 
-    public Uri? Image { get; set; }
+    [Column("password_hash")]
+    public string PasswordHash { get; set; }
+
+    [Column("created_at")]
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    // Foreign Key to Author (Required, Unique)
+    [Column("author_id")]
+    public Guid AuthorId { get; set; }
+
+    public virtual Author Author { get; set; }
+
+    // Navigation for Relationships
+    public virtual ICollection<RecipeHeart> Hearts { get; set; }
 }

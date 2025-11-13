@@ -1,11 +1,14 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using MyCookbook.API.Interfaces;
 using MyCookbook.API.Implementations;
 using MyCookbook.API.BackgroundJobs;
+using MyCookbook.API.Implementations.SiteParsers;
 using MyCookbook.Common.Database;
 
 namespace MyCookbook.API;
@@ -27,7 +30,12 @@ public sealed class Program
             opt =>
             {
                 opt.UseSqlite(
-                    "Data Source=MyCookbook.db;");
+                        "Data Source=MyCookbook.db;",
+                        options => options.CommandTimeout(30))
+                    .LogTo(
+                        Console.WriteLine,
+                        [RelationalEventId.CommandExecuting, RelationalEventId.CommandError])
+                    .EnableSensitiveDataLogging();
             });
         /*builder.Services.AddDbContextFactory<MyCookbookContext>(
             opt =>
@@ -41,14 +49,17 @@ public sealed class Program
         builder.Services.AddSingleton<IJsonNodeGraphExploder, JsonNodeGraphExploder>();
         builder.Services.AddSingleton<IUrlQueuerFromJsonObjectMap, UrlQueuerFromJsonObjectMap>();
         builder.Services.AddSingleton<IRecipeWebSiteWrapperProcessor, RecipeWebSiteWrapperProcessor>();
-        builder.Services.AddSingleton<IUrlProcessor, UrlProcessor>();
+        builder.Services.AddSingleton<IUrlLdJsonDataNormalizer, UrlLdJsonDataNormalizer>();
         builder.Services.AddSingleton<IIngredientsCache, IngredientsCache>();
-        builder.Services.AddSingleton<JobRunner>();
-        builder.Services.AddHostedService<JobRunner>();
-        //builder.Services.AddSingleton<JobReRunner>();
-        //builder.Services.AddHostedService<JobReRunner>();
-        //builder.Services.AddSingleton<OneOffs>();
-        //builder.Services.AddHostedService<OneOffs>();
+        builder.Services.AddSingleton<ISiteNormalizerFactory, SiteNormalizerFactory>();
+        builder.Services.AddSingleton<UrlDownloaderJob>();
+        builder.Services.AddHostedService<UrlDownloaderJob>();
+        /*builder.Services.AddSingleton<UrlReRunnerJob>();
+        builder.Services.AddHostedService<UrlReRunnerJob>();
+        builder.Services.AddSingleton<OneOffs>();
+        builder.Services.AddHostedService<OneOffs>();
+        builder.Services.AddSingleton<WebDataParserJob>();
+        builder.Services.AddHostedService<WebDataParserJob>();*/
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.

@@ -1,28 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 using MyCookbook.Common.Enums;
 
 namespace MyCookbook.Common.Database;
 
+[PrimaryKey(nameof(StepId))]
 [Table("RecipeSteps")]
 public class RecipeStep
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public Guid Guid { get; set; }
+    [Column("step_id")]
+    public Guid StepId { get; set; } = Guid.NewGuid();
 
-    public int StepNumber { get; set; }
-
+    [Column("step_type")]
     public RecipeStepType RecipeStepType { get; set; }
 
-    public string? Instructions { get; set; }
+    [Column("step_number")]
+    public int StepNumber { get; set; }
 
-    public virtual List<RecipeStepIngredient> RecipeStepIngredients { get; set; }
+    [Column("instructions")]
+    public string Instructions { get; set; }
 
-    public Guid RecipeGuid { get; set; }
+    // Foreign Keys
+    [Column("recipe_id")]
+    public Guid RecipeId { get; set; }
 
-    [ForeignKey(nameof(RecipeGuid))]
     public virtual Recipe Recipe { get; set; }
+
+    // Navigation
+    public virtual ICollection<RecipeStepIngredient> StepIngredients { get; set; }
+
+    public virtual ICollection<EntityImage> EntityImages { get; set; }
 }

@@ -23,7 +23,7 @@ public partial class RecipeIngredientViewModel : ObservableObject
     private string? _generatedQuantity;
 
     [ObservableProperty]
-    private Measurement _measurement;
+    private MeasurementUnit _measurementUnit;
 
     [ObservableProperty]
     private string? _notes;
@@ -39,7 +39,7 @@ public partial class RecipeIngredientViewModel : ObservableObject
         }
 
         Quantity = GeneratedQuantity = model.Quantity;
-        Measurement = model.Measurement;
+        MeasurementUnit = model.MeasurementUnit;
         Notes = model.Notes;
     }
 }

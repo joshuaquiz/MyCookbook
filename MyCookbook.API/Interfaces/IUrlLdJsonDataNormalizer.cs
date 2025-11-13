@@ -1,14 +1,14 @@
 using System.Threading;
 using System.Threading.Tasks;
+using MyCookbook.API.Models;
 using MyCookbook.Common.Database;
 
 namespace MyCookbook.API.Interfaces;
 
-public interface IUrlProcessor
+public interface IUrlLdJsonDataNormalizer
 {
-    public ValueTask<Recipe?> ProcessUrl(
+    public ValueTask<SiteWrapper> NormalizeParsedLdJsonData(
         MyCookbookContext db,
-        RecipeUrl recipeUrl,
-        bool isReprocessing,
+        RawDataSource dataSource,
         CancellationToken cancellationToken);
 }

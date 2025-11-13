@@ -26,7 +26,7 @@ public sealed class JsonNodeGraphExploder : IJsonNodeGraphExploder
 
         if (jsonObject.TryGetPropertyValue(
                 "@type",
-                out var _))
+                out _))
         {
             return new List<JsonObject>(1)
             {

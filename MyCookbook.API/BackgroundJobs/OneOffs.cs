@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -9,17 +10,18 @@ using HtmlAgilityPack;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using MyCookbook.API.Interfaces;
 using MyCookbook.Common.Database;
 
 namespace MyCookbook.API.BackgroundJobs;
 
-public sealed class OneOffs(
+public sealed partial class OneOffs(
     IDbContextFactory<MyCookbookContext> myCookbookContextFactory,
-    IUrlProcessor urlProcessor,
-    ILogger<JobRunner> logger)
+    ILogger<UrlDownloaderJob> logger)
     : BackgroundService
 {
+    [GeneratedRegex("[ \t\r\n]{2,}")]
+    private static partial Regex CollapseWhitespaceRegex();
+
     protected override async Task ExecuteAsync(
         CancellationToken stoppingToken)
     {
@@ -27,43 +29,50 @@ public sealed class OneOffs(
         {
             await using var db = await myCookbookContextFactory.CreateDbContextAsync(
                 stoppingToken);
-            var recipeUrls = await db.RecipeUrls
+            var recipeUrls = await db.RawDataSources
                 .Where(
                     x =>
-                        string.IsNullOrWhiteSpace(
-                            x.Html))
+                        !string.IsNullOrWhiteSpace(
+                            x.RawHtml))
                 .ToListAsync(
                     stoppingToken);
             foreach (var recipeUrl in recipeUrls)
             {
                 try
                 {
-                    logger.LogInformation(
-                        $"Processing {recipeUrl.Uri}");
-                    var web = new HtmlWeb();
-                    var doc = await web.LoadFromWebAsync(
-                        recipeUrl.Uri,
-                        Encoding.Default,
-                        new NetworkCredential(),
-                        stoppingToken);
-                    recipeUrl.Html = Regex.Replace(
-                        doc.Text,
-                        "\\s{2,}",
-                        " ");
+                    var doc = new HtmlDocument();
+                    doc.LoadHtml(
+                        recipeUrl.RawHtml!);
+                    foreach (var node in doc.DocumentNode.DescendantsAndSelf().Where(n => n.NodeType == HtmlNodeType.Comment)
+                                 .Concat(
+                                     doc.DocumentNode.SelectNodes("//script[@type='text/x-config']")?.Nodes() ?? [])
+                                 .Concat(
+                                     doc.DocumentNode.SelectNodes("//noscript")?.Nodes() ?? [])
+                                 .Concat(
+                                     doc.DocumentNode.SelectNodes("//iframe")?.Nodes() ?? [])
+                                 .Concat(
+                                     doc.DocumentNode.SelectNodes("//form")?.Nodes() ?? [])
+                                 .Concat(
+                                     doc.DocumentNode.SelectNodes("//style")?.Nodes() ?? [])
+                                 .Concat(
+                                     doc.DocumentNode.SelectNodes("//ins")?.Nodes() ?? [])
+                                 .Concat(
+                                     doc.DocumentNode.SelectNodes("//amp-ad")?.Nodes() ?? [])
+                                 .Concat(
+                                     doc.DocumentNode.SelectNodes("//script[@type='text/javascript']")?.Nodes() ?? [])
+                                 .ToList())
+                    {
+                        node.Remove();
+                    }
+
+                    recipeUrl.RawHtml = CollapseWhitespaceRegex().Replace(doc.DocumentNode.OuterHtml, " ");
+                    recipeUrl.Error = null;
                     await db.SaveChangesAsync(
                         stoppingToken);
-                    var delay = recipeUrl.StatusCode == HttpStatusCode.OK
-                        ? TimeSpan.FromSeconds(
-                            Random.Shared.Next(
-                                3,
-                                20))
-                        : TimeSpan.FromMinutes(3);
-                    logger.LogInformation(
-                        $"Delaying for processor for {delay:g}");
                 }
                 catch (Exception e)
                 {
-                    recipeUrl.Exception = $"{e.Message}{Environment.NewLine}{e.StackTrace}";
+                    recipeUrl.Error = $"{e.Message}{Environment.NewLine}{e.StackTrace}";
                     await db.SaveChangesAsync(
                         stoppingToken);
                 }

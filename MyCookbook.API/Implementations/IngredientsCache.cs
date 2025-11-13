@@ -52,7 +52,7 @@ public sealed class IngredientsCache
         {
             if (Ingredients.All(
                     x =>
-                        x.Guid != ingredient.Guid))
+                        x.IngredientId != ingredient.IngredientId))
             {
                 Ingredients.Add(
                     ingredient);
@@ -64,14 +64,14 @@ public sealed class IngredientsCache
         MyCookbookContext myCookbookContext,
         CancellationToken cancellationToken)
     {
-        if (Ingredients.Count > 0)
+        if (!Ingredients.IsEmpty)
         {
             return;
         }
 
         await LockObj.WaitAsync(
             cancellationToken);
-        if (Ingredients.Count > 0)
+        if (!Ingredients.IsEmpty)
         {
             LockObj.Release();
             return;

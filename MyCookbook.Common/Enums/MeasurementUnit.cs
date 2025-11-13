@@ -1,6 +1,6 @@
 ﻿namespace MyCookbook.Common.Enums;
 
-public enum Measurement
+public enum MeasurementUnit
 {
     Unit,
     Piece,
@@ -13,5 +13,7 @@ public enum Measurement
     Ounce,
     Fillet,
     Inch,
-    Can
+    Can,
+    Pound,
+    Stick
 }

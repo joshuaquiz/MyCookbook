@@ -1,23 +1,22 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace MyCookbook.Common.Database;
 
+[PrimaryKey(nameof(IngredientId))]
+[Table("Ingredients")]
 public class Ingredient
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public Guid Guid { get; set; }
+    [Column("ingredient_id")]
+    public Guid IngredientId { get; set; } = Guid.NewGuid();
 
-    public string Name { get; init; }
+    [Column("name")]
+    public string Name { get; set; }
 
-    public string? Image { get; set; }
+    // Navigation
+    public virtual ICollection<RecipeStepIngredient> StepIngredients { get; set; }
 
-    [NotMapped]
-    public Uri? ImageUri
-    {
-        get => Image == null ? null : new Uri(Image);
-        set => Image = value?.AbsoluteUri;
-    }
+    public virtual ICollection<EntityImage> EntityImages { get; set; }
 }

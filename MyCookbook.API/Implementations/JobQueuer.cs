@@ -22,8 +22,8 @@ public sealed class JobQueuer(
                 UriKind.Absolute);
         }
 
-        if (await db.RecipeUrls.AnyAsync(
-                x => x.Uri == url))
+        if (await db.RawDataSources.AnyAsync(
+                x => x.Url == url))
         {
             logger.LogInformation(
                 $"{url} already processed or in the queue, not queueing again");
@@ -32,13 +32,13 @@ public sealed class JobQueuer(
 
         logger.LogInformation(
             $"Queueing {url}");
-        await db.RecipeUrls.AddAsync(
-            new RecipeUrl
+        await db.RawDataSources.AddAsync(
+            new RawDataSource
             {
-                Guid = Guid.NewGuid(),
+                SourceId = Guid.NewGuid(),
                 ProcessingStatus = RecipeUrlStatus.NotStarted,
-                Uri = url,
-                Host = url.Host
+                Url = url,
+                UrlHost = url.Host
             });
         await db.SaveChangesAsync();
     }

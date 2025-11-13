@@ -284,22 +284,26 @@ public sealed partial class CookbookDelegatingHandler : BaseDelegatingHandler
                             var context = CreateNewContext(
                                 connection.DatabasePath);
                             var recipe = await context.Recipes
-                                .Include(x => x.Author)
-                                .Include(x => x.RecipeSteps).ThenInclude(x => x.RecipeStepIngredients).ThenInclude(x => x.Ingredient)
-                                .FirstAsync(x => x.Guid == guid, cancellationToken);
-                            var stepNumber = 1;
+                                .Include(x => x.EntityImages).ThenInclude(x => x.Image)
+                                .Include(x => x.Author).ThenInclude(x => x.EntityImages).ThenInclude(x => x.Image)
+                                .Include(x => x.Steps).ThenInclude(x => x.StepIngredients).ThenInclude(x => x.Ingredient).ThenInclude(x => x.EntityImages).ThenInclude(x => x.Image)
+                                .FirstAsync(x => x.RecipeId == guid, cancellationToken);
                             var recipeItem = new RecipeModel(
-                                recipe.Guid,
-                                recipe.ImageUri,
-                                recipe.Name,
-                                recipe.TotalTimeSpan / 2,
-                                recipe.TotalTimeSpan / 2,
-                                4,
+                                recipe.RecipeId,
+                                recipe.EntityImages.FirstOrDefault(x => x.Image.ImageType == ImageType.Main)?.Image.Url,
+                                recipe.Title,
+                                recipe.PrepTimeMinutes.HasValue
+                                    ? TimeSpan.FromMinutes(recipe.PrepTimeMinutes.Value)
+                                    : TimeSpan.Zero, 
+                                recipe.CookTimeMinutes.HasValue
+                                    ? TimeSpan.FromMinutes(recipe.CookTimeMinutes.Value)
+                                    : TimeSpan.Zero, 
+                                recipe.Servings ?? 4,
                                 recipe.Description,
                                 new UserProfileModel(
-                                    recipe.Author.Guid,
-                                    recipe.Author.BackgroundImageUri,
-                                    recipe.Author.ImageUri,
+                                    recipe.Author.AuthorId,
+                                    recipe.Author.EntityImages.FirstOrDefault(x => x.Image.ImageType == ImageType.Background)?.Image.Url,
+                                    recipe.Author.EntityImages.FirstOrDefault(x => x.Image.ImageType == ImageType.Main)?.Image.Url,
                                     recipe.Author.Name,
                                     recipe.Author.Name,
                                     string.Empty,
@@ -310,53 +314,59 @@ public sealed partial class CookbookDelegatingHandler : BaseDelegatingHandler
                                     false,
                                     false,
                                     []),
-                                recipe.RecipeSteps
+                                recipe.Steps
                                     .Where(
                                         x =>
                                             x.RecipeStepType == RecipeStepType.PrepStep)
                                     .Select(
                                         x =>
                                             new StepModel(
-                                                x.Guid,
+                                                x.StepId,
                                                 x.StepNumber,
                                                 null,
                                                 x.Instructions,
-                                                x.RecipeStepIngredients
+                                                x.StepIngredients
                                                     .Select(
                                                         y =>
                                                             new RecipeIngredientModel(
-                                                                y.Guid,
+                                                                y.StepIngredientId,
                                                                 new IngredientModel(
-                                                                    y.Ingredient.Guid,
-                                                                    y.Ingredient.ImageUri,
+                                                                    y.Ingredient.IngredientId,
+                                                                    y.Ingredient.EntityImages.FirstOrDefault(z => z.Image.ImageType == ImageType.Main)?.Image.Url,
                                                                     y.Ingredient.Name),
-                                                                y.Quantity,
-                                                                y.Measurement,
+                                                                y.QuantityType,
+                                                                y.MinValue,
+                                                                y.MaxValue,
+                                                                y.NumberValue,
+                                                                y.Unit,
                                                                 y.Notes))
                                                     .ToList()))
                                     .ToList(),
-                                recipe.RecipeSteps
+                                recipe.Steps
                                     .Where(
                                         x =>
                                             x.RecipeStepType == RecipeStepType.CookingStep)
                                     .Select(
                                         x =>
                                             new StepModel(
-                                                x.Guid,
+                                                x.StepId,
                                                 x.StepNumber,
                                                 null,
                                                 x.Instructions,
-                                                x.RecipeStepIngredients
+                                                x.StepIngredients
                                                     .Select(
                                                         y =>
                                                             new RecipeIngredientModel(
-                                                                y.Guid,
+                                                                y.StepIngredientId,
                                                                 new IngredientModel(
-                                                                    y.Ingredient.Guid,
-                                                                    y.Ingredient.ImageUri,
+                                                                    y.Ingredient.IngredientId,
+                                                                    y.Ingredient.EntityImages.FirstOrDefault(z => z.Image.ImageType == ImageType.Main)?.Image.Url,
                                                                     y.Ingredient.Name),
-                                                                y.Quantity,
-                                                                y.Measurement,
+                                                                y.QuantityType,
+                                                                y.MinValue,
+                                                                y.MaxValue,
+                                                                y.NumberValue,
+                                                                y.Unit,
                                                                 y.Notes))
                                                     .ToList()))
                                     .ToList());

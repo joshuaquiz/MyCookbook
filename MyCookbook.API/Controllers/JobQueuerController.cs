@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using MyCookbook.API.BackgroundJobs;
 using MyCookbook.API.Interfaces;
 using MyCookbook.Common.Database;
 
@@ -34,7 +33,7 @@ public sealed class JobQueuerController(
     public async Task<ActionResult> GetOverallStatus()
     {
         await using var db = await dbContextFactory.CreateDbContextAsync();
-        var data = await db.RecipeUrls
+        var data = await db.RawDataSources
             .GroupBy(
                 x =>
                     x.ProcessingStatus)
@@ -46,10 +45,22 @@ public sealed class JobQueuerController(
     }
 
     [HttpGet("GetHostStatuses")]
-    public async Task<IDictionary<string, HostStatus>> GetHostStatuses()
+    public async Task<ActionResult> GetHostStatuses()
     {
         await using var db = await dbContextFactory.CreateDbContextAsync();
-        return JobRunner.HostStatuses;
+        var data = await db.RawDataSources
+            .GroupBy(x =>
+                x.UrlHost)
+            .ToDictionaryAsync(
+                x => x.Key,
+                x => x
+                    .GroupBy(y =>
+                        y.ProcessingStatus)
+                    .ToDictionary(
+                        y => y.Key,
+                        y => y.Count()));
+        return Ok(
+            data);
     }
 
     [HttpGet("GetDomainBreakdown")]
@@ -61,10 +72,11 @@ public sealed class JobQueuerController(
     private async Task<List<UrlSegment>> GetUrlSegments()
     {
         await using var db = await dbContextFactory.CreateDbContextAsync();
-        var urls = db.RecipeUrls.Select(x => x.Uri).ToList();
-
-        var root = new UrlSegment { Segment = "/" };
-
+        var urls = db.RawDataSources.Select(x => x.Url).ToList();
+        var root = new UrlSegment
+        {
+            Segment = "/"
+        };
         foreach (var uri in urls)
         {
             var segments = new List<string> { $"{uri.Scheme}://{uri.Host}/" };
@@ -77,7 +89,7 @@ public sealed class JobQueuerController(
         return [root];
     }
 
-    private void AddUrlSegments(UrlSegment parent, List<string> segments)
+    private static void AddUrlSegments(UrlSegment parent, List<string> segments)
     {
         if (!segments.Any())
         {
@@ -97,13 +109,9 @@ public sealed class JobQueuerController(
     public class UrlSegment
     {
         public string Segment { get; set; }
-        public int Count => Children.Count;
-        public List<UrlSegment> Children { get; set; } = [];
-    }
 
-    public class RecipeUrl
-    {
-        public int Id { get; set; }
-        public string Uri { get; set; }
+        public int Count => Children.Count;
+
+        public List<UrlSegment> Children { get; set; } = [];
     }
 }

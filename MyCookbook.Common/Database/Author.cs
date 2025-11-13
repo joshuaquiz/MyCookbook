@@ -1,38 +1,38 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace MyCookbook.Common.Database;
 
+[PrimaryKey(nameof(AuthorId))]
 [Table("Authors")]
 public class Author
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public Guid Guid { get; set; }
+    [Column("author_id")]
+    public Guid AuthorId { get; set; } = Guid.NewGuid();
 
-    public string Name { get; init; }
+    [Column("name")]
+    public string Name { get; set; }
 
-    public string? Image { get; set; }
+    [Column("bio")]
+    public string Bio { get; set; }
 
-    [NotMapped]
-    public Uri? ImageUri
-    {
-        get => Image == null ? null : new Uri(Image);
-        set => Image = value?.AbsoluteUri;
-    }
+    [Column("location")]
+    public string? Location { get; set; }
 
-    public string? BackgroundImage { get; set; }
+    [Column("is_visible")]
+    public bool IsVisible { get; set; }
 
-    [NotMapped]
-    public Uri? BackgroundImageUri
-    {
-        get => BackgroundImage == null ? null : new Uri(BackgroundImage);
-        set => BackgroundImage = value?.AbsoluteUri;
-    }
+    [Column("author_type")]
+    public AuthorType AuthorType { get; set; }
 
-    public Guid? UserGuid { get; set; }
+    // Navigation for Relationships
+    public virtual User User { get; set; } // One-to-one (optional)
 
-    [ForeignKey(nameof(UserGuid))]
-    public virtual User? User { get; set; }
+    public virtual ICollection<AuthorLink> Links { get; set; }
+
+    public virtual ICollection<Recipe> Recipes { get; set; }
+
+    public virtual ICollection<EntityImage> EntityImages { get; set; } // Link to images
 }
