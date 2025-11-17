@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.S3;
@@ -19,17 +18,14 @@ internal sealed class DatabaseSetupHelper
         IAmazonS3 s3Client,
         ILogger<SQLiteAsyncConnection> logger)
     {
-        var databasePath = DownloadDatabase(
-                false,
-                configuration,
-                s3Client,
-                new Progress<double>(),
-                logger,
-                CancellationToken.None)
-            .GetAwaiter()
-            .GetResult();
+        var dbFile = GetDatabasePath();
+        if (!dbFile.Exists)
+        {
+            using var stream = dbFile.Create();
+        }
+
         return new SQLiteAsyncConnection(
-            databasePath)
+            dbFile.FullName)
         {
             Trace = true,
             Tracer = x => logger.LogDebug(x)
@@ -37,65 +33,50 @@ internal sealed class DatabaseSetupHelper
     }
 
     internal static async Task<string> DownloadDatabase(
-        bool doUpgradeIfNeeded,
         IConfiguration configuration,
         IAmazonS3 s3Client,
         IProgress<double> progress,
         ILogger<SQLiteAsyncConnection> logger,
         CancellationToken cancellationToken)
     {
-        var databasePath = Path.Combine(
-            Environment.GetFolderPath(
-                Environment.SpecialFolder.LocalApplicationData),
-            "MyCookbook.db");
-        var tempPath = databasePath + ".tmp.db";
-        if (File.Exists(tempPath))
+        var dbFile = GetDatabasePath();
+        if (dbFile is { Exists: true })
         {
-            File.Delete(tempPath);
-        }
-
-        var dbFile = new FileInfo(databasePath);
-        if (!dbFile.Exists)
-        {
-            await s3Client.DownloadToFilePathAsync(
-                configuration["S3DbBucket"],
-                "FreshMyCookbook.db",
-                databasePath,
-                new Dictionary<string, object>(),
+            var metadataResponse = await s3Client.GetObjectMetadataAsync(
+                new GetObjectMetadataRequest
+                {
+                    BucketName = configuration["S3DbBucket"],
+                    Key = "MyCookbook.db"
+                },
                 cancellationToken);
-        }
-
-        if (doUpgradeIfNeeded && dbFile is { Exists: true, Length: < 2_000_000_000 })
-        {
-            var connection = new SQLiteConnection(
-                databasePath)
+            if (dbFile.Length == metadataResponse.ContentLength)
             {
-                Trace = true,
-                Tracer = x => logger.LogDebug(x)
-            };
+                return dbFile.FullName;
+            }
+
+            File.Delete(dbFile.FullName);
             await CustomMultipartDownloadAsync(
+                metadataResponse.ContentLength,
                 s3Client,
-                configuration["S3DbBucket"],
+                configuration["S3DbBucket"]!,
                 "MyCookbook.db",
-                tempPath,
+                dbFile.FullName,
                 progress,
                 cancellationToken);
-            HandleMigrations(
-                connection,
-                tempPath);
-            MergeNewRows(
-                connection,
-                tempPath);
-            if (File.Exists(tempPath))
-            {
-                File.Delete(tempPath);
-            }
         }
 
-        return databasePath;
+        return dbFile.FullName;
     }
 
+    private static FileInfo GetDatabasePath() =>
+        new(
+            Path.Combine(
+                Environment.GetFolderPath(
+                    Environment.SpecialFolder.LocalApplicationData),
+                "MyCookbook.db"));
+
     private static async Task CustomMultipartDownloadAsync(
+        long totalFileSize,
         IAmazonS3 s3Client,
         string bucketName,
         string key,
@@ -103,65 +84,37 @@ internal sealed class DatabaseSetupHelper
         IProgress<double> progress,
         CancellationToken cancellationToken)
     {
-        // --- Configuration ---
         const long partSize = 16 * 1024 * 1024; // 16 MB part size
-
-        // 1. Get object metadata to find the total size
-        var metadataRequest = new GetObjectMetadataRequest
-        {
-            BucketName = bucketName,
-            Key = key
-        };
-        var metadataResponse = await s3Client.GetObjectMetadataAsync(metadataRequest, cancellationToken);
-        var totalFileSize = metadataResponse.ContentLength;
-
-        // --- Progress Tracking Variables ---
         var totalBytesTransferred = 0L;
-        // Object used as a lock for thread-safe updates to totalBytesTransferred
         var progressLock = new object();
-        progress.Report(0.0); // Report 0% start
-
-        // 2. Calculate the number of parts
+        progress.Report(0.0);
         var totalParts = (int)Math.Ceiling((double)totalFileSize / partSize);
         var downloadTasks = new List<Task>();
-
-        // Used to reassemble the file in the correct order
         var partFilePaths = new string[totalParts];
-
-        // Optional: Use a SemaphoreSlim to control concurrency
         const int maxConcurrentDownloads = 8;
         var semaphore = new SemaphoreSlim(maxConcurrentDownloads);
-
         for (var partNumber = 0; partNumber < totalParts; partNumber++)
         {
             var startByte = partNumber * partSize;
             var endByte = Math.Min(startByte + partSize - 1, totalFileSize - 1);
-            var currentPartSize = endByte - startByte + 1; // Actual size of this part
-
-            // Define a temporary path to save the part
+            var currentPartSize = endByte - startByte + 1;
             var tempFilePath = $"{destinationFilePath}.part{partNumber}";
             partFilePaths[partNumber] = tempFilePath;
-
-            // Add the download task
             downloadTasks.Add(
                 Task.Run(
                     async () =>
                     {
-                        await semaphore.WaitAsync(cancellationToken); // Wait for a slot in the semaphore
+                        await semaphore.WaitAsync(cancellationToken);
                         try
                         {
-                            // 3. Create a GetObject request with the specific byte range
-                            var getObjectRequest = new GetObjectRequest
-                            {
-                                BucketName = bucketName,
-                                Key = key,
-                                ByteRange = new ByteRange(startByte, endByte)
-                            };
-
-                            // 4. Execute the download for this part
-                            // Manual stream copy is required to get progress *within* the part
-                            // The AWS SDK's WriteResponseStreamToFileAsync doesn't support IProgress
-                            using var response = await s3Client.GetObjectAsync(getObjectRequest, cancellationToken);
+                            using var response = await s3Client.GetObjectAsync(
+                                new GetObjectRequest
+                                {
+                                    BucketName = bucketName,
+                                    Key = key,
+                                    ByteRange = new ByteRange(startByte, endByte)
+                                },
+                                cancellationToken);
                             await DownloadStreamWithProgress(
                                 response.ResponseStream,
                                 tempFilePath,
@@ -174,16 +127,13 @@ internal sealed class DatabaseSetupHelper
                         }
                         finally
                         {
-                            semaphore.Release(); // Release the slot
+                            semaphore.Release();
                         }
-                    }, cancellationToken));
+                    },
+                    cancellationToken));
         }
 
-        // 5. Wait for all parts to complete
         await Task.WhenAll(downloadTasks);
-
-        // 6. Reassemble the file
-        // Progress reporting on the reassembly phase is omitted, as it's typically very fast
         await using (var finalStream = new FileStream(destinationFilePath, FileMode.Create))
         {
             foreach (var partPath in partFilePaths)
@@ -193,9 +143,7 @@ internal sealed class DatabaseSetupHelper
             }
         }
 
-        progress.Report(1.0); // Report 100% completion
-
-        // 7. Clean up temporary files
+        progress.Report(1.0);
         foreach (var partPath in partFilePaths)
         {
             File.Delete(partPath);
@@ -266,53 +214,5 @@ internal sealed class DatabaseSetupHelper
                 progress.Report(progressValue);
             }
         }
-    }
-
-    private static void HandleMigrations(
-        SQLiteConnection connection,
-        string tempDbPath)
-    {
-        // TODO: Implement migration logic here.
-    }
-
-    private static void MergeNewRows(
-        SQLiteConnection connection,
-        string tempDbPath)
-    {
-        var attachCommand = connection.CreateCommand(
-            $"ATTACH DATABASE '{tempDbPath.Replace("'", "''")}' AS TempDB;");
-        attachCommand.ExecuteNonQuery();
-
-        List<string> tables = [
-            "Users",
-            "Ingredients",
-            "Authors",
-            "RecipeUrls",
-            "Recipes",
-            "RecipeSteps",
-            "RecipeStepIngredients"
-        ];
-        connection.BeginTransaction();
-        try
-        {
-            foreach (var insertCommand in tables
-                         .Select(table =>
-                             connection.CreateCommand(
-                                 $"INSERT OR IGNORE INTO {table} SELECT * FROM TempDB.{table};"
-                             )))
-            {
-                insertCommand.ExecuteNonQuery();
-            }
-
-            connection.Commit();
-        }
-        catch
-        {
-            connection.Rollback();
-            throw;
-        }
-
-        var detachCommand = connection.CreateCommand("DETACH DATABASE TempDB;");
-        detachCommand.ExecuteNonQuery();
     }
 }

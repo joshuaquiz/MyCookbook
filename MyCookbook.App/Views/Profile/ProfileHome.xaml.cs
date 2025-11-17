@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using CommunityToolkit.Maui.Views;
+using CommunityToolkit.Maui.Extensions;
 using Microsoft.Maui.Controls;
 using MyCookbook.App.Components.RecipeSummary;
 using MyCookbook.App.Implementations;

@@ -25,13 +25,13 @@ public partial class SearchHome
     public SearchHome(
         CookbookHttpClient httpClient)
     {
+        _cts = new CancellationTokenSource();
         _pageSize = 20;
         _httpClient = httpClient;
         InitializeComponent();
-        GetData = RecipeSummaryListComponent_OnGetData;
         Categories = [];
         Ingredients = [];
-        _cts = new CancellationTokenSource();
+        GetData = RecipeSummaryListComponent_OnGetData;
     }
 
     private async Task ResetCancellationTokenSource()
@@ -197,8 +197,8 @@ public partial class SearchHome
         _ingredient = _ingredient == ingredientName
             ? null
             : ingredientName;
-        /*await RecipeSummaryListControl
+        await RecipeSummaryListControl
             ?.RefreshData(
-                _cts.Token)!;*/
+                _cts.Token)!;
     }
 }

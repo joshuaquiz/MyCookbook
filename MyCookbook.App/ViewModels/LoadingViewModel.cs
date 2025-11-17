@@ -47,7 +47,6 @@ public partial class LoadingViewModel(
                 }
             });
             await DatabaseSetupHelper.DownloadDatabase(
-                true,
                 configuration,
                 s3Client,
                 downloadProgress,

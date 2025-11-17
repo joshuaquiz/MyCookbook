@@ -84,24 +84,75 @@ public sealed partial class CookbookDelegatingHandler : BaseDelegatingHandler
                             var skip = queryParams["skip"];
                             var popularRecipeItems = await connection.QueryAsync<RecipeSummaryViewModel>(
                                 """
+                                WITH RecipePrimaryImage AS (
+                                    -- Finds a single primary image URL for each recipe
+                                    SELECT
+                                        ei.entity_id AS recipe_id,
+                                        MIN(i.url) AS image_url -- Use MIN as a common SQLite trick to pick one arbitrary URL
+                                    FROM
+                                        EntityImages AS ei
+                                        INNER JOIN Images AS i
+                                            ON i.image_id = ei.image_id
+                                                AND i.image_type = 1
+                                    WHERE
+                                        ei.entity_type = 1
+                                    GROUP BY
+                                        ei.entity_id
+                                ),
+                                RecipeBackgroundImage AS (
+                                    -- Finds a single primary image URL for each recipe
+                                    SELECT
+                                        ei.entity_id AS recipe_id,
+                                        MIN(i.url) AS image_url -- Use MIN as a common SQLite trick to pick one arbitrary URL
+                                    FROM
+                                        EntityImages AS ei
+                                        INNER JOIN Images AS i
+                                            ON i.image_id = ei.image_id
+                                                AND i.image_type = 2
+                                    WHERE
+                                        ei.entity_type = 1
+                                    GROUP BY
+                                        ei.entity_id
+                                ),
+                                AuthorPrimaryImage AS (
+                                    -- Finds a single primary image URL for each author
+                                    SELECT
+                                        ei.entity_id AS author_id,
+                                        MIN(i.url) AS image_url -- Use MIN as a common SQLite trick to pick one arbitrary URL
+                                    FROM
+                                        EntityImages AS ei
+                                        INNER JOIN Images AS i
+                                            ON i.image_id = ei.image_id
+                                                AND i.image_type = 1
+                                    WHERE
+                                        ei.entity_type = 3
+                                    GROUP BY
+                                        ei.entity_id
+                                )
                                 SELECT
-                                    r.Guid AS Guid,
-                                    COALESCE(r.Image, a.BackgroundImage) AS ImageUrlRaw,
-                                    r.Name AS Name,
-                                    a.Image AS AuthorImageUrlRaw,
-                                    a.Name AS AuthorName,
-                                    CAST(r.TotalTime AS BIGINT) AS TotalTimeSeconds,
-                                    u.Uri AS ItemUrlRaw
+                                    r.recipe_id AS Guid,
+                                    COALESCE(pri.image_url, bri.image_url) AS ImageUrlRaw,
+                                    r.title AS Name,
+                                    ai.image_url AS AuthorImageUrlRaw,
+                                    a.name AS AuthorName,
+                                    CAST(COALESCE(r.prep_time, 0) + COALESCE(r.cook_time, 0) AS BIGINT) AS TotalMinutes,
+                                    u.url AS ItemUrlRaw
                                 FROM
                                     Recipes AS r
-                                INNER JOIN
-                                    Authors AS a ON a.Guid = r.AuthorGuid
-                                INNER JOIN
-                                    RecipeUrls AS u ON u.Guid = r.RecipeUrlGuid
+                                    INNER JOIN Authors AS a
+                                        ON a.author_id = r.author_id
+                                    INNER JOIN RawDataSources AS u
+                                        ON u.source_id = r.recipe_url_id
+                                    LEFT JOIN RecipePrimaryImage AS pri
+                                        ON pri.recipe_id = r.recipe_id
+                                    LEFT JOIN RecipeBackgroundImage AS bri
+                                        ON bri.recipe_id = r.recipe_id
+                                    LEFT JOIN AuthorPrimaryImage AS ai
+                                        ON ai.author_id = r.author_id
                                 LIMIT
                                     ?
                                 OFFSET
-                                    ?
+                                    ?;
                                 """,
                                 take,
                                 skip);
@@ -112,7 +163,8 @@ public sealed partial class CookbookDelegatingHandler : BaseDelegatingHandler
                                             x =>
                                                 x.Guid)));
                         })
-                ]),
+{
+                    }]),
             new MockedHttpRequest(
                 SearchIngredients(),
                 [
@@ -121,7 +173,7 @@ public sealed partial class CookbookDelegatingHandler : BaseDelegatingHandler
                         async (_, _) =>
                         {
                             var popularRecipeItems = await connection.QueryAsync<SearchCategoryItem>(
-                                "SELECT \"#\" || SUBSTRING(HEX(ROUND(RANDOM() * 10000000)), 0, 7) AS ColorHex, i.Name AS Name FROM Ingredients AS i");
+                                "SELECT \"#\" || SUBSTRING(HEX(ROUND(RANDOM() * 10000000)), 0, 7) AS ColorHex, i.name AS Name FROM Ingredients AS i WHERE i.name NOT LIKE '% %'");
                             return CreateStringContent(
                                 JsonSerializer.Serialize(
                                     popularRecipeItems
@@ -161,7 +213,7 @@ public sealed partial class CookbookDelegatingHandler : BaseDelegatingHandler
                             var term = queryParams["term"]?.Trim() ?? string.Empty;
                             var termQuery = string.IsNullOrWhiteSpace(term)
                                 ? "1 = 1"
-                                : $"(r.Name LIKE '%{term}%' OR a.Name LIKE '%{term}%' OR i.Name LIKE '%{term}%')";
+                                : $"(i.name LIKE '%{term}%' OR r.title LIKE '%{term}%' OR a.name LIKE '%{term}%')";
                             var category = queryParams["category"]?.Trim() ?? string.Empty;
                             var categoryQuery = string.IsNullOrWhiteSpace(category)
                                 ? string.Empty
@@ -169,34 +221,81 @@ public sealed partial class CookbookDelegatingHandler : BaseDelegatingHandler
                             var ingredient = queryParams["ingredient"]?.Trim() ?? string.Empty;
                             var ingredientQuery = string.IsNullOrEmpty(ingredient)
                                 ? string.Empty
-                                : $" AND i.Name = '{ingredient}'";
+                                : $" AND i.name = '{ingredient}'";
                             var popularRecipeItems = await connection.QueryAsync<RecipeSummaryViewModel>(
                                 $"""
-                                SELECT
-                                    r.Guid AS Guid,
-                                    r.Image AS ImageUrl,
-                                    r.Name AS Name,
-                                    a.Image AS AuthorImageUrl,
-                                    a.Name AS AuthorName,
-                                    r.TotalTime AS TotalTime,
-                                    u.Uri AS ItemUrl
+                                
+                                WITH RecipePrimaryImage AS (
+                                    -- Finds a single primary image URL for each recipe
+                                    SELECT
+                                        ei.entity_id AS recipe_id,
+                                        MIN(i.url) AS image_url -- Use MIN as a common SQLite trick to pick one arbitrary URL
+                                    FROM
+                                        EntityImages AS ei
+                                        INNER JOIN Images AS i
+                                            ON i.image_id = ei.image_id
+                                                AND i.image_type = 1
+                                    WHERE
+                                        ei.entity_type = 1
+                                    GROUP BY
+                                        ei.entity_id
+                                ),
+                                RecipeBackgroundImage AS (
+                                    -- Finds a single primary image URL for each recipe
+                                    SELECT
+                                        ei.entity_id AS recipe_id,
+                                        MIN(i.url) AS image_url -- Use MIN as a common SQLite trick to pick one arbitrary URL
+                                    FROM
+                                        EntityImages AS ei
+                                        INNER JOIN Images AS i
+                                            ON i.image_id = ei.image_id
+                                                AND i.image_type = 2
+                                    WHERE
+                                        ei.entity_type = 1
+                                    GROUP BY
+                                        ei.entity_id
+                                ),
+                                AuthorPrimaryImage AS (
+                                    -- Finds a single primary image URL for each author
+                                    SELECT
+                                        ei.entity_id AS author_id,
+                                        MIN(i.url) AS image_url -- Use MIN as a common SQLite trick to pick one arbitrary URL
+                                    FROM
+                                        EntityImages AS ei
+                                        INNER JOIN Images AS i
+                                            ON i.image_id = ei.image_id
+                                                AND i.image_type = 1
+                                    WHERE
+                                        ei.entity_type = 3
+                                    GROUP BY
+                                        ei.entity_id
+                                )
+                                SELECT DISTINCT
+                                    r.recipe_id AS Guid,
+                                    COALESCE(pri.image_url, bri.image_url) AS ImageUrlRaw,
+                                    r.title AS Name,
+                                    ai.image_url AS AuthorImageUrlRaw,
+                                    a.name AS AuthorName,
+                                    CAST(COALESCE(r.prep_time, 0) + COALESCE(r.cook_time, 0) AS BIGINT) AS TotalMinutes,
+                                    u.url AS ItemUrlRaw
                                 FROM
-                                    Recipes AS r
-                                INNER JOIN
-                                    Authors AS a
-                                        ON a.Guid = r.AuthorGuid
-                                INNER JOIN
-                                    RecipeUrls AS u
-                                        ON u.Guid = r.RecipeUrlGuid
-                                INNER JOIN
-                                    RecipeSteps AS rs
-                                        ON rs.RecipeGuid = r.Guid
-                                INNER JOIN
-                                    RecipeStepIngredients AS ri
-                                        ON ri.RecipeStepGuid = rs.Guid
-                                INNER JOIN
                                     Ingredients AS i
-                                        ON i.Guid = ri.IngredientGuid
+                                    INNER JOIN RecipeStepIngredients AS rsi
+                                        ON rsi.ingredient_id = i.ingredient_id
+                                    INNER JOIN RecipeSteps AS rs
+                                        ON rs.step_id = rsi.recipe_step_id
+                                    INNER JOIN Recipes AS r
+                                        ON r.recipe_id = rs.recipe_id
+                                    INNER JOIN Authors AS a
+                                        ON a.author_id = r.author_id
+                                    INNER JOIN RawDataSources AS u
+                                        ON u.source_id = r.recipe_url_id
+                                    LEFT JOIN RecipePrimaryImage AS pri
+                                        ON pri.recipe_id = r.recipe_id
+                                    LEFT JOIN RecipeBackgroundImage AS bri
+                                        ON bri.recipe_id = r.recipe_id
+                                    LEFT JOIN AuthorPrimaryImage AS ai
+                                        ON ai.author_id = r.author_id
                                 WHERE
                                     {termQuery}{categoryQuery}{ingredientQuery}
                                 LIMIT
@@ -255,10 +354,10 @@ public sealed partial class CookbookDelegatingHandler : BaseDelegatingHandler
                                     "/Cookbook",
                                     string.Empty)
                                 .ToUpperInvariant();
-                            var popularRecipeItems = await connection.QueryAsync<RecipeSummaryViewModel>(
+                            var popularRecipeItems = new List<RecipeSummaryViewModel>()/*await connection.QueryAsync<RecipeSummaryViewModel>(
                                 $"SELECT r.Guid AS Guid, r.Image AS ImageUrl, r.Name AS Name, a.Image AS AuthorImageUrl, a.Name AS AuthorName, r.TotalTime AS TotalTime, u.Uri AS ItemUrl FROM Recipes AS r INNER JOIN Authors AS a ON a.Guid = r.AuthorGuid INNER JOIN RecipeUrls AS u ON u.Guid = r.RecipeUrlGuid WHERE a.Guid = '{authorGuid}' LIMIT ? OFFSET ?",
                                 take,
-                                skip);
+                                skip)*/;
                             return CreateStringContent(
                                 JsonSerializer.Serialize(
                                     popularRecipeItems

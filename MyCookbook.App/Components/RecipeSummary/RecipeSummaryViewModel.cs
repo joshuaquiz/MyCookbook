@@ -16,8 +16,8 @@ public partial class RecipeSummaryViewModel
 
     public string? AuthorName { get; init; }
 
-    public long TotalTimeSeconds { get; init; }
-    public TimeSpan TotalTime => TimeSpan.FromSeconds(TotalTimeSeconds);
+    public long TotalMinutes { get; init; }
+    public TimeSpan TotalTime => TimeSpan.FromMinutes(TotalMinutes);
 
     public string? ItemUrlRaw { get; init; }
     public Uri? ItemUrl => ItemUrlRaw is null ? null : new Uri(ItemUrlRaw);

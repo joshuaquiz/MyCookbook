@@ -31,11 +31,10 @@ public sealed class UrlDownloaderJob(
             {
                 var latestParserVersion = Enum.GetValues<ParserVersion>().Max();
                 foreach (var dataSource in (await db.RawDataSources
-                             /*.Where(
+                             .Where(
                                  x =>
                                      x.ProcessingStatus == RecipeUrlStatus.NotStarted
-                                     || x.ProcessingStatus == RecipeUrlStatus.Downloading)*/
-                             .Where(x => !x.UrlHost.Contains("food"))
+                                     || x.ProcessingStatus == RecipeUrlStatus.Downloading)
                              .GroupBy(x => x.UrlHost)
                              .ToDictionaryAsync(
                                  x => x.Key,
@@ -43,10 +42,6 @@ public sealed class UrlDownloaderJob(
                                  stoppingToken))
                          .SelectMany(x => x.Value))
                 {
-                    if (dataSource.UrlHost != "www.budgetbytes.com")
-                    {
-                        continue;
-                    }
                     logger.LogInformation(
                         $"Starting to process {dataSource.Url}");
                     dataSource.ProcessingStatus = RecipeUrlStatus.Downloading;

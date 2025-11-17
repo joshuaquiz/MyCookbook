@@ -13,6 +13,7 @@ namespace MyCookbook.App.Components.RecipeSummaryList;
 
 public partial class RecipeSummaryListControl
 {
+    private bool _endOfList;
     private int _pageNumber;
 
     public static readonly BindableProperty CountProperty =
@@ -93,7 +94,7 @@ public partial class RecipeSummaryListControl
     private async Task GetDataPage(
         CancellationToken cancellationToken)
     {
-        if (IsBusy)
+        if (IsBusy || _endOfList)
         {
             return;
         }
@@ -101,12 +102,14 @@ public partial class RecipeSummaryListControl
         IsBusy = true;
         var scrollToTop = !Items.Any();
         const int maxItems = 250;
+        var itemsInPage = 0;
         try
         {
             await foreach (var item in GetData(_pageNumber, cancellationToken).WithCancellation(cancellationToken))
             {
                 Items.Add(item);
                 Count++;
+                itemsInPage++;
             }
 
             while (Items.Count > maxItems)
@@ -125,7 +128,15 @@ public partial class RecipeSummaryListControl
             Cv.ScrollTo(0);
         }
 
+        if (itemsInPage < 5)
+        {
+            _endOfList = true;
+        }
+
         _pageNumber++;
         IsBusy = false;
+        PagingTimeout = DateTimeOffset.UtcNow.AddMilliseconds(5);
     }
+
+    public DateTimeOffset PagingTimeout { get; set; }
 }

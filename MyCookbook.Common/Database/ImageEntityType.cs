@@ -2,13 +2,13 @@
 
 public enum ImageEntityType
 {
-    Unknown,
+    Unknown = 0,
 
-    Recipe,
+    Recipe = 1,
 
-    Step,
+    Step = 2,
 
-    Author,
+    Author = 3,
 
-    Ingredient
+    Ingredient = 4
 }

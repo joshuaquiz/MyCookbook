@@ -1,7 +1,8 @@
-using System;
 using CommunityToolkit.Mvvm.ComponentModel;
 using MyCookbook.Common.ApiModels;
+using MyCookbook.Common.Database;
 using MyCookbook.Common.Enums;
+using System;
 
 namespace MyCookbook.App.ViewModels;
 
@@ -17,10 +18,16 @@ public partial class RecipeIngredientViewModel : ObservableObject
     private Uri? _imageUri;
 
     [ObservableProperty]
-    private string? _quantity;
+    private QuantityType _quantityType;
 
     [ObservableProperty]
-    private string? _generatedQuantity;
+    private decimal? _minValue;
+
+    [ObservableProperty]
+    private decimal? _maxValue;
+
+    [ObservableProperty]
+    private decimal? _numberValue;
 
     [ObservableProperty]
     private MeasurementUnit _measurementUnit;
@@ -32,13 +39,12 @@ public partial class RecipeIngredientViewModel : ObservableObject
         RecipeIngredientModel model)
     {
         Guid = model.Guid;
-        if (model.Ingredient.HasValue)
-        {
-            Name = model.Ingredient.Value.Name;
-            ImageUri = model.Ingredient.Value.ImageUri;
-        }
-
-        Quantity = GeneratedQuantity = model.Quantity;
+        Name = model.Ingredient.Name;
+        ImageUri = model.Ingredient.ImageUri;
+        QuantityType = model.QuantityType;
+        MinValue = model.MinValue;
+        MaxValue = model.MaxValue;
+        NumberValue = model.NumberValue;
         MeasurementUnit = model.MeasurementUnit;
         Notes = model.Notes;
     }

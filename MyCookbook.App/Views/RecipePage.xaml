@@ -13,7 +13,7 @@
     Shell.PresentationMode="Animated"
     Title="{Binding Name}">
     <ContentPage.Resources>
-        <converters:MeasurementToStringConverter x:Key="MeasurementToStringConverter" />
+        <converters:IngredientToStringConverter x:Key="IngredientToStringConverter" />
         <converters:TimeSpanToStringConverter x:Key="TimeSpanToStringConverter" />
         <DataTemplate 
             x:Key="RecipeIngredientTemplate"
@@ -22,24 +22,21 @@
                 <Grid
                     RowDefinitions="50"
                     ColumnDefinitions="*,150">
-                    <HorizontalStackLayout
+                    <Label
                         Grid.Row="0"
-                        Grid.Column="0">
-                        <Label
-                            VerticalOptions="Fill"
-                            VerticalTextAlignment="Center"
-                            Margin="10,0,3,0"
-                            Text="{Binding GeneratedQuantity}" />
-                        <Label
-                            VerticalOptions="Fill"
-                            VerticalTextAlignment="Center"
-                            Text="{Binding MeasurementUnit, Converter={StaticResource MeasurementToStringConverter}}" />
-                        <Label
-                            VerticalOptions="Fill"
-                            VerticalTextAlignment="Center"
-                            Margin="3,0,0,0"
-                            Text="{Binding Name}" />
-                    </HorizontalStackLayout>
+                        Grid.Column="0"
+                        VerticalOptions="Fill"
+                        VerticalTextAlignment="Center"
+                        Padding="20,0,0,0">
+                        <Label.Text>
+                            <MultiBinding Converter="{StaticResource IngredientToStringConverter}">
+                                <Binding Path="." />
+                                <Binding 
+                                    Path="BindingContext.ServingsMultiplier"
+                                    Source="{x:Reference Root}" />
+                            </MultiBinding>
+                        </Label.Text>
+                    </Label>
                     <Image
                         Grid.Row="0"
                         Grid.Column="2"

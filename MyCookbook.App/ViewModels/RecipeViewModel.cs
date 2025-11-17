@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.Controls;
-using MyCookbook.App.Converters;
 using MyCookbook.App.Implementations;
 using MyCookbook.Common.ApiModels;
 
@@ -115,15 +114,6 @@ public partial class RecipeViewModel(
         if (_originalServings is > 0)
         {
             ServingsMultiplier = (decimal)newServings / _originalServings.Value;
-            foreach (var recipeIngredientViewModel in RecipeIngredients)
-            {
-                recipeIngredientViewModel.GeneratedQuantity =
-                    QuantityToFractionConverter.GetGeneratedQuantity(
-                            decimal.Parse(recipeIngredientViewModel.Quantity ?? "0"),
-                            ServingsMultiplier,
-                            recipeIngredientViewModel.MeasurementUnit)
-                        .ToString();
-            }
         }
     }
 

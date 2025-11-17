@@ -22,7 +22,7 @@
                 RefreshColor="{StaticResource Primary}">
                 <CollectionView
                     x:Name="Cv"
-                    Margin="0"
+                    Margin="0,5"
                     ItemsLayout="VerticalList"
                     ItemsUpdatingScrollMode="KeepScrollOffset"
                     HorizontalScrollBarVisibility="Never"

@@ -88,9 +88,7 @@ public partial class MyCookbookViewModel : BaseViewModel
                                  x =>
                                      x.RecipeIngredients.Any(
                                          i =>
-                                             i.Ingredient.HasValue
-                                             && i.Ingredient
-                                                 .Value
+                                             i.Ingredient
                                                  .Name
                                                  .Contains(
                                                      term)))

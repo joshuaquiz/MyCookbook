@@ -52,14 +52,14 @@ public sealed class Program
         builder.Services.AddSingleton<IUrlLdJsonDataNormalizer, UrlLdJsonDataNormalizer>();
         builder.Services.AddSingleton<IIngredientsCache, IngredientsCache>();
         builder.Services.AddSingleton<ISiteNormalizerFactory, SiteNormalizerFactory>();
-        builder.Services.AddSingleton<UrlDownloaderJob>();
-        builder.Services.AddHostedService<UrlDownloaderJob>();
-        /*builder.Services.AddSingleton<UrlReRunnerJob>();
-        builder.Services.AddHostedService<UrlReRunnerJob>();
+        //builder.Services.AddSingleton<UrlDownloaderJob>();
+        //builder.Services.AddHostedService<UrlDownloaderJob>();
+        //builder.Services.AddSingleton<UrlReRunnerJob>();
+        //builder.Services.AddHostedService<UrlReRunnerJob>();
         builder.Services.AddSingleton<OneOffs>();
         builder.Services.AddHostedService<OneOffs>();
-        builder.Services.AddSingleton<WebDataParserJob>();
-        builder.Services.AddHostedService<WebDataParserJob>();*/
+        //builder.Services.AddSingleton<WebDataParserJob>();
+        //builder.Services.AddHostedService<WebDataParserJob>();
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.

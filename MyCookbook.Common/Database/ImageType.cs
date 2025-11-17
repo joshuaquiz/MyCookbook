@@ -2,13 +2,13 @@
 
 public enum ImageType
 {
-    Unknown,
+    Unknown = 0,
 
-    Main,
+    Main = 1,
 
-    Background,
+    Background = 2,
 
-    Step,
+    Step = 3,
 
-    Ingredient
+    Ingredient = 4
 }

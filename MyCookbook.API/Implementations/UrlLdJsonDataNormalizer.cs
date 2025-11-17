@@ -32,11 +32,23 @@ public sealed class UrlLdJsonDataNormalizer(
                                   jsonStrings)
                               ?.SelectMany(ldJsonSectionJsonObjectExtractor.GetJsonObjectsFromLdJsonSection)
                               .SelectMany(jsonNodeGraphExploder.ExplodeIfGraph)
-                              .Select(
+                              .SelectMany(
                                   x =>
-                                      new KeyValuePair<string, JsonObject>(
-                                          x["@type"]?.ToString() ?? Guid.NewGuid().ToString(),
-                                          x))
+                                  {
+                                      if (x["@type"] is JsonArray types)
+                                      {
+                                          return types.Select(t => new KeyValuePair<string, JsonObject>(
+                                              t?.ToString() ?? Guid.NewGuid().ToString(),
+                                              x));
+                                      }
+
+                                      return
+                                      [
+                                          new KeyValuePair<string, JsonObject>(
+                                              x["@type"]?.ToString() ?? Guid.NewGuid().ToString(),
+                                              x)
+                                      ];
+                                  })
                               .Where(x => !string.IsNullOrWhiteSpace(x.Key))
                               .GroupBy(
                                   x =>
@@ -82,7 +94,9 @@ public sealed class UrlLdJsonDataNormalizer(
             nameof(Schema.NET.Recipe),
             nameof(ItemList),
             nameof(TVSeries),
-            nameof(Product)
+            nameof(Product),
+            nameof(FAQPage),
+            nameof(Question)
         };
         var unhandledItems = jsonObjects
             .Where(x => !handledOrIgnoredNames.Contains(x.Key))

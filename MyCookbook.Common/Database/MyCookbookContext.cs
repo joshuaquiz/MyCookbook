@@ -47,6 +47,14 @@ public class MyCookbookContext(
             .Select(ei => ei.Image)
             .ToListAsync();
 
+    public async Task<List<EntityImage>> GetEntityImages(
+        Guid id,
+        ImageEntityType imageEntityType) =>
+        await EntityImages
+            .Include(x => x.Image)
+            .Where(ei => ei.EntityId == id && ei.ImageEntityType == imageEntityType)
+            .ToListAsync();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // 1. Primary Keys (Defined on models, but confirming GUID text type)
