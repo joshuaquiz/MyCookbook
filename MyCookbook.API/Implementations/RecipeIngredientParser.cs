@@ -29,7 +29,7 @@ public static partial class RecipeIngredientParser
     {
         { nameof(MeasurementUnit.Head), @"(?<!(?:fish|salmon|cod|tuna|tilapia|halibut|mackerel|flounder|snapper|sea-bass|seabass|sea\s+bass|bass|mahi-mahi|mahimahi|mahi\s+mahi)\s+)(?:head|heads)" },
         { nameof(MeasurementUnit.Stick), @"(?<!(?:fish)\s+)(?:stick|sticks)" },
-        { nameof(MeasurementUnit.Package), @"(?:(?:box(?!ed|(?:\s+(?:grater|knife)))|boxes|package|packages|pkg|pkgs))" }
+        { nameof(MeasurementUnit.Package), @"(?:(?:box(?!ed|(?:\s+(?:grater|knife)))|boxes|package|packages|pkg(?:\.)?|pkgs))" }
     };
 
     private static readonly ReadOnlyDictionary<MeasurementUnit, string> DefaultValues =
@@ -48,7 +48,7 @@ public static partial class RecipeIngredientParser
     [GeneratedRegex(@"(?<!\([^\)]*)(and(?>!squeezed)|(?:beaten with)|(?:whisked with)|(?:whipped with))(?= )")]
     private static partial Regex LineSeparatorRegex();
 
-    [GeneratedRegex(@"[a-zA-Z0-9/, \(\):\-\.!]")]
+    [GeneratedRegex(@"[a-zA-Z0-9/, \(\):\-\.!']")]
     private static partial Regex SanitizeRegex();
 
     [GeneratedRegex(@"^[^\d]+$")]
@@ -62,6 +62,12 @@ public static partial class RecipeIngredientParser
 
     [GeneratedRegex(@"\b(?:(?<!\((?!\)))\s*)(?:(?:fresh(?:ly)?|fine|coarse|ground|black|cracked)\s+)*pepper(?:(?:\s+\(\s*(?:(?:fresh(?:ly)?|fine|coarse|ground|black|cracked)\s*)*\))|\b)", RegexOptions.IgnoreCase)]
     private static partial Regex PepperRegex();
+
+    [GeneratedRegex(@"\b((?:(?:(?:pepper(?<PepperQuilifier>s|y|ie)?)|(?:onion(?<OnionQuilifier>s|y|ie)?))(?:\s+and\s+)?)+)\b", RegexOptions.IgnoreCase)]
+    private static partial Regex PeppersAndOnionsRegex();
+
+    [GeneratedRegex(@"\b((?<!plum\s+)tomatoe(?:s)?)\b", RegexOptions.IgnoreCase)]
+    private static partial Regex TomatoesRegex();
 
     private static readonly Regex MeasurementRegex;
 
@@ -257,7 +263,7 @@ public static partial class RecipeIngredientParser
                     MaxValue = item.MaxValue?.ParsedValue,
                     NumberValue = item.NumberValue?.ParsedValue,
                     Notes = notes,
-                    RawText = item.RawText,
+                    RawText = ingredient,
                     RecipeStepId = recipeStepGuid
                 };
             }
@@ -280,7 +286,7 @@ public static partial class RecipeIngredientParser
         matchLocations.Add(
             newLocation);
         matchLocations = matchLocations
-            .OrderBy(x => x.MatchStartIndex)
+            .OrderByDescending(x => x.MatchStartIndex)
             .ToList();
     }
 
@@ -605,22 +611,91 @@ public static partial class RecipeIngredientParser
         string str,
         IReadOnlyCollection<MatchLocation> otherMatchedTokens)
     {
-        var cleanedValue = StripFoundTokens(
+        var cleanedValue = ReplaceFoundTokens(
             ReplaceParentheticalSets(
                 str),
             otherMatchedTokens);
-        var sections = cleanedValue
-            .Value
-            .Split(
-                ',',
-                StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-        if (sections.Length > 0)
+        var peppersAndOnionsMatch = PeppersAndOnionsRegex().Match(cleanedValue);
+        if (peppersAndOnionsMatch.Success)
         {
+            var peppersAndOnionsValue = peppersAndOnionsMatch.Value;
+            if (peppersAndOnionsMatch.Groups["OnionQuilifier"].Success)
+            {
+                peppersAndOnionsValue = peppersAndOnionsValue.Replace("onion" + peppersAndOnionsMatch.Groups["OnionQuilifier"].Value, "onion", StringComparison.InvariantCultureIgnoreCase);
+            }
+
+            if (peppersAndOnionsMatch.Groups["PepperQuilifier"].Success)
+            {
+                peppersAndOnionsValue = peppersAndOnionsValue.Replace("pepper" + peppersAndOnionsMatch.Groups["PepperQuilifier"].Value, "pepper", StringComparison.InvariantCultureIgnoreCase);
+            }
+
+            var hasTrailingComma = cleanedValue[(peppersAndOnionsMatch.Index + peppersAndOnionsMatch.Length)..]
+                .StartsWith(',');
             return new TokenMatch<string>(
-                sections[0],
-                sections[0],
-                cleanedValue.ZeroOffset);
+                FormatName(peppersAndOnionsValue),
+                hasTrailingComma
+                    ? peppersAndOnionsMatch.Value + ','
+                    : peppersAndOnionsMatch.Value,
+                peppersAndOnionsMatch.Index);
         }
+
+        var tomatosMatch = TomatoesRegex().Match(cleanedValue);
+        if (tomatosMatch.Success)
+        {
+            var hasTrailingComma = cleanedValue[(tomatosMatch.Index + tomatosMatch.Length)..]
+                .StartsWith(',');
+            return new TokenMatch<string>(
+                FormatName(tomatosMatch.Value),
+                hasTrailingComma
+                    ? tomatosMatch.Value + ','
+                    : tomatosMatch.Value,
+                tomatosMatch.Index);
+        }
+
+        var pepperMatch = PepperRegex().Match(cleanedValue);
+        if (pepperMatch.Success)
+        {
+            var hasTrailingComma = cleanedValue[(pepperMatch.Index + pepperMatch.Length)..]
+                .StartsWith(',');
+            return new TokenMatch<string>(
+                FormatName(pepperMatch.Value),
+                hasTrailingComma
+                    ? pepperMatch.Value + ','
+                    : pepperMatch.Value,
+                pepperMatch.Index);
+        }
+
+        var saltMatch = SaltRegex().Match(cleanedValue);
+        if (saltMatch.Success)
+        {
+            var hasTrailingComma = cleanedValue[(saltMatch.Index + saltMatch.Length)..]
+                .StartsWith(',');
+            return new TokenMatch<string>(
+                FormatName(saltMatch.Value),
+                hasTrailingComma
+                    ? saltMatch.Value + ','
+                    : saltMatch.Value,
+                saltMatch.Index);
+        }
+
+        var splitIndex = cleanedValue.IndexOfAny([',', '.']);
+        var indexOffset = cleanedValue.TakeWhile(c => c == ' ').Count();
+        var initialValue = splitIndex > -1
+            ? cleanedValue[indexOffset..splitIndex]
+            : cleanedValue[indexOffset..];
+        var withSplitIndex = initialValue.IndexOf("with ", StringComparison.InvariantCultureIgnoreCase);
+        var value = withSplitIndex > -1
+            ? initialValue[..withSplitIndex]
+            : initialValue;
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            throw new Exception($"No valid name found. '{str}'");
+        }
+
+        return new TokenMatch<string>(
+            FormatName(value),
+            value.Trim(),
+            indexOffset);
 
         /*var hasDefaultValue = DefaultValues.TryGetValue(measurementUnit, out var defaultValue);
         if (hasDefaultValue)
@@ -629,10 +704,15 @@ public static partial class RecipeIngredientParser
                 defaultValue!,
                 cleanedValue,
                 0);
-        }*/
+        }
 
-        throw new Exception($"No valid name found. '{str}'");
+        throw new Exception($"No valid name found. '{str}'");*/
     }
+
+    internal static string FormatName(
+        string str) =>
+        CleaUpWhitespace(str)
+            .Transform(To.SentenceCase);
 
     internal static TokenMatch<MeasurementUnit> GetMeasurement(
         string str)
@@ -817,7 +897,7 @@ public static partial class RecipeIngredientParser
                     " Plus ",
                     " plus "
                 ],
-                StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                StringSplitOptions.RemoveEmptyEntries);
         var rawQuantities = sections.Length > 1
             ? sections
                 .Select(GetQuantity)
@@ -848,40 +928,41 @@ public static partial class RecipeIngredientParser
         string str,
         IReadOnlyCollection<MatchLocation> otherMatchedTokens)
     {
-        var cleanedValue = StripFoundTokens(
+        var cleanedValue = ReplaceFoundTokens(
             str,
             otherMatchedTokens);
-        return cleanedValue.Value;
+        return CleaUpWhitespace(cleanedValue)
+            .Replace("),", ")")
+            .Replace(") ,", ")")
+            .Replace(")(", " ")
+            .Replace(") (", " ")
+            .Replace(" )", ")")
+            .Replace("( ", "(");
     }
 
-    private static (string Value, int ZeroOffset) StripFoundTokens(
+    private static string ReplaceFoundTokens(
         string str,
-        IReadOnlyCollection<MatchLocation> otherMatchedTokens)
-    {
-        var removedCharCount = 0;
-        var zeroOffset = 0;
-        return (MultiWhitespaceRegex()
-                .Replace(
-                    otherMatchedTokens
-                        .Aggregate(
-                            str,
-                            (current, token) =>
-                            {
-                                var value = current
-                                    .Remove(
-                                        token.MatchStartIndex - removedCharCount,
-                                        token.MatchedValue!.Length);
-                                removedCharCount += token.MatchedValue!.Length;
-                                if (token.MatchStartIndex == 0)
-                                {
-                                    zeroOffset += token.MatchedValue.Length + 1;
-                                }
+        IReadOnlyCollection<MatchLocation> otherMatchedTokens) =>
+        otherMatchedTokens
+            .Aggregate(
+                str,
+                (current, token) =>
+                    current
+                        .Remove(
+                            token.MatchStartIndex,
+                            token.MatchedValue!.Length)
+                        .Insert(
+                            token.MatchStartIndex,
+                            new string(' ', token.MatchedValue!.Length)));
 
-                                return value;
-                            }),
+    private static string CleaUpWhitespace(
+        string str)
+    {
+        return MultiWhitespaceRegex()
+                .Replace(
+                    str,
                     " ")
-                .Trim(' ', ','),
-            zeroOffset);
+                .Trim(' ', ',');
     }
 
     internal static string ReplaceParentheticalSets(

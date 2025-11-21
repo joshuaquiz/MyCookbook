@@ -421,14 +421,14 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Something oniony"
+                        Name = "Onion"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
                     NumberValue = 1M,
                     Unit = MeasurementUnit.Unit,
-                    Notes = "like scallion or 1/4 small red onion, chopped",
+                    Notes = "Something like scallion or 1/4 small red onion, chopped",
                     RawText = "Something oniony, like 1 scallion or 1/4 small red onion, chopped"
                 }
             ]),
@@ -470,7 +470,7 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "egg yolks"
+                        Name = "Egg yolks"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
@@ -502,14 +502,14 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "diced tomatoes with juice"
+                        Name = "Tomatoes"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
                     NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
-                    Notes = "( 28-ounce)",
+                    Notes = "(28-ounce) diced with juice",
                     RawText = "1 ( 28-ounce) can diced tomatoes with juice"
                 }
             ]),
@@ -534,7 +534,7 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "flank steak"
+                        Name = "Flank steak"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
@@ -566,15 +566,15 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "diced tomatoes with juice"
+                        Name = "Butternut squash"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
                     NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "( 28-ounce)",
-                    RawText = "1 ( 28-ounce) can diced tomatoes with juice"
+                    Unit = MeasurementUnit.Unit,
+                    Notes = "(1 1/2 to 2-pound) peeled, seeded, and cut into 1-inch cubes",
+                    RawText = "1 (1 1/2 to 2-pound) butternut squash, peeled, seeded, and cut into 1-inch cubes"
                 }
             ]),
         new(
@@ -598,15 +598,15 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "diced tomatoes with juice"
+                        Name = "Pork tenderloin"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
                     NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "( 28-ounce)",
-                    RawText = "1 ( 28-ounce) can diced tomatoes with juice"
+                    Unit = MeasurementUnit.Unit,
+                    Notes = "(1 1/2 to 2-pound)",
+                    RawText = "1 (1 1/2 to 2-pound) pork tenderloin"
                 }
             ]),
         new(
@@ -630,15 +630,15 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "diced tomatoes with juice"
+                        Name = "Flank steak"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
                     NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "( 28-ounce)",
-                    RawText = "1 ( 28-ounce) can diced tomatoes with juice"
+                    Unit = MeasurementUnit.Unit,
+                    Notes = "(1 1/2-pound)",
+                    RawText = "1 (1 1/2-pound) flank steak"
                 }
             ]),
         new(
@@ -662,14 +662,15 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Acorn squash"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    NumberValue = 1M,
+                    Unit = MeasurementUnit.Unit,
+                    Notes = "(1- pound)",
+                    RawText = "1 (1- pound) acorn squash"
                 }
             ]),
         new(
@@ -693,14 +694,15 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Ciabatta or rustic bread"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    NumberValue = 1M,
+                    Unit = MeasurementUnit.Loaf,
+                    Notes = "(1 pound) ends trimmed, cut in 1/2 horizontally",
+                    RawText = "1 (1 pound) loaf ciabatta or rustic bread, ends trimmed, cut in 1/2 horizontally"
                 }
             ]),
         new(
@@ -724,14 +726,15 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Skirt steak"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    NumberValue = 1M,
+                    Unit = MeasurementUnit.Unit,
+                    Notes = "(1 pound) cut in half",
+                    RawText = "1 (1 pound) skirt steak, cut in half"
                 }
             ]),
         new(
@@ -755,14 +758,15 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Panettone bread"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    NumberValue = 1M,
+                    Unit = MeasurementUnit.Loaf,
+                    Notes = "(1.1 pound: 500 gram) baking paper removed",
+                    RawText = "1 (1.1 pound: 500 gram) loaf panettone bread, baking paper removed"
                 }
             ]),
         new(
@@ -786,14 +790,15 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Rack spareribs"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    NumberValue = 1M,
+                    Unit = MeasurementUnit.Unit,
+                    Notes = "(1/2 to 1-pound)",
+                    RawText = "1 (1/2 to 1-pound) rack spareribs"
                 }
             ]),
         new(
@@ -817,14 +822,15 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Active dry yeast"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    NumberValue = 1M,
+                    Unit = MeasurementUnit.Package,
+                    Notes = "(1/4-ounce 2 1/4 teaspoons)",
+                    RawText = "1 (1/4-ounce) package active dry yeast (2 1/4 teaspoons)"
                 }
             ]),
         new(
@@ -848,14 +854,15 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Active dry yeast"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    NumberValue = 1M,
+                    Unit = MeasurementUnit.Package,
+                    Notes = "(1/4-ounce)",
+                    RawText = "1 (1/4-ounce) package active dry yeast"
                 }
             ]),
         new(
@@ -879,14 +886,15 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Chicken broth"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    Notes = "(10 3/4-ounce)",
+                    RawText = "1 (10 3/4-ounce) can chicken broth"
                 }
             ]),
         new(
@@ -910,14 +918,15 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Clam base"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    Notes = "(10-ounce)",
+                    RawText = "1 (10-ounce) can clam base"
                 }
             ]),
         new(
@@ -941,14 +950,15 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Frozen chopped spinach"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    NumberValue = 1M,
+                    Unit = MeasurementUnit.Package,
+                    Notes = "(10-ounce) cooked and squeezed dry, reserving 1 tablespoon of the liquid",
+                    RawText = "1 (10-ounce) package frozen chopped spinach, cooked and squeezed dry, reserving 1 tablespoon of the liquid"
                 }
             ]),
         new(
@@ -972,14 +982,15 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Tomato sauce"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    Notes = "(12-ounce)",
+                    RawText = "1 (12-ounce) can tomato sauce"
                 }
             ]),
         new(
@@ -1003,14 +1014,15 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Pumpkin puree"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    Notes = "(15 - ounce not pumpkin pie filling)",
+                    RawText = "1 (15 - ounce) can pumpkin puree (not pumpkin pie filling)"
                 }
             ]),
         new(
@@ -1034,14 +1046,15 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Black beans"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    Notes = "(15.5-ounce) preferably low-sodium, drained and rinsed",
+                    RawText = "1 (15.5-ounce) can black beans, preferably low-sodium, drained and rinsed"
                 }
             ]),
         new(
@@ -1065,14 +1078,15 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Hominy"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    Notes = "(15.5-ounce) drained and rinsed",
+                    RawText = "1 (15.5-ounce) can hominy, drained and rinsed"
                 }
             ]),
         new(
@@ -1096,324 +1110,15 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Pink beans"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1 -inch piece fresh ginger, peeled and minced",
-            [
-                new IngredientLine(
-                    "1 -inch piece fresh ginger, peeled and minced",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Piece, "piece", 8))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1 -ounce red pepper, diced",
-            [
-                new IngredientLine(
-                    "1 -ounce red pepper, diced",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "1 -ounce red pepper, diced", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1 (1-inch piece) ginger, peeled and minced",
-            [
-                new IngredientLine(
-                    "1 (1-inch piece) ginger, peeled and minced",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "1                ginger, peeled and minced", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1 (1-inch-thick) sliced pancetta, cut into small dice",
-            [
-                new IngredientLine(
-                    "1 (1-inch-thick) sliced pancetta, cut into small dice",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "1                sliced pancetta, cut into small dice", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1 (1-inch) cinnamon stick",
-            [
-                new IngredientLine(
-                    "1 (1-inch) cinnamon stick",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Stick, "stick", 20))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1 (1-inch) stick true canela (soft Ceylon cinnamon), coarsely chopped",
-            [
-                new IngredientLine(
-                    "1 (1-inch) stick true canela (soft Ceylon cinnamon), coarsely chopped",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Stick, "stick", 11))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1 (1-ounce) piece Parmesan, coarsely chopped",
-            [
-                new IngredientLine(
-                    "1 (1-ounce) piece Parmesan, coarsely chopped",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Piece, "piece", 12))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1 (1-pound) loaf ciabatta bread (or 8 slices country bread)",
-            [
-                new IngredientLine(
-                    "1 (1-pound) loaf ciabatta bread (or 8 slices country bread)",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Loaf, "loaf", 12))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1 (1-pound) loaf purchased frozen white bread dough, thawed (recommended: Bridgeford)",
-            [
-                new IngredientLine(
-                    "1 (1-pound) loaf purchased frozen white bread dough, thawed (recommended: Bridgeford)",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Loaf, "loaf", 12))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1 (1-pound) package frozen green, red and yellow peppers and onions*",
-            [
-                new IngredientLine(
-                    "1 (1-pound) package frozen green, red and yellow peppers and onions",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Package, "package", 12))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    Notes = "(15.5-ounce) rinsed and drained",
+                    RawText = "1 (15.5-ounce) can pink beans, rinsed and drained"
                 }
             ]),
         new(
@@ -1437,45 +1142,15 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Peeled plum tomatoes"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1 (1-pound) loaf ciabatta bread, halved horizontally (see Cook's Note)",
-            [
-                new IngredientLine(
-                    "1 (1-pound) loaf ciabatta bread, halved horizontally (see Cook s Note)",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Loaf, "loaf", 12))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    Notes = "(15-ounce/441 ml)",
+                    RawText = "1 (15-ounce/441 ml) can peeled plum tomatoes"
                 }
             ]),
         new(
@@ -1489,7 +1164,7 @@ public static class RecipeIngredientParserTests
                             null,
                             null,
                             new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Package, "pkg", 11))
+                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Package, "pkg.", 11))
                     ])
             ],
             1,
@@ -1499,14 +1174,15 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Pillsbury Hot Roll Mix"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    NumberValue = 1M,
+                    Unit = MeasurementUnit.Package,
+                    Notes = "(16 oz.)",
+                    RawText = "1 (16 oz.) pkg. Pillsbury Hot Roll Mix"
                 }
             ]),
         new(
@@ -1530,21 +1206,22 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Dry broccoli cole slaw"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    NumberValue = 1M,
+                    Unit = MeasurementUnit.Package,
+                    Notes = "(16-ounce about 5 1/2 cups)",
+                    RawText = "1 (16-ounce) package (about 5 1/2 cups) dry broccoli cole slaw"
                 }
             ]),
         new(
             "1 (18 1/4-ounce) box devil's food cake mix",
             [
                 new IngredientLine(
-                    "1 (18 1/4-ounce) box devil s food cake mix",
+                    "1 (18 1/4-ounce) box devil's food cake mix",
                     [
                         new QuantityLine(
                             new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
@@ -1561,14 +1238,303 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Devil's food cake mix"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    NumberValue = 1M,
+                    Unit = MeasurementUnit.Package,
+                    Notes = "(18 1/4-ounce)",
+                    RawText = "1 (18 1/4-ounce) box devil's food cake mix"
+                }
+            ]),
+        new(
+            "1 (1-inch piece) ginger, peeled and minced",
+            [
+                new IngredientLine(
+                    "1 (1-inch piece) ginger, peeled and minced",
+                    [
+                        new QuantityLine(
+                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
+                            null,
+                            null,
+                            new TokenMatch<decimal>(1M, "1", 0),
+                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "1                ginger, peeled and minced", 0))
+                    ])
+            ],
+            1,
+            null,
+            [
+                new RecipeStepIngredient
+                {
+                    Ingredient = new Ingredient
+                    {
+                        Name = "Ginger"
+                    },
+                    QuantityType = QuantityType.Number,
+                    MinValue = null,
+                    MaxValue = null,
+                    NumberValue = 1M,
+                    Unit = MeasurementUnit.Unit,
+                    Notes = "(1-inch piece) peeled and minced",
+                    RawText = "1 (1-inch piece) ginger, peeled and minced"
+                }
+            ]),
+        new(
+            "1 (1-inch) cinnamon stick",
+            [
+                new IngredientLine(
+                    "1 (1-inch) cinnamon stick",
+                    [
+                        new QuantityLine(
+                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
+                            null,
+                            null,
+                            new TokenMatch<decimal>(1M, "1", 0),
+                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Stick, "stick", 20))
+                    ])
+            ],
+            1,
+            null,
+            [
+                new RecipeStepIngredient
+                {
+                    Ingredient = new Ingredient
+                    {
+                        Name = "Cinnamon"
+                    },
+                    QuantityType = QuantityType.Number,
+                    MinValue = null,
+                    MaxValue = null,
+                    NumberValue = 1M,
+                    Unit = MeasurementUnit.Stick,
+                    Notes = "(1-inch)",
+                    RawText = "1 (1-inch) cinnamon stick"
+                }
+            ]),
+        new(
+            "1 (1-inch) stick true canela (soft Ceylon cinnamon), coarsely chopped",
+            [
+                new IngredientLine(
+                    "1 (1-inch) stick true canela (soft Ceylon cinnamon), coarsely chopped",
+                    [
+                        new QuantityLine(
+                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
+                            null,
+                            null,
+                            new TokenMatch<decimal>(1M, "1", 0),
+                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Stick, "stick", 11))
+                    ])
+            ],
+            1,
+            null,
+            [
+                new RecipeStepIngredient
+                {
+                    Ingredient = new Ingredient
+                    {
+                        Name = "True canela"
+                    },
+                    QuantityType = QuantityType.Number,
+                    MinValue = null,
+                    MaxValue = null,
+                    NumberValue = 1M,
+                    Unit = MeasurementUnit.Stick,
+                    Notes = "(1-inch soft Ceylon cinnamon) coarsely chopped",
+                    RawText = "1 (1-inch) stick true canela (soft Ceylon cinnamon), coarsely chopped"
+                }
+            ]),
+        new(
+            "1 (1-inch-thick) sliced pancetta, cut into small dice",
+            [
+                new IngredientLine(
+                    "1 (1-inch-thick) sliced pancetta, cut into small dice",
+                    [
+                        new QuantityLine(
+                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
+                            null,
+                            null,
+                            new TokenMatch<decimal>(1M, "1", 0),
+                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "1                sliced pancetta, cut into small dice", 0))
+                    ])
+            ],
+            1,
+            null,
+            [
+                new RecipeStepIngredient
+                {
+                    Ingredient = new Ingredient
+                    {
+                        Name = "Sliced pancetta"
+                    },
+                    QuantityType = QuantityType.Number,
+                    MinValue = null,
+                    MaxValue = null,
+                    NumberValue = 1M,
+                    Unit = MeasurementUnit.Unit,
+                    Notes = "(1-inch-thick) cut into small dice",
+                    RawText = "1 (1-inch-thick) sliced pancetta, cut into small dice"
+                }
+            ]),
+        new(
+            "1 (1-ounce) piece Parmesan, coarsely chopped",
+            [
+                new IngredientLine(
+                    "1 (1-ounce) piece Parmesan, coarsely chopped",
+                    [
+                        new QuantityLine(
+                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
+                            null,
+                            null,
+                            new TokenMatch<decimal>(1M, "1", 0),
+                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Piece, "piece", 12))
+                    ])
+            ],
+            1,
+            null,
+            [
+                new RecipeStepIngredient
+                {
+                    Ingredient = new Ingredient
+                    {
+                        Name = "Parmesan"
+                    },
+                    QuantityType = QuantityType.Number,
+                    MinValue = null,
+                    MaxValue = null,
+                    NumberValue = 1M,
+                    Unit = MeasurementUnit.Piece,
+                    Notes = "(1-ounce) coarsely chopped",
+                    RawText = "1 (1-ounce) piece Parmesan, coarsely chopped"
+                }
+            ]),
+        new(
+            "1 (1-pound) loaf ciabatta bread (or 8 slices country bread)",
+            [
+                new IngredientLine(
+                    "1 (1-pound) loaf ciabatta bread (or 8 slices country bread)",
+                    [
+                        new QuantityLine(
+                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
+                            null,
+                            null,
+                            new TokenMatch<decimal>(1M, "1", 0),
+                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Loaf, "loaf", 12))
+                    ])
+            ],
+            1,
+            null,
+            [
+                new RecipeStepIngredient
+                {
+                    Ingredient = new Ingredient
+                    {
+                        Name = "Ciabatta bread"
+                    },
+                    QuantityType = QuantityType.Number,
+                    MinValue = null,
+                    MaxValue = null,
+                    NumberValue = 1M,
+                    Unit = MeasurementUnit.Loaf,
+                    Notes = "(1-pound or 8 slices country bread)",
+                    RawText = "1 (1-pound) loaf ciabatta bread (or 8 slices country bread)"
+                }
+            ]),
+        new(
+            "1 (1-pound) loaf ciabatta bread, halved horizontally (see Cook's Note)",
+            [
+                new IngredientLine(
+                    "1 (1-pound) loaf ciabatta bread, halved horizontally (see Cook's Note)",
+                    [
+                        new QuantityLine(
+                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
+                            null,
+                            null,
+                            new TokenMatch<decimal>(1M, "1", 0),
+                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Loaf, "loaf", 12))
+                    ])
+            ],
+            1,
+            null,
+            [
+                new RecipeStepIngredient
+                {
+                    Ingredient = new Ingredient
+                    {
+                        Name = "Ciabatta bread"
+                    },
+                    QuantityType = QuantityType.Number,
+                    MinValue = null,
+                    MaxValue = null,
+                    NumberValue = 1M,
+                    Unit = MeasurementUnit.Loaf,
+                    Notes = "(1-pound) halved horizontally (see Cook's Note)",
+                    RawText = "1 (1-pound) loaf ciabatta bread, halved horizontally (see Cook's Note)"
+                }
+            ]),
+        new(
+            "1 (1-pound) loaf purchased frozen white bread dough, thawed (recommended: Bridgeford)",
+            [
+                new IngredientLine(
+                    "1 (1-pound) loaf purchased frozen white bread dough, thawed (recommended: Bridgeford)",
+                    [
+                        new QuantityLine(
+                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
+                            null,
+                            null,
+                            new TokenMatch<decimal>(1M, "1", 0),
+                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Loaf, "loaf", 12))
+                    ])
+            ],
+            1,
+            null,
+            [
+                new RecipeStepIngredient
+                {
+                    Ingredient = new Ingredient
+                    {
+                        Name = "Purchased frozen white bread dough"
+                    },
+                    QuantityType = QuantityType.Number,
+                    MinValue = null,
+                    MaxValue = null,
+                    NumberValue = 1M,
+                    Unit = MeasurementUnit.Loaf,
+                    Notes = "(1-pound) thawed (recommended: Bridgeford)",
+                    RawText = "1 (1-pound) loaf purchased frozen white bread dough, thawed (recommended: Bridgeford)"
+                }
+            ]),
+        new(
+            "1 (1-pound) package frozen green, red and yellow peppers and onions*",
+            [
+                new IngredientLine(
+                    "1 (1-pound) package frozen green, red and yellow peppers and onions",
+                    [
+                        new QuantityLine(
+                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
+                            null,
+                            null,
+                            new TokenMatch<decimal>(1M, "1", 0),
+                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Package, "package", 12))
+                    ])
+            ],
+            1,
+            null,
+            [
+                new RecipeStepIngredient
+                {
+                    Ingredient = new Ingredient
+                    {
+                        Name = "Pepper and onion"
+                    },
+                    QuantityType = QuantityType.Number,
+                    MinValue = null,
+                    MaxValue = null,
+                    NumberValue = 1M,
+                    Unit = MeasurementUnit.Package,
+                    Notes = "(1-pound) frozen green, red and yellow",
+                    RawText = "1 (1-pound) package frozen green, red and yellow peppers and onions"
                 }
             ]),
         new(
@@ -1592,14 +1558,15 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Tomatoes"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    Notes = "(28-ounce) whole, peeled",
+                    RawText = "1 (28-ounce) can whole, peeled tomatoes"
                 }
             ]),
         new(
@@ -1623,14 +1590,15 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Carrot"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    NumberValue = 1M,
+                    Unit = MeasurementUnit.Piece,
+                    Notes = "(2-inch) peeled",
+                    RawText = "1 (2-inch) piece carrot, peeled"
                 }
             ]),
         new(
@@ -1654,16 +1622,17 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Roast"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    NumberValue = 1M,
+                    Unit = MeasurementUnit.Unit,
+                    Notes = "(3 rib) about 5 pounds, rimmed of excess but not all fat",
+                    RawText = "1 (3 rib) roast, about 5 pounds, rimmed of excess but not all fat"
                 }
-            ]),
+            ]),/*******************/
         new(
             "1 (3 to 3 1/2-pound) piece center-cut salmon, skin on, pin bones removed, halved",
             [
@@ -1690,6 +1659,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -1721,6 +1691,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -1752,6 +1723,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -1783,6 +1755,71 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
+                    Unit = MeasurementUnit.Can,
+                    Notes = "notes",
+                    RawText = "Raw"
+                }
+            ]),
+        new(
+            "1 -inch piece fresh ginger, peeled and minced",
+            [
+                new IngredientLine(
+                    "1 -inch piece fresh ginger, peeled and minced",
+                    [
+                        new QuantityLine(
+                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
+                            null,
+                            null,
+                            new TokenMatch<decimal>(1M, "1", 0),
+                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Piece, "piece", 8))
+                    ])
+            ],
+            1,
+            null,
+            [
+                new RecipeStepIngredient
+                {
+                    Ingredient = new Ingredient
+                    {
+                        Name = "fresh ginger"
+                    },
+                    QuantityType = QuantityType.Number,
+                    MinValue = null,
+                    MaxValue = null,
+                    NumberValue = 1M,
+                    Unit = MeasurementUnit.Piece,
+                    Notes = "1 -inch peeled and minced",
+                    RawText = "1 -inch piece fresh ginger, peeled and minced"
+                }
+            ]),
+        new(
+            "1 -ounce red pepper, diced",
+            [
+                new IngredientLine(
+                    "1 -ounce red pepper, diced",
+                    [
+                        new QuantityLine(
+                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
+                            null,
+                            null,
+                            new TokenMatch<decimal>(1M, "1", 0),
+                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "1 -ounce red pepper, diced", 0))
+                    ])
+            ],
+            1,
+            null,
+            [
+                new RecipeStepIngredient
+                {
+                    Ingredient = new Ingredient
+                    {
+                        Name = "Name"
+                    },
+                    QuantityType = QuantityType.Number,
+                    MinValue = null,
+                    MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -1814,6 +1851,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -1845,6 +1883,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -1876,6 +1915,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -1907,6 +1947,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -1938,6 +1979,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -1969,6 +2011,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -2000,6 +2043,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -2031,6 +2075,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -2062,6 +2107,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -2093,6 +2139,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -2124,6 +2171,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -2155,6 +2203,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -2186,6 +2235,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -2217,6 +2267,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -2248,6 +2299,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -2279,6 +2331,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -2310,6 +2363,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -2341,6 +2395,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -2372,6 +2427,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -2403,6 +2459,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -2434,6 +2491,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -2465,6 +2523,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -2496,6 +2555,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -2527,6 +2587,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -2558,6 +2619,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -2589,6 +2651,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -2620,6 +2683,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -2651,6 +2715,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -2682,6 +2747,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -2713,6 +2779,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -2744,6 +2811,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -2775,6 +2843,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -2806,6 +2875,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -2837,6 +2907,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -2868,6 +2939,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -2899,6 +2971,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -2930,6 +3003,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -2961,6 +3035,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -2992,6 +3067,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -3023,6 +3099,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -3060,6 +3137,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -3091,6 +3169,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -3122,6 +3201,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -3153,6 +3233,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -3184,6 +3265,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -3215,6 +3297,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -3246,6 +3329,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -3277,6 +3361,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -3308,6 +3393,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -3339,6 +3425,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -3370,6 +3457,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -3401,6 +3489,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -3432,6 +3521,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -3463,6 +3553,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -3494,6 +3585,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -3525,6 +3617,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -3556,6 +3649,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -3587,6 +3681,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -3618,6 +3713,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -3649,6 +3745,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -3680,6 +3777,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -3711,6 +3809,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -3742,6 +3841,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -3773,6 +3873,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -3804,6 +3905,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -3835,6 +3937,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -3866,6 +3969,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -3897,6 +4001,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -3928,6 +4033,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -3959,6 +4065,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -3990,6 +4097,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -4021,6 +4129,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -4052,6 +4161,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -4083,6 +4193,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -4114,6 +4225,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -4145,6 +4257,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -4176,6 +4289,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -4207,6 +4321,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -4238,6 +4353,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -4269,6 +4385,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -4300,6 +4417,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -4331,6 +4449,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -4362,6 +4481,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -4393,6 +4513,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -4424,6 +4545,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -4455,6 +4577,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -4486,6 +4609,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -4517,6 +4641,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -4548,6 +4673,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -4579,6 +4705,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -4610,6 +4737,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -4641,6 +4769,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -4672,6 +4801,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -4703,6 +4833,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -4734,6 +4865,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -4765,6 +4897,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -4796,6 +4929,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -4827,6 +4961,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -4858,6 +4993,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -4889,6 +5025,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -4920,6 +5057,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -4951,6 +5089,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -4982,6 +5121,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -5013,6 +5153,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -5044,6 +5185,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -5075,6 +5217,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -5106,6 +5249,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -5137,6 +5281,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -5168,6 +5313,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -5199,6 +5345,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -5230,6 +5377,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -5261,6 +5409,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -5292,6 +5441,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -5323,6 +5473,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -5354,6 +5505,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -5385,6 +5537,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -5416,6 +5569,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -5447,6 +5601,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -5478,6 +5633,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -5509,6 +5665,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -5540,6 +5697,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -5571,6 +5729,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -5602,6 +5761,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -5633,6 +5793,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -5664,6 +5825,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -5701,6 +5863,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -5732,6 +5895,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -5763,6 +5927,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -5794,6 +5959,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -5825,6 +5991,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -5856,6 +6023,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -5887,6 +6055,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -5918,6 +6087,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -5949,6 +6119,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -5980,6 +6151,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -6011,6 +6183,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -6042,6 +6215,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -6073,6 +6247,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -6104,6 +6279,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -6135,6 +6311,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -6166,6 +6343,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -6197,6 +6375,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -6228,6 +6407,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -6259,6 +6439,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -6290,6 +6471,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -6321,6 +6503,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -6352,6 +6535,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -6383,6 +6567,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -6414,6 +6599,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -6445,6 +6631,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -6476,6 +6663,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -6507,6 +6695,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -6538,6 +6727,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -6569,6 +6759,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -6600,6 +6791,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -6631,6 +6823,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -6662,6 +6855,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -6693,6 +6887,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -6724,6 +6919,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -6755,6 +6951,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -6786,6 +6983,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -6817,6 +7015,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -6848,6 +7047,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -6879,6 +7079,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -6910,6 +7111,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -6941,6 +7143,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -6972,6 +7175,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -7003,6 +7207,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -7034,6 +7239,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -7065,6 +7271,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -7096,6 +7303,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -7127,6 +7335,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -7158,6 +7367,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -7189,6 +7399,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -7220,6 +7431,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -7251,6 +7463,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -7282,6 +7495,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -7313,6 +7527,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -7344,6 +7559,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -7375,6 +7591,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -7412,6 +7629,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -7443,6 +7661,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -7474,6 +7693,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -7505,6 +7725,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -7546,6 +7767,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -7587,6 +7809,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -7628,6 +7851,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -7669,6 +7893,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -7700,6 +7925,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -7731,6 +7957,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -7762,6 +7989,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -7793,6 +8021,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -7824,6 +8053,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
@@ -7865,6 +8095,7 @@ public static class RecipeIngredientParserTests
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
+                    NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
