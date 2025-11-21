@@ -1,22 +1,37 @@
+using Humanizer;
+using Microsoft.EntityFrameworkCore;
+using MyCookbook.Common.Database;
+using MyCookbook.Common.Enums;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using Humanizer;
-using Microsoft.EntityFrameworkCore;
-using MyCookbook.Common.Database;
-using MyCookbook.Common.Enums;
 using Ingredient = MyCookbook.Common.Database.Ingredient;
 
 namespace MyCookbook.API.Implementations;
 
 public static partial class RecipeIngredientParser
 {
+    private static readonly IReadOnlyDictionary<string, string> MeasurementSynonyms = new Dictionary<string, string>
+    {
+        { "clofe", nameof(MeasurementUnit.Clove) },
+        { "lb", nameof(MeasurementUnit.Pound) },
+        { "pkg", nameof(MeasurementUnit.Package) },
+        { "box", nameof(MeasurementUnit.Package) },
+        { "dash", nameof(MeasurementUnit.Drop) }
+    };
+
+    private static readonly IReadOnlyDictionary<string, string> MeasurementOverrides = new Dictionary<string, string>
+    {
+        { nameof(MeasurementUnit.Head), @"(?<!(?:fish|salmon|cod|tuna|tilapia|halibut|mackerel|flounder|snapper|sea-bass|seabass|sea\s+bass|bass|mahi-mahi|mahimahi|mahi\s+mahi)\s+)(?:head|heads)" },
+        { nameof(MeasurementUnit.Stick), @"(?<!(?:fish)\s+)(?:stick|sticks)" },
+        { nameof(MeasurementUnit.Package), @"(?:(?:box(?!ed|(?:\s+(?:grater|knife)))|boxes|package|packages|pkg|pkgs))" }
+    };
+
     private static readonly ReadOnlyDictionary<MeasurementUnit, string> DefaultValues =
         new(
             new Dictionary<MeasurementUnit, string>
@@ -24,22 +39,43 @@ public static partial class RecipeIngredientParser
                 { MeasurementUnit.Clove, "clove" }
             });
 
-    [GeneratedRegex(@"^[^a-z0-9]*(?:(?<Number>(?:\d{1,3}(?:,?\d{3})*)|(?:(?:\d{1,3}(?:,?\d{3})*\s+(?!/)+)?\d{1,3}\s*/\s*\d{1,3}))|(?<Range>(?:\d{1,3}(?:,?\d{3})*)|(?:(?:\d{1,3}(?:,?\d{3})*\s+(?!/))?\d{1,3}\s*/\s*\d{1,3})\s*-\s*(?:\d{1,3}(?:,?\d{3})*)|(?:(?:\d{1,3}(?:,?\d{3})*\s+(?!/))?\d{1,3}\s*/\s*\d{1,3})))(?<Ending>(?:\s+\d{1,3}(?:,?\d{3})*\s*(?:to\s+\d{1,3}(?:,?\d{3})*)?-\s*[a-z]+)?[a-z !?\(\):;,\-\.]*)$", RegexOptions.IgnoreCase)]
+    [GeneratedRegex(@"(?:^[^a-z0-9]*|\b)(?:(?:(?<Range>(?<R1>(?:(?:\d+(?!,)(?=\.|\s+))|\d{1,3}(?:,?\d{3})*)(?:\.\d+)?(?:(?:\s+(?:(?:\d+(?!,)(?=\.|\s+))|\d{1,3}(?:,?\d{3})*)(?:\.\d+)?)?\s*/\s*(?:(?:\d+(?!,)(?=\.|\s+))|\d{1,3}(?:,?\d{3})*)(?:\.\d+)?)?)?\s+to\s+(?<R2>(?:(?:\d+(?!,)(?=\.|\s+))|\d{1,3}(?:,?\d{3})*)(?:\.\d+)?(?:(?:\s+(?:(?:\d+(?!,)(?=\.|\s+))|\d{1,3}(?:,?\d{3})*)(?:\.\d+)?)?\s*/\s*(?:(?:\d+(?!,)(?=\.|\s+))|\d{1,3}(?:,?\d{3})*)(?:\.\d+)?)?))|(?<Number>(?:(?:\d+(?!,)(?=\.|\s+))|\d{1,3}(?:,?\d{3})*)(?:\.\d+)?(?:(?:\s+(?:(?:\d+(?!,)(?=\.|\s+))|\d{1,3}(?:,?\d{3})*)(?:\.\d+)?)?\s*/\s*(?:(?:\d+(?!,)(?=\.|\s+))|\d{1,3}(?:,?\d{3})*)(?:\.\d+)?)?(?!\s+to\s+)))(?!-))(?<Ending>.*)$", RegexOptions.IgnoreCase)]
     private static partial Regex QuantityRegex();
 
-    [GeneratedRegex("[a-zA-Z0-9/, ():-]")]
+    [GeneratedRegex(@"\s{2,}")]
+    private static partial Regex MultiWhitespaceRegex();
+
+    [GeneratedRegex(@"(?<!\([^\)]*)(and(?>!squeezed)|(?:beaten with)|(?:whisked with)|(?:whipped with))(?= )")]
+    private static partial Regex LineSeparatorRegex();
+
+    [GeneratedRegex(@"[a-zA-Z0-9/, \(\):\-\.!]")]
     private static partial Regex SanitizeRegex();
 
-    [GeneratedRegex(@"(?<Number>\d)(?<Letter>[a-zA-Z])")]
+    [GeneratedRegex(@"^[^\d]+$")]
+    private static partial Regex NoNumbersRegex();
+
+    [GeneratedRegex(@"(?<=^|\s|\()(?<Number>\d+)(?!(?:s|rds|nds|nd|st|erd|rd|erds|rds|th|ths)(?:\s|$))(?=[a-zA-Z\)])")]
     private static partial Regex DigitTextRegex();
+
+    [GeneratedRegex(@"\b(?:(?<!\((?!\)))\s*)(?:(?:fresh|flaked|fine|coarse|kosher|sea)\s+)*salt(?:(?:\s+\(\s*(?:(?:fresh|flaked|fine|coarse|kosher|sea)\s*)*\))|\b)", RegexOptions.IgnoreCase)]
+    private static partial Regex SaltRegex();
+
+    [GeneratedRegex(@"\b(?:(?<!\((?!\)))\s*)(?:(?:fresh(?:ly)?|fine|coarse|ground|black|cracked)\s+)*pepper(?:(?:\s+\(\s*(?:(?:fresh(?:ly)?|fine|coarse|ground|black|cracked)\s*)*\))|\b)", RegexOptions.IgnoreCase)]
+    private static partial Regex PepperRegex();
 
     private static readonly Regex MeasurementRegex;
 
     static RecipeIngredientParser()
     {
-        var measurements = Enum.GetNames<MeasurementUnit>();
+        var measurements = Enum.GetNames<MeasurementUnit>()
+            .Except(MeasurementOverrides.Keys)
+            .ToList();
+        var measurementSynonymsKeys = MeasurementSynonyms
+            .Where(x => !MeasurementOverrides.ContainsKey(x.Value))
+            .Select(x => x.Key)
+            .ToList();
         MeasurementRegex = new Regex(
-            "(?:[^a-zA-Z]|^)("
+            @"(?<=[^a-z]|^)(?<!(?:-\s*)|(?:into\s+)|(?:into(?:\s|\-)+\d+(?:\s|\-)?)|(?:(?<!\d[^\s]+)\s+about(?:\s|\-)+\d+(?:\s|\-)?))("
             + string.Join(
                 '|',
                 measurements
@@ -51,8 +87,17 @@ public static partial class RecipeIngredientParser
                                     " ",
                                     string.Empty))
                     .Concat(
-                        measurements))
-            + ")(?:[^a-zA-Z]|$)",
+                        measurements)
+                    .Concat(
+                        measurementSynonymsKeys)
+                    .Concat(
+                        measurementSynonymsKeys
+                            .Select(
+                                x =>
+                                    x.Pluralize()))
+                    .Concat(
+                        MeasurementOverrides.Values))
+            + ")(?=[^a-z]|$)",
             RegexOptions.IgnoreCase);
     }
 
@@ -64,201 +109,193 @@ public static partial class RecipeIngredientParser
         List<Ingredient> ingredientsAlreadyMatchedAdded,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
+        foreach (var parsedRecipeStepIngredient in GetParsedRecipeStepIngredients(recipeStepGuid, str, ingredientsAlreadyMatchedAdded))
+        {
+            var recipeStepIngredientFromDb = await db.StepIngredients.FirstOrDefaultAsync(
+                x =>
+                    x.RecipeStep.RecipeId == recipeGuid
+                    && x.Ingredient.Name == parsedRecipeStepIngredient.Ingredient.Name
+                    && x.RawText == str
+                    && x.Notes == parsedRecipeStepIngredient.Notes
+                    && x.NumberValue == parsedRecipeStepIngredient.NumberValue
+                    && x.MinValue == parsedRecipeStepIngredient.MinValue
+                    && x.MaxValue == parsedRecipeStepIngredient.MaxValue
+                    && x.QuantityType == parsedRecipeStepIngredient.QuantityType
+                    && x.Unit == parsedRecipeStepIngredient.Unit,
+                cancellationToken);
+            var ingredientFromDb = ingredientsAlreadyMatchedAdded.FirstOrDefault(x => x.Name == parsedRecipeStepIngredient.Ingredient.Name)
+                                   ?? await db.Ingredients.FirstOrDefaultAsync(
+                                       x => x.Name == parsedRecipeStepIngredient.Ingredient.Name,
+                                       cancellationToken);
+            if (ingredientFromDb == null)
+            {
+                var ingFromDb = await db.Ingredients.AddAsync(
+                    new Ingredient
+                    {
+                        Name = parsedRecipeStepIngredient.Ingredient.Name
+                    },
+                    cancellationToken);
+                ingredientFromDb = ingFromDb.Entity;
+                ingredientsAlreadyMatchedAdded.Add(ingFromDb.Entity);
+            }
+
+            if (recipeStepIngredientFromDb == null)
+            {
+                parsedRecipeStepIngredient.Ingredient = ingredientFromDb;
+                var rsiFromDb = await db.StepIngredients.AddAsync(
+                    parsedRecipeStepIngredient,
+                    cancellationToken);
+                recipeStepIngredientFromDb = rsiFromDb.Entity;
+            }
+
+            yield return recipeStepIngredientFromDb;
+        }
+    }
+
+    internal static IEnumerable<RecipeStepIngredient> GetParsedRecipeStepIngredients(
+        Guid recipeStepGuid,
+        string str,
+        List<Ingredient> ingredientsAlreadyMatchedAdded)
+    {
         var sanitizedInput = Sanitize(
             str);
         foreach (var ingredient in GetIngredients(
                      sanitizedInput))
         {
+            if (str.StartsWith("Egg wash", StringComparison.InvariantCultureIgnoreCase)
+                || str.StartsWith("For serving", StringComparison.InvariantCultureIgnoreCase))
+            {
+                yield return new RecipeStepIngredient
+                {
+                    Ingredient = new Ingredient
+                    {
+                        Name = "Egg wash"
+                    },
+                    Unit = MeasurementUnit.Unit,
+                    NumberValue = 1,
+                    QuantityType = QuantityType.Number,
+                    Notes = str.Replace("Egg wash", string.Empty, StringComparison.InvariantCultureIgnoreCase).Replace("For serving", string.Empty, StringComparison.InvariantCultureIgnoreCase).Trim(' ', ':').TrimStart('(').TrimEnd(')'),
+                    RawText = str,
+                    RecipeStepId = recipeStepGuid
+                };
+                yield break;
+            }
+
             var rawQuantities = GetRawQuantities(
                     ingredient)
                 .Distinct()
                 .ToList();
             var firstMeasurement = rawQuantities.First().Measurement;
-            var rawQuantitiesAndConversionRates = rawQuantities
-                .Where(
-                    x =>
-                        x is { Measurement: not null, QuantityType.ParsedValue: QuantityType.Number })
-                .Select(
-                    x =>
-                        new
-                        {
-                            RawQuantity = x,
-                            ConversionRate = GetConversionRate(
-                                x.Measurement!.ParsedValue,
-                                firstMeasurement!.ParsedValue)!
-                        })
-                .ToList();
-            var rawQuantitiesWithConversionRates = rawQuantitiesAndConversionRates
-                .Where(
-                    x =>
-                        x.ConversionRate != null)
-                .ToList();
-            if (rawQuantitiesWithConversionRates.Count > 0)
+            foreach (var item in rawQuantities
+                         .Select(x =>
+                             new
+                             {
+                                 RawQuantity = x,
+                                 ConversionRate = GetConversionRate(
+                                     x.Measurement.ParsedValue,
+                                     firstMeasurement.ParsedValue)!
+                             })
+                         .GroupBy(x =>
+                             x.ConversionRate.HasValue)
+                         .SelectMany(x =>
+                         {
+                             var items = x.Select(y => y.RawQuantity).ToList();
+                             if (x.Key && items.Count > 1)
+                             {
+                                 var itemsToAdd = items
+                                     .Where(
+                                         y =>
+                                            y is { QuantityType.ParsedValue: QuantityType.Number })
+                                     .ToList();
+                                 var itemsNotToAdd = items.Except(itemsToAdd).ToList();
+                                 items = itemsNotToAdd;
+                                 if (itemsNotToAdd.Count > 0)
+                                 {
+                                     var total = AddRawQuantities(itemsToAdd);
+                                     items.Add(
+                                         new RawQuantity(
+                                             str,
+                                             new TokenMatch<QuantityType>(QuantityType.Number, str, 0),
+                                             null,
+                                             null,
+                                             new TokenMatch<decimal>(total.NumberValue, str, 0),
+                                             new TokenMatch<MeasurementUnit>(total.MeasurementUnit, str, 0)));
+                                 }
+                             }
+
+                             return items;
+                         }))
             {
-                var totalRawQuantity = AddRawQuantities(
-                    rawQuantitiesWithConversionRates.Select(x => x.RawQuantity).ToList());
-                var matchedTokens = rawQuantitiesWithConversionRates
-                    .Select(
-                        x =>
-                            x.RawQuantity.Measurement!.MatchedValue)
-                    .Concat(
-                        rawQuantitiesWithConversionRates
-                            .Select(
-                                x =>
-                                    x.RawQuantity.NumberValue!.MatchedValue))
-                    .Where(x => x != null)
-                    .Select(x => x!)
-                    .ToList();
+                var matchedTokens = new List<MatchLocation>();
+                AddMatchLocation(
+                    ref matchedTokens,
+                    item.RawText.Length,
+                    item.QuantityType);
+                AddMatchLocation(
+                    ref matchedTokens,
+                    item.RawText.Length,
+                    item.Measurement);
                 var name = GetName(
                     ingredient,
-                    matchedTokens,
-                    totalRawQuantity.MeasurementUnit);
-                matchedTokens.Add(
-                    name.MatchedValue!);
+                    matchedTokens);
+                AddMatchLocation(
+                    ref matchedTokens,
+                    item.RawText.Length,
+                    name);
                 var notes = GetNotes(
                     ingredient,
                     matchedTokens);
-                var recipeStepIngredientFromDb = await db.StepIngredients.FirstOrDefaultAsync(
-                    x =>
-                        x.RecipeStep.RecipeId == recipeGuid
-                        && x.Ingredient.Name == name.ParsedValue
-                        && x.RawText == str
-                        && x.Notes == notes
-                        && x.NumberValue == totalRawQuantity.NumberValue
-                        && x.QuantityType == QuantityType.Number
-                        && x.Unit == totalRawQuantity.MeasurementUnit,
-                    cancellationToken);
-                if (recipeStepIngredientFromDb == null)
+                yield return new RecipeStepIngredient
                 {
-                    var ingredientFromDb = ingredientsAlreadyMatchedAdded.FirstOrDefault(x => x.Name == name.ParsedValue)
-                                           ?? await db.Ingredients.FirstOrDefaultAsync(
-                                               x => x.Name == name.ParsedValue,
-                                               cancellationToken);
-                    if (ingredientFromDb == null)
+                    Ingredient = new Ingredient
                     {
-                        var ingFromDb = await db.Ingredients.AddAsync(
-                            new Ingredient
-                            {
-                                Name = name.ParsedValue
-                            },
-                            cancellationToken);
-                        ingredientFromDb = ingFromDb.Entity;
-                        ingredientsAlreadyMatchedAdded.Add(ingFromDb.Entity);
-                    }
-
-                    var rsiFromDb = await db.StepIngredients.AddAsync(
-                        new RecipeStepIngredient
-                        {
-                            Ingredient = ingredientFromDb,
-                            Unit = totalRawQuantity.MeasurementUnit,
-                            NumberValue = totalRawQuantity.NumberValue,
-                            QuantityType = QuantityType.Number,
-                            Notes = notes,
-                            RawText = str,
-                            RecipeStepId = recipeStepGuid
-                        },
-                        cancellationToken);
-                    recipeStepIngredientFromDb = rsiFromDb.Entity;
-                }
-
-                yield return recipeStepIngredientFromDb;
-            }
-
-            foreach (var rawQuantity in rawQuantitiesWithConversionRates
-                         .Where(
-                             x =>
-                                 x.ConversionRate == null))
-            {
-                var matchedTokens = rawQuantities
-                    .Select(
-                        x =>
-                            x.Measurement!.MatchedValue)
-                    .Concat(
-                        rawQuantities
-                            .Select(
-                                x =>
-                                    x.NumberValue!.MatchedValue))
-                    .Where(x => x != null)
-                    .Select(x => x!)
-                    .ToList();
-                var name = GetName(
-                    ingredient,
-                    matchedTokens,
-                    rawQuantity.RawQuantity.Measurement!.ParsedValue);
-                matchedTokens.Add(
-                    name.MatchedValue!);
-                var notes = GetNotes(
-                    ingredient,
-                    matchedTokens);
-                var recipeStepIngredientFromDb = await db.StepIngredients.FirstOrDefaultAsync(
-                    x =>
-                        x.RecipeStep.RecipeId == recipeGuid
-                        && x.Ingredient.Name == name.ParsedValue
-                        && x.RawText == str
-                        && x.Notes == notes
-                        && x.NumberValue == (rawQuantity.RawQuantity.NumberValue != null
-                            ? rawQuantity.RawQuantity.NumberValue.ParsedValue
-                            : null)
-                        && x.MinValue == (rawQuantity.RawQuantity.MinValue != null
-                            ? rawQuantity.RawQuantity.MinValue.ParsedValue
-                            : null)
-                        && x.MaxValue == (rawQuantity.RawQuantity.MaxValue != null
-                            ? rawQuantity.RawQuantity.MaxValue.ParsedValue
-                            : null)
-                        && x.QuantityType == rawQuantity.RawQuantity.QuantityType.ParsedValue
-                        && x.Unit == rawQuantity.RawQuantity.Measurement!.ParsedValue,
-                    cancellationToken);
-                if (recipeStepIngredientFromDb == null)
-                {
-                    var ingredientFromDb = ingredientsAlreadyMatchedAdded.FirstOrDefault(x => x.Name == name.ParsedValue)
-                                           ?? await db.Ingredients.FirstOrDefaultAsync(
-                                               x => x.Name == name.ParsedValue,
-                                               cancellationToken);
-                    if (ingredientFromDb == null)
-                    {
-                        var ingFromDb = await db.Ingredients.AddAsync(
-                            new Ingredient
-                            {
-                                Name = name.ParsedValue
-                            },
-                            cancellationToken);
-                        ingredientFromDb = ingFromDb.Entity;
-                        ingredientsAlreadyMatchedAdded.Add(ingFromDb.Entity);
-                    }
-
-                    var rsiFromDb = await db.StepIngredients.AddAsync(
-                        new RecipeStepIngredient
-                        {
-                            Ingredient = ingredientFromDb,
-                            Unit = rawQuantity.RawQuantity.Measurement!.ParsedValue,
-                            MinValue = rawQuantity.RawQuantity.MinValue?.ParsedValue,
-                            MaxValue = rawQuantity.RawQuantity.MaxValue?.ParsedValue,
-                            NumberValue = rawQuantity.RawQuantity.NumberValue?.ParsedValue,
-                            QuantityType = rawQuantity.RawQuantity.QuantityType.ParsedValue,
-                            Notes = notes,
-                            RecipeStepId = recipeStepGuid
-                        },
-                        cancellationToken);
-                    recipeStepIngredientFromDb = rsiFromDb.Entity;
-                }
-
-                yield return recipeStepIngredientFromDb;
+                        Name = name.ParsedValue
+                    },
+                    QuantityType = item.QuantityType.ParsedValue,
+                    Unit = item.Measurement.ParsedValue,
+                    MinValue = item.MinValue?.ParsedValue,
+                    MaxValue = item.MaxValue?.ParsedValue,
+                    NumberValue = item.NumberValue?.ParsedValue,
+                    Notes = notes,
+                    RawText = item.RawText,
+                    RecipeStepId = recipeStepGuid
+                };
             }
         }
+    }
+
+    private static void AddMatchLocation(
+        ref List<MatchLocation> matchLocations,
+        int originalLength,
+        MatchLocation? newLocation)
+    {
+        if (newLocation == null
+            || matchLocations.Any(x => x.MatchStartIndex == newLocation.MatchStartIndex)
+            || (newLocation.MatchStartIndex == 0
+                && newLocation.MatchedValue?.Length == originalLength))
+        {
+            return;
+        }
+
+        matchLocations.Add(
+            newLocation);
+        matchLocations = matchLocations
+            .OrderBy(x => x.MatchStartIndex)
+            .ToList();
     }
 
     private static QuantityTotal AddRawQuantities(
         IReadOnlyCollection<RawQuantity> rawQuantities)
     {
         var baseMeasurement = rawQuantities
-            .Select(x => x.Measurement!.ParsedValue)
+            .Select(x => x.Measurement.ParsedValue)
             .Aggregate(GetLowestMeasurement);
         return new QuantityTotal(
-            (decimal) rawQuantities.Sum(x => x.NumberValue!.ParsedValue * GetConversionRate(x.Measurement!.ParsedValue, baseMeasurement)!)!,
+            (decimal) rawQuantities.Sum(x => x.NumberValue!.ParsedValue * GetConversionRate(x.Measurement.ParsedValue, baseMeasurement)!)!,
             baseMeasurement);
     }
 
-    public static decimal? GetConversionRate(
+    internal static decimal? GetConversionRate(
         MeasurementUnit from,
         MeasurementUnit to) =>
         from switch
@@ -283,6 +320,26 @@ public static partial class RecipeIngredientParser
                 MeasurementUnit.Stick => 1M,
                 _ => null
             },
+            MeasurementUnit.Package => to switch
+            {
+                MeasurementUnit.Package => 1M,
+                _ => null
+            },
+            MeasurementUnit.Loaf => to switch
+            {
+                MeasurementUnit.Loaf => 1M,
+                _ => null
+            },
+            MeasurementUnit.Bottle => to switch
+            {
+                MeasurementUnit.Bottle => 1M,
+                _ => null
+            },
+            MeasurementUnit.Head => to switch
+            {
+                MeasurementUnit.Head => 1M,
+                _ => null
+            },
             MeasurementUnit.Clove => to switch
             {
                 MeasurementUnit.Clove => 1M,
@@ -301,6 +358,18 @@ public static partial class RecipeIngredientParser
             MeasurementUnit.Inch => to switch
             {
                 MeasurementUnit.Inch => 1M,
+                _ => null
+            },
+            MeasurementUnit.Drop => to switch
+            {
+                MeasurementUnit.Drop => 1M,
+                MeasurementUnit.Pinch => 6M,
+                _ => null
+            },
+            MeasurementUnit.Pinch => to switch
+            {
+                MeasurementUnit.Pinch => 1M,
+                MeasurementUnit.Drop => 1 / 6,
                 _ => null
             },
             MeasurementUnit.Can => to switch
@@ -347,7 +416,7 @@ public static partial class RecipeIngredientParser
                 null)
         };
 
-    public static MeasurementUnit GetLowestMeasurement(
+    internal static MeasurementUnit GetLowestMeasurement(
         MeasurementUnit m1,
         MeasurementUnit m2) =>
         m1 switch
@@ -358,11 +427,21 @@ public static partial class RecipeIngredientParser
                 or MeasurementUnit.Clove
                 or MeasurementUnit.Pound
                 or MeasurementUnit.Stick
+                or MeasurementUnit.Package
+                or MeasurementUnit.Loaf
+                or MeasurementUnit.Bottle
+                or MeasurementUnit.Head
                 or MeasurementUnit.Bunch
                 or MeasurementUnit.Fillet
                 or MeasurementUnit.Inch
                 or MeasurementUnit.Can
                 or MeasurementUnit.Cup => m2,
+            MeasurementUnit.Drop => m2 switch
+            {
+                MeasurementUnit.Drop => MeasurementUnit.Drop,
+                MeasurementUnit.Pinch => MeasurementUnit.Drop,
+                _ => m2
+            },
             MeasurementUnit.TableSpoon => m2 switch
             {
                 MeasurementUnit.Cup => MeasurementUnit.TableSpoon,
@@ -382,54 +461,91 @@ public static partial class RecipeIngredientParser
                 null)
         };
 
-    public static string Sanitize(
+    internal static string Sanitize(
         string str)
     {
+        if (!int.TryParse(new string(str[0], 1), out _))
+        {
+            var parts = str.Split([' '], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            var first = parts[0].ToUpperInvariant();
+            var remainder = string.Join(" ", parts[1..]);
+            str = first switch
+            {
+                "ONE" => $"1 {remainder}",
+                "TWO" => $"2 {remainder}",
+                "THREE" => $"3 {remainder}",
+                "FOUR" => $"4 {remainder}",
+                "FIVE" => $"5 {remainder}",
+                "SIX" => $"6 {remainder}",
+                "SEVEN" => $"7 {remainder}",
+                "EIGHT" => $"8 {remainder}",
+                "NINE" => $"9 {remainder}",
+                "TEN" => $"10 {remainder}",
+                "ELEVEN" => $"11 {remainder}",
+                "TWELVE" => $"12 {remainder}",
+                "THIRTEEN" => $"13 {remainder}",
+                "FOURTEEN" => $"14 {remainder}",
+                "FIFTEEN" => $"15 {remainder}",
+                "SIXTEEN" => $"16 {remainder}",
+                "SEVENTEEN" => $"17 {remainder}",
+                "EIGHTEEN" => $"18 {remainder}",
+                "NINETEEN" => $"19 {remainder}",
+                "TWENTY" => $"20 {remainder}",
+                _ => str
+            };
+        }
+
         var spacedInput = str.ToList();
         foreach (var match in DigitTextRegex().EnumerateMatches(str))
         {
-            spacedInput.Insert(match.Index + 1, ' ');
+            spacedInput.Insert(match.Index + match.Length, ' ');
         }
 
-        return new string(
-            spacedInput.Select(c =>
-                    SanitizeRegex()
-                        .IsMatch(
-                            c.ToString())
-                        ? c
-                        : c switch
-                        {
-                            '“' or '”' => '"',
-                            ';' => ':',
-                            '\t' => ' ',
-                            '\\' => '/',
-                            _ => ' '
-                        })
-                .ToArray());
+        return MultiWhitespaceRegex()
+                .Replace(
+                    new string(spacedInput
+                        .Select(c =>
+                            SanitizeRegex()
+                                .IsMatch(
+                                    c.ToString())
+                                ? c
+                                : c switch
+                                {
+                                    '“' or '”' => '"',
+                                    ';' => ':',
+                                    '\t' => ' ',
+                                    '\\' => '/',
+                                    _ => ' '
+                                })
+                        .ToArray()),
+                    " ");
     }
 
-    private static IEnumerable<string> GetIngredients(
+    internal static IEnumerable<string> GetIngredients(
         string str)
     {
-        var potentialSections = str
-            .Split(
-                [
-                    " AND ",
-                    " And ",
-                    " and "
-                ],
-                StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-            .Select(RemoveParentheticalSets)
-            .Select(
-                x => new
+        if (string.IsNullOrWhiteSpace(str))
+        {
+            yield break;
+        }
+
+        if (str.StartsWith("Egg wash", StringComparison.InvariantCultureIgnoreCase)
+            || str.StartsWith("For serving", StringComparison.InvariantCultureIgnoreCase))
+        {
+            yield return str;
+            yield break;
+        }
+
+        var potentialSections = LineSeparatorRegex().Split(str)
+            .Select(x =>
+                new
                 {
-                    Measurement = GetMeasurement(x),
                     Quantity = GetQuantity(x),
                     Section = x
                 })
             .ToList();
         if (potentialSections.Count > 1
-                 && potentialSections.All(x => x.Measurement.ParsedValue == MeasurementUnit.Unit && x.Quantity.QuantityType.ParsedValue == QuantityType.Unknown))
+            && potentialSections.All(x => x.Quantity.QuantityType.ParsedValue != QuantityType.Unknown))
         {
             for (var i = 0; i < potentialSections.Count; i++)
             {
@@ -439,7 +555,7 @@ public static partial class RecipeIngredientParser
                         potentialSection.Quantity.QuantityType.MatchedValue!,
                         string.Empty)
                     .Replace(
-                        potentialSection.Measurement.MatchedValue!,
+                        potentialSection.Quantity.Measurement.MatchedValue!,
                         string.Empty)
                     .Trim();
                 if (string.IsNullOrEmpty(remainingFromThisSection) && potentialSections.Count > i + 1)
@@ -450,192 +566,189 @@ public static partial class RecipeIngredientParser
                             nextSection.Quantity.QuantityType.MatchedValue!,
                             string.Empty)
                         .Replace(
-                            nextSection.Measurement.MatchedValue!,
+                            nextSection.Quantity.Measurement.MatchedValue!,
                             string.Empty)
                         .Trim();
-                    yield return $"{potentialSection.Section} {remainingFromNextSection}";
+                    yield return $"{potentialSection.Section} {remainingFromNextSection}".Trim();
                 }
                 else
                 {
-                    yield return potentialSection.Section;
+                    yield return potentialSection.Section.Trim();
                 }
             }
         }
         else
         {
-            yield return str;
+            var saltMatch = SaltRegex().Match(str);
+            var pepperMatch = PepperRegex().Match(str);
+            if (saltMatch.Success && pepperMatch.Success)
+            {
+                var start = Math.Min(saltMatch.Index, pepperMatch.Index);
+                var prefix = start > 0
+                    ? str[..start]
+                    : null;
+                var end = Math.Max(saltMatch.Index + saltMatch.Length, pepperMatch.Index + pepperMatch.Length);
+                var suffix = end < str.Length
+                    ? str[end..]
+                    : null;
+                yield return (prefix + saltMatch.Value + suffix).Trim();
+                yield return (prefix + pepperMatch.Value + suffix).Trim();
+            }
+            else
+            {
+                yield return str.Trim();
+            }
         }
     }
 
-    public static TokenMatch<string> GetName(
+    internal static TokenMatch<string> GetName(
         string str,
-        IReadOnlyCollection<string> otherMatchedTokens,
-        MeasurementUnit measurementUnit)
+        IReadOnlyCollection<MatchLocation> otherMatchedTokens)
     {
-        var cleanedValue = CleanForTextValues(
-            str,
+        var cleanedValue = StripFoundTokens(
+            ReplaceParentheticalSets(
+                str),
             otherMatchedTokens);
         var sections = cleanedValue
+            .Value
             .Split(
                 ',',
                 StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         if (sections.Length > 0)
         {
             return new TokenMatch<string>(
-                sections.First(),
-                cleanedValue);
+                sections[0],
+                sections[0],
+                cleanedValue.ZeroOffset);
         }
 
-        var hasDefaultValue = DefaultValues.TryGetValue(measurementUnit, out var defaultValue);
+        /*var hasDefaultValue = DefaultValues.TryGetValue(measurementUnit, out var defaultValue);
         if (hasDefaultValue)
         {
             return new TokenMatch<string>(
                 defaultValue!,
-                cleanedValue);
-        }
+                cleanedValue,
+                0);
+        }*/
 
         throw new Exception($"No valid name found. '{str}'");
     }
 
-    private static string CleanForTextValues(
-        string str,
-        IReadOnlyCollection<string> otherMatchedTokens)
-    {
-        var data = new StringBuilder(
-            RemoveParentheticalSets(
-                str));
-        var cleanedValue = otherMatchedTokens
-            .Aggregate(
-                data,
-                (current, otherMatchedToken) =>
-                    string.IsNullOrWhiteSpace(otherMatchedToken)
-                        ? current
-                        : current
-                            .Replace(
-                                otherMatchedToken,
-                                " "))
-            .Replace('-', ' ')
-            .Replace("  ", " ")
-            .ToString()
-            .Trim();
-        if (otherMatchedTokens.Count > 2)
-        {
-            cleanedValue = cleanedValue
-                .Replace(
-                    "PLUS",
-                    string.Empty,
-                    StringComparison.InvariantCultureIgnoreCase)
-                .Trim();
-        }
-
-        var measurementValue = GetMeasurement(
-            cleanedValue);
-        while (measurementValue.ParsedValue != MeasurementUnit.Unit || (measurementValue.MatchedValue!.Contains("unit", StringComparison.InvariantCultureIgnoreCase) && cleanedValue != measurementValue.MatchedValue))
-        {
-            cleanedValue = cleanedValue
-                .Replace(
-                    measurementValue.MatchedValue!,
-                    string.Empty)
-                .Trim();
-            measurementValue = GetMeasurement(
-                cleanedValue);
-        }
-
-        return cleanedValue;
-    }
-
-    public static TokenMatch<MeasurementUnit> GetMeasurement(
+    internal static TokenMatch<MeasurementUnit> GetMeasurement(
         string str)
     {
         var matchedValue = MeasurementRegex
             .Matches(
                 str)
-            .FirstOrDefault()
-            ?.Value;
-        var cleanedText = matchedValue
-            ?.Trim(',', ' ', '-', '/', '\\')
-            .Humanize()
-            .Singularize()
-            .Replace(
-                " ",
-                string.Empty)
-            .Replace(
-                "lb",
-                "Pound",
-                true,
-                CultureInfo.InvariantCulture)
-            .Replace(
-                "Clofe",
-                "Clove",
-                true,
-                CultureInfo.InvariantCulture);
-        return matchedValue != null
-            ? new TokenMatch<MeasurementUnit>(
+            .FirstOrDefault();
+        if (matchedValue != null)
+        {
+            var singularized = matchedValue
+                .Value
+                .Trim(',', ' ', '-', '/', '\\')
+                .Humanize()
+                .Singularize();
+            return new TokenMatch<MeasurementUnit>(
                 Enum.TryParse(
-                    cleanedText,
+                    MeasurementSynonyms
+                        .Aggregate(
+                            singularized,
+                            (current, measurementSynonym) =>
+                                current
+                                    .Replace(
+                                        measurementSynonym.Key,
+                                        measurementSynonym.Value,
+                                        StringComparison.InvariantCultureIgnoreCase))
+                        .Replace(
+                            " ",
+                            string.Empty),
                     true,
                     out MeasurementUnit measurementUnit)
                     ? measurementUnit
                     : throw new Exception($"Could not parse '{matchedValue}' (raw '{str}')"),
-                matchedValue)
-            : new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, str);
+                matchedValue.Value,
+                matchedValue.Index);
+        }
+
+        return new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, str, 0);
     }
 
-    public static RawQuantity GetQuantity(
+    internal static RawQuantity GetQuantity(
         string str)
     {
+        var measurement = GetMeasurement(str);
+        if (string.IsNullOrWhiteSpace(str))
+        {
+            return new RawQuantity(
+                str,
+                new TokenMatch<QuantityType>(QuantityType.Unknown, str, 0),
+                null,
+                null,
+                null,
+                measurement);
+        }
+
         var match = QuantityRegex()
             .Matches(str)
             .FirstOrDefault();
         if (match == null)
         {
+            var quantityType = NoNumbersRegex().IsMatch(str)
+                ? QuantityType.Number
+                : QuantityType.Unknown;
             return new RawQuantity(
-                new TokenMatch<QuantityType>(QuantityType.Unknown, str),
+                str,
+                new TokenMatch<QuantityType>(quantityType, str, 0),
                 null,
                 null,
-                new TokenMatch<decimal>(1, str),
-                null);
+                new TokenMatch<decimal>(1, str, 0),
+                measurement);
         }
 
         if (match.Groups["Number"].Success)
         {
             var numberValue = match.Groups["Number"].Value;
+            var matchStartIndex = match.Groups["Number"].Index;
             return new RawQuantity(
-                new TokenMatch<QuantityType>(QuantityType.Number, numberValue),
+                str,
+                new TokenMatch<QuantityType>(QuantityType.Number, numberValue, matchStartIndex),
                 null,
                 null,
-                new TokenMatch<decimal>(ParseFractionSection(numberValue), numberValue),
-                null);
+                new TokenMatch<decimal>(ParseFractionSection(numberValue), numberValue, matchStartIndex),
+                measurement);
         }
 
         if (match.Groups["Range"].Success)
         {
             var rangeValue = match.Groups["Range"].Value;
-            var r1 = match.Groups["R1"].Value;
-            var r2 = match.Groups["R2"].Value;
+            var matchStartIndex = match.Groups["Range"].Index;
+            var r1 = match.Groups["R1"];
+            var r2 = match.Groups["R2"];
             var rangeItems = new[]
             {
-                (Parsed: ParseFractionSection(r1), Raw: r1),
-                (Parsed: ParseFractionSection(r2), Raw: r2)
-            }.OrderByDescending(x => x.Parsed)
+                (Parsed: ParseFractionSection(r1.Value), Raw: r1),
+                (Parsed: ParseFractionSection(r2.Value), Raw: r2)
+            }.OrderBy(x => x.Parsed)
             .ToArray();
             return new RawQuantity(
-                new TokenMatch<QuantityType>(QuantityType.Range, rangeValue),
-                new TokenMatch<decimal>(rangeItems[0].Parsed, rangeItems[0].Raw),
-                new TokenMatch<decimal>(rangeItems[1].Parsed, rangeItems[1].Raw),
+                str,
+                new TokenMatch<QuantityType>(QuantityType.Range, rangeValue, matchStartIndex),
+                new TokenMatch<decimal>(rangeItems[0].Parsed, rangeItems[0].Raw.Value, rangeItems[0].Raw.Index),
+                new TokenMatch<decimal>(rangeItems[1].Parsed, rangeItems[1].Raw.Value, rangeItems[1].Raw.Index),
                 null,
-                null);
+                measurement);
         }
 
         return new RawQuantity(
-            new TokenMatch<QuantityType>(QuantityType.Unknown, str),
+            str,
+            new TokenMatch<QuantityType>(QuantityType.Unknown, str, 0),
             null,
             null,
             null,
-            null);
+            measurement);
     }
 
-    public static decimal ParseFractionSection(
+    internal static decimal ParseFractionSection(
         string section)
     {
         if (!section.Contains('/'))
@@ -677,10 +790,25 @@ public static partial class RecipeIngredientParser
         return number + (fractionParts[0] / fractionParts[1]);
     }
 
-    private static IEnumerable<RawQuantity> GetRawQuantities(
+    internal static IEnumerable<RawQuantity> GetRawQuantities(
         string str)
     {
-        var data = RemoveParentheticalSets(
+        if (str.StartsWith("Egg wash", StringComparison.InvariantCultureIgnoreCase)
+            || str.StartsWith("For serving", StringComparison.InvariantCultureIgnoreCase))
+        {
+            return new List<RawQuantity>(1)
+            {
+                new(
+                    str,
+                    new TokenMatch<QuantityType>(QuantityType.Number, str, 0),
+                    null,
+                    null,
+                    new TokenMatch<decimal>(1M, str, 0),
+                    new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, str, 0))
+            };
+        }
+
+        var data = ReplaceParentheticalSets(
             str);
         var sections = data
             .Split(
@@ -690,91 +818,109 @@ public static partial class RecipeIngredientParser
                     " plus "
                 ],
                 StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-        if (sections.Length > 1)
-        {
-            var preParsedData = sections.Select(
-                x =>
-                    new
-                    {
-                        Measurement = GetMeasurement(
-                            x),
-                        Quantity = GetQuantity(
-                            x)
-                    })
-                .ToList();
-            foreach (var section in preParsedData)
-            {
-                yield return section.Quantity
-                    with
-                    {
-                        Measurement = section.Measurement
-                    };
-            }
-        }
+        var rawQuantities = sections.Length > 1
+            ? sections
+                .Select(GetQuantity)
+                .ToList()
+            : [GetQuantity(data)];
 
-        var measurement = GetMeasurement(
-                             data);
-        var quantityType = GetQuantity(
-            data);
-        yield return quantityType
+        if (rawQuantities.Count == 2
+            && rawQuantities[0].QuantityType.ParsedValue != QuantityType.Unknown
+            && rawQuantities[1].QuantityType.MatchedValue!.Contains("more for ", StringComparison.InvariantCultureIgnoreCase)
+            && (rawQuantities[1].QuantityType.MatchedValue!.Contains("top", StringComparison.InvariantCultureIgnoreCase)
+                || rawQuantities[1].QuantityType.MatchedValue!.Contains(" bottom", StringComparison.InvariantCultureIgnoreCase)
+                || rawQuantities[1].QuantityType.MatchedValue!.Contains(" pan", StringComparison.InvariantCultureIgnoreCase)
+                || rawQuantities[1].QuantityType.MatchedValue!.Contains(" bowl", StringComparison.InvariantCultureIgnoreCase)
+                || rawQuantities[1].QuantityType.MatchedValue!.Contains(" kneading", StringComparison.InvariantCultureIgnoreCase)))
+        {
+            rawQuantities[0] = rawQuantities[0]
                 with
                 {
-                    Measurement = measurement
+                    RawText = str
                 };
+            rawQuantities.RemoveAt(1);
+        }
+
+        return rawQuantities;
     }
 
-    public static string GetNotes(
+    internal static string GetNotes(
         string str,
-        IReadOnlyCollection<string> otherMatchedTokens)
+        IReadOnlyCollection<MatchLocation> otherMatchedTokens)
     {
-        var cleanedValue = CleanForTextValues(
-                str,
-                otherMatchedTokens)
-            .Trim(' ', ',');
-        var results = GetParentheticalSetsContents(
-                str)
-            .ToList();
-        return cleanedValue
-               + (results.Count != 0
-                   ? " (" + string.Join(
-                       ", ",
-                       results) + ')'
-                   : string.Empty)
-               .Trim();
+        var cleanedValue = StripFoundTokens(
+            str,
+            otherMatchedTokens);
+        return cleanedValue.Value;
     }
 
-    public static string RemoveParentheticalSets(
+    private static (string Value, int ZeroOffset) StripFoundTokens(
+        string str,
+        IReadOnlyCollection<MatchLocation> otherMatchedTokens)
+    {
+        var removedCharCount = 0;
+        var zeroOffset = 0;
+        return (MultiWhitespaceRegex()
+                .Replace(
+                    otherMatchedTokens
+                        .Aggregate(
+                            str,
+                            (current, token) =>
+                            {
+                                var value = current
+                                    .Remove(
+                                        token.MatchStartIndex - removedCharCount,
+                                        token.MatchedValue!.Length);
+                                removedCharCount += token.MatchedValue!.Length;
+                                if (token.MatchStartIndex == 0)
+                                {
+                                    zeroOffset += token.MatchedValue.Length + 1;
+                                }
+
+                                return value;
+                            }),
+                    " ")
+                .Trim(' ', ','),
+            zeroOffset);
+    }
+
+    internal static string ReplaceParentheticalSets(
         string str)
     {
-        var data = str;
-        var indexOfOpen = data.IndexOf(
+        var indexOfOpen = str.IndexOf(
             '(');
         var indexOfClose = indexOfOpen > -1
-            ? data.IndexOf(
+            ? str.IndexOf(
                 ')',
                 indexOfOpen)
             : -1;
-        while (
-            indexOfOpen > -1
-            && indexOfClose > -1)
+        if (indexOfClose > -1)
         {
-            data = data.Remove(
-                    indexOfOpen,
-                    indexOfClose - indexOfOpen + 1)
-                .Trim();
-            indexOfOpen = data.IndexOf(
-                '(');
-            indexOfClose = indexOfOpen > -1
-                ? data.IndexOf(
-                    ')',
-                    indexOfOpen)
-                : -1;
+            var newString = new StringBuilder();
+            while (
+                indexOfOpen > -1
+                && indexOfClose > -1)
+            {
+                newString.Append(str[newString.Length..indexOfOpen]);
+                newString.Append(new string(Enumerable.Repeat(' ', indexOfClose - indexOfOpen + 1).ToArray()));
+                indexOfOpen = str.IndexOf(
+                    '(',
+                    indexOfClose);
+                indexOfClose = indexOfOpen > -1
+                    ? str.IndexOf(
+                        ')',
+                        indexOfOpen)
+                    : -1;
+            }
+
+            newString.Append(str[newString.Length..]);
+            return newString.ToString();
         }
 
-        return data;
+        return str;
     }
 
-    public static IEnumerable<string> GetParentheticalSetsContents(
+    internal static IEnumerable<string> GetParentheticalSetsContents(
         string str)
     {
         var startIndex = 0;
@@ -807,16 +953,25 @@ public static partial class RecipeIngredientParser
 }
 
 public sealed record QuantityTotal(
-    decimal? NumberValue,
+    decimal NumberValue,
     MeasurementUnit MeasurementUnit);
 
 public sealed record RawQuantity(
+    string RawText,
     TokenMatch<QuantityType> QuantityType,
     TokenMatch<decimal>? MinValue,
     TokenMatch<decimal>? MaxValue,
     TokenMatch<decimal>? NumberValue,
-    TokenMatch<MeasurementUnit>? Measurement);
+    TokenMatch<MeasurementUnit> Measurement);
 
 public sealed record TokenMatch<T>(
     T ParsedValue,
-    string? MatchedValue);
+    string? MatchedValue,
+    int MatchStartIndex)
+    : MatchLocation(
+        MatchedValue,
+        MatchStartIndex);
+
+public abstract record MatchLocation(
+    string? MatchedValue,
+    int MatchStartIndex);

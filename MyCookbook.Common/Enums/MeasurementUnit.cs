@@ -15,5 +15,11 @@ public enum MeasurementUnit
     Inch,
     Can,
     Pound,
-    Stick
+    Stick,
+    Package,
+    Loaf,
+    Bottle,
+    Head,
+    Drop,
+    Pinch
 }

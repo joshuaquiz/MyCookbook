@@ -2,13 +2,13 @@
 
 public enum QuantityType
 {
-    Unknown = 1,
+    Unknown = 0,
 
-    Number = 2,
+    Number = 1,
 
-    Range = 3,
+    Range = 2,
 
-    Min = 4,
+    Min = 3,
 
-    Max = 5
+    Max = 4
 }
