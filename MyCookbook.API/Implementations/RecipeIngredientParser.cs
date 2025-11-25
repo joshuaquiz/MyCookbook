@@ -20,6 +20,9 @@ public static partial class RecipeIngredientParser
     {
         { "clofe", nameof(MeasurementUnit.Clove) },
         { "lb", nameof(MeasurementUnit.Pound) },
+        { "oz", nameof(MeasurementUnit.Ounce) },
+        { "tsp", nameof(MeasurementUnit.TeaSpoon) },
+        { "tbsp", nameof(MeasurementUnit.TableSpoon) },
         { "pkg", nameof(MeasurementUnit.Package) },
         { "box", nameof(MeasurementUnit.Package) },
         { "dash", nameof(MeasurementUnit.Drop) }
@@ -48,7 +51,7 @@ public static partial class RecipeIngredientParser
     [GeneratedRegex(@"(?<!\([^\)]*)(and(?>!squeezed)|(?:beaten with)|(?:whisked with)|(?:whipped with))(?= )")]
     private static partial Regex LineSeparatorRegex();
 
-    [GeneratedRegex(@"[a-zA-Z0-9/, \(\):\-\.!']")]
+    [GeneratedRegex(@"[a-zA-Z0-9/, \(\):\-\.!'%]")]
     private static partial Regex SanitizeRegex();
 
     [GeneratedRegex(@"^[^\d]+$")]
@@ -57,10 +60,10 @@ public static partial class RecipeIngredientParser
     [GeneratedRegex(@"(?<=^|\s|\()(?<Number>\d+)(?!(?:s|rds|nds|nd|st|erd|rd|erds|rds|th|ths)(?:\s|$))(?=[a-zA-Z\)])")]
     private static partial Regex DigitTextRegex();
 
-    [GeneratedRegex(@"\b(?:(?<!\((?!\)))\s*)(?:(?:fresh|flaked|fine|coarse|kosher|sea)\s+)*salt(?:(?:\s+\(\s*(?:(?:fresh|flaked|fine|coarse|kosher|sea)\s*)*\))|\b)", RegexOptions.IgnoreCase)]
+    [GeneratedRegex(@"\b(?:(?<!\((?!\)))\s*)(?:(?:fresh|flaked|fine(?:ly)?|coarse|kosher|sea)\s+)*salt(?:(?:\s+\(\s*(?:(?:fresh|flaked|fine(?:ly)?|coarse|kosher|sea)\s*)*\))|\b)", RegexOptions.IgnoreCase)]
     private static partial Regex SaltRegex();
 
-    [GeneratedRegex(@"\b(?:(?<!\((?!\)))\s*)(?:(?:fresh(?:ly)?|fine|coarse|ground|black|cracked)\s+)*pepper(?:(?:\s+\(\s*(?:(?:fresh(?:ly)?|fine|coarse|ground|black|cracked)\s*)*\))|\b)", RegexOptions.IgnoreCase)]
+    [GeneratedRegex(@"\b(?:(?<!chile|serrano|(?:\((?!\))))\s*)(?:(?:fresh(?:ly)?|fine(?:ly)?|coarse|ground|black|cracked)\s+)*pepper(?:(?:\s+\(\s*(?:(?:fresh(?:ly)?|fine(?:ly)?|coarse|ground|black|cracked)\s*)*\))|\b)", RegexOptions.IgnoreCase)]
     private static partial Regex PepperRegex();
 
     [GeneratedRegex(@"\b((?:(?:(?:pepper(?<PepperQuilifier>s|y|ie)?)|(?:onion(?<OnionQuilifier>s|y|ie)?))(?:\s+and\s+)?)+)\b", RegexOptions.IgnoreCase)]
@@ -678,7 +681,7 @@ public static partial class RecipeIngredientParser
                 saltMatch.Index);
         }
 
-        var splitIndex = cleanedValue.IndexOfAny([',', '.']);
+        var splitIndex = cleanedValue.IndexOfAny([',', '.', ':']);
         var indexOffset = cleanedValue.TakeWhile(c => c == ' ').Count();
         var initialValue = splitIndex > -1
             ? cleanedValue[indexOffset..splitIndex]

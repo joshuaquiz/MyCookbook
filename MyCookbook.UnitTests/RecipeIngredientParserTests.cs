@@ -578,70 +578,6 @@ public static class RecipeIngredientParserTests
                 }
             ]),
         new(
-            "1 (1 1/2 to 2-pound) pork tenderloin",
-            [
-                new IngredientLine(
-                    "1 (1 1/2 to 2-pound) pork tenderloin",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "1                    pork tenderloin", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Pork tenderloin"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Unit,
-                    Notes = "(1 1/2 to 2-pound)",
-                    RawText = "1 (1 1/2 to 2-pound) pork tenderloin"
-                }
-            ]),
-        new(
-            "1 (1 1/2-pound) flank steak",
-            [
-                new IngredientLine(
-                    "1 (1 1/2-pound) flank steak",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "1               flank steak", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Flank steak"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Unit,
-                    Notes = "(1 1/2-pound)",
-                    RawText = "1 (1 1/2-pound) flank steak"
-                }
-            ]),
-        new(
             "1 (1- pound) acorn squash",
             [
                 new IngredientLine(
@@ -671,70 +607,6 @@ public static class RecipeIngredientParserTests
                     Unit = MeasurementUnit.Unit,
                     Notes = "(1- pound)",
                     RawText = "1 (1- pound) acorn squash"
-                }
-            ]),
-        new(
-            "1 (1 pound) loaf ciabatta or rustic bread, ends trimmed, cut in 1/2 horizontally",
-            [
-                new IngredientLine(
-                    "1 (1 pound) loaf ciabatta or rustic bread, ends trimmed, cut in 1/2 horizontally",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Loaf, "loaf", 12))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Ciabatta or rustic bread"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Loaf,
-                    Notes = "(1 pound) ends trimmed, cut in 1/2 horizontally",
-                    RawText = "1 (1 pound) loaf ciabatta or rustic bread, ends trimmed, cut in 1/2 horizontally"
-                }
-            ]),
-        new(
-            "1 (1 pound) skirt steak, cut in half",
-            [
-                new IngredientLine(
-                    "1 (1 pound) skirt steak, cut in half",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "1           skirt steak, cut in half", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Skirt steak"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Unit,
-                    Notes = "(1 pound) cut in half",
-                    RawText = "1 (1 pound) skirt steak, cut in half"
                 }
             ]),
         new(
@@ -770,38 +642,6 @@ public static class RecipeIngredientParserTests
                 }
             ]),
         new(
-            "1 (1/2 to 1-pound) rack spareribs",
-            [
-                new IngredientLine(
-                    "1 (1/2 to 1-pound) rack spareribs",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "1                  rack spareribs", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Rack spareribs"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Unit,
-                    Notes = "(1/2 to 1-pound)",
-                    RawText = "1 (1/2 to 1-pound) rack spareribs"
-                }
-            ]),
-        new(
             "1 (1/4-ounce) package active dry yeast (2 1/4 teaspoons)",
             [
                 new IngredientLine(
@@ -831,38 +671,6 @@ public static class RecipeIngredientParserTests
                     Unit = MeasurementUnit.Package,
                     Notes = "(1/4-ounce 2 1/4 teaspoons)",
                     RawText = "1 (1/4-ounce) package active dry yeast (2 1/4 teaspoons)"
-                }
-            ]),
-        new(
-            "1 (1/4-ounce) package active dry yeast�",
-            [
-                new IngredientLine(
-                    "1 (1/4-ounce) package active dry yeast",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Package, "package", 14))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Active dry yeast"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Package,
-                    Notes = "(1/4-ounce)",
-                    RawText = "1 (1/4-ounce) package active dry yeast"
                 }
             ]),
         new(
@@ -898,38 +706,6 @@ public static class RecipeIngredientParserTests
                 }
             ]),
         new(
-            "1 (10-ounce) can clam base",
-            [
-                new IngredientLine(
-                    "1 (10-ounce) can clam base",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Can, "can", 13))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Clam base"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "(10-ounce)",
-                    RawText = "1 (10-ounce) can clam base"
-                }
-            ]),
-        new(
             "1 (10-ounce) package frozen chopped spinach, cooked and squeezed dry, reserving 1 tablespoon of the liquid",
             [
                 new IngredientLine(
@@ -962,102 +738,6 @@ public static class RecipeIngredientParserTests
                 }
             ]),
         new(
-            "1 (12-ounce) can tomato sauce",
-            [
-                new IngredientLine(
-                    "1 (12-ounce) can tomato sauce",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Can, "can", 13))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Tomato sauce"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "(12-ounce)",
-                    RawText = "1 (12-ounce) can tomato sauce"
-                }
-            ]),
-        new(
-            "1 (15 - ounce) can pumpkin puree (not pumpkin pie filling)",
-            [
-                new IngredientLine(
-                    "1 (15 - ounce) can pumpkin puree (not pumpkin pie filling)",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Can, "can", 15))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Pumpkin puree"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "(15 - ounce not pumpkin pie filling)",
-                    RawText = "1 (15 - ounce) can pumpkin puree (not pumpkin pie filling)"
-                }
-            ]),
-        new(
-            "1 (15.5-ounce) can black beans, preferably low-sodium, drained and rinsed",
-            [
-                new IngredientLine(
-                    "1 (15.5-ounce) can black beans, preferably low-sodium, drained and rinsed",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Can, "can", 15))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Black beans"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "(15.5-ounce) preferably low-sodium, drained and rinsed",
-                    RawText = "1 (15.5-ounce) can black beans, preferably low-sodium, drained and rinsed"
-                }
-            ]),
-        new(
             "1 (15.5-ounce) can hominy, drained and rinsed",
             [
                 new IngredientLine(
@@ -1087,38 +767,6 @@ public static class RecipeIngredientParserTests
                     Unit = MeasurementUnit.Can,
                     Notes = "(15.5-ounce) drained and rinsed",
                     RawText = "1 (15.5-ounce) can hominy, drained and rinsed"
-                }
-            ]),
-        new(
-            "1 (15.5-ounce) can pink beans, rinsed and drained",
-            [
-                new IngredientLine(
-                    "1 (15.5-ounce) can pink beans, rinsed and drained",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Can, "can", 15))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Pink beans"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "(15.5-ounce) rinsed and drained",
-                    RawText = "1 (15.5-ounce) can pink beans, rinsed and drained"
                 }
             ]),
         new(
@@ -1314,70 +962,6 @@ public static class RecipeIngredientParserTests
                 }
             ]),
         new(
-            "1 (1-inch) stick true canela (soft Ceylon cinnamon), coarsely chopped",
-            [
-                new IngredientLine(
-                    "1 (1-inch) stick true canela (soft Ceylon cinnamon), coarsely chopped",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Stick, "stick", 11))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "True canela"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Stick,
-                    Notes = "(1-inch soft Ceylon cinnamon) coarsely chopped",
-                    RawText = "1 (1-inch) stick true canela (soft Ceylon cinnamon), coarsely chopped"
-                }
-            ]),
-        new(
-            "1 (1-inch-thick) sliced pancetta, cut into small dice",
-            [
-                new IngredientLine(
-                    "1 (1-inch-thick) sliced pancetta, cut into small dice",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "1                sliced pancetta, cut into small dice", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Sliced pancetta"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Unit,
-                    Notes = "(1-inch-thick) cut into small dice",
-                    RawText = "1 (1-inch-thick) sliced pancetta, cut into small dice"
-                }
-            ]),
-        new(
             "1 (1-ounce) piece Parmesan, coarsely chopped",
             [
                 new IngredientLine(
@@ -1410,38 +994,6 @@ public static class RecipeIngredientParserTests
                 }
             ]),
         new(
-            "1 (1-pound) loaf ciabatta bread (or 8 slices country bread)",
-            [
-                new IngredientLine(
-                    "1 (1-pound) loaf ciabatta bread (or 8 slices country bread)",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Loaf, "loaf", 12))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Ciabatta bread"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Loaf,
-                    Notes = "(1-pound or 8 slices country bread)",
-                    RawText = "1 (1-pound) loaf ciabatta bread (or 8 slices country bread)"
-                }
-            ]),
-        new(
             "1 (1-pound) loaf ciabatta bread, halved horizontally (see Cook's Note)",
             [
                 new IngredientLine(
@@ -1471,38 +1023,6 @@ public static class RecipeIngredientParserTests
                     Unit = MeasurementUnit.Loaf,
                     Notes = "(1-pound) halved horizontally (see Cook's Note)",
                     RawText = "1 (1-pound) loaf ciabatta bread, halved horizontally (see Cook's Note)"
-                }
-            ]),
-        new(
-            "1 (1-pound) loaf purchased frozen white bread dough, thawed (recommended: Bridgeford)",
-            [
-                new IngredientLine(
-                    "1 (1-pound) loaf purchased frozen white bread dough, thawed (recommended: Bridgeford)",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Loaf, "loaf", 12))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Purchased frozen white bread dough"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Loaf,
-                    Notes = "(1-pound) thawed (recommended: Bridgeford)",
-                    RawText = "1 (1-pound) loaf purchased frozen white bread dough, thawed (recommended: Bridgeford)"
                 }
             ]),
         new(
@@ -1570,38 +1090,6 @@ public static class RecipeIngredientParserTests
                 }
             ]),
         new(
-            "1 (2-inch) piece carrot, peeled",
-            [
-                new IngredientLine(
-                    "1 (2-inch) piece carrot, peeled",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Piece, "piece", 11))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Carrot"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Piece,
-                    Notes = "(2-inch) peeled",
-                    RawText = "1 (2-inch) piece carrot, peeled"
-                }
-            ]),
-        new(
             "1 (3 rib) roast, about 5 pounds, rimmed of excess but not all fat",
             [
                 new IngredientLine(
@@ -1632,7 +1120,7 @@ public static class RecipeIngredientParserTests
                     Notes = "(3 rib) about 5 pounds, rimmed of excess but not all fat",
                     RawText = "1 (3 rib) roast, about 5 pounds, rimmed of excess but not all fat"
                 }
-            ]),/*******************/
+            ]),
         new(
             "1 (3 to 3 1/2-pound) piece center-cut salmon, skin on, pin bones removed, halved",
             [
@@ -1654,15 +1142,15 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Center-cut salmon"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
                     NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    Unit = MeasurementUnit.Piece,
+                    Notes = "(3 to 3 1/2-pound) skin on, pin bones removed, halved",
+                    RawText = "1 (3 to 3 1/2-pound) piece center-cut salmon, skin on, pin bones removed, halved"
                 }
             ]),
         new(
@@ -1686,29 +1174,29 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Chicken"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
                     NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    Unit = MeasurementUnit.Unit,
+                    Notes = "(3 to 4-pound) cut in 8ths",
+                    RawText = "1 (3 to 4-pound) chicken, cut in 8ths"
                 }
             ]),
         new(
             "1 (3 to 4-pound) chicken, cut into 1/8's",
             [
                 new IngredientLine(
-                    "1 (3 to 4-pound) chicken, cut into 1/8 s",
+                    "1 (3 to 4-pound) chicken, cut into 1/8's",
                     [
                         new QuantityLine(
                             new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
                             null,
                             null,
                             new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "1                chicken, cut into 1/8 s", 0))
+                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "1                chicken, cut into 1/8's", 0))
                     ])
             ],
             1,
@@ -1718,143 +1206,15 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Chicken"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
                     NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1 (4-pound) whole chicken, cut into pieces (giblets, neck and backbone reserved for another use)",
-            [
-                new IngredientLine(
-                    "1 (4-pound) whole chicken, cut into pieces (giblets, neck and backbone reserved for another use)",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "1           whole chicken, cut into pieces                                                      ", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1 -inch piece fresh ginger, peeled and minced",
-            [
-                new IngredientLine(
-                    "1 -inch piece fresh ginger, peeled and minced",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Piece, "piece", 8))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "fresh ginger"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Piece,
-                    Notes = "1 -inch peeled and minced",
-                    RawText = "1 -inch piece fresh ginger, peeled and minced"
-                }
-            ]),
-        new(
-            "1 -ounce red pepper, diced",
-            [
-                new IngredientLine(
-                    "1 -ounce red pepper, diced",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "1 -ounce red pepper, diced", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1 (6-pound) pork shoulder",
-            [
-                new IngredientLine(
-                    "1 (6-pound) pork shoulder",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "1           pork shoulder", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    Unit = MeasurementUnit.Unit,
+                    Notes = "(3 to 4-pound) cut into 1/8's",
+                    RawText = "1 (3 to 4-pound) chicken, cut into 1/8's"
                 }
             ]),
         new(
@@ -1878,15 +1238,47 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Clams"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
                     NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    Notes = "(6.5 ounce) drained, juice reserved",
+                    RawText = "1 (6.5 ounce) can clams, drained, juice reserved"
+                }
+            ]),
+        new(
+            "1 (6-pound) pork shoulder",
+            [
+                new IngredientLine(
+                    "1 (6-pound) pork shoulder",
+                    [
+                        new QuantityLine(
+                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
+                            null,
+                            null,
+                            new TokenMatch<decimal>(1M, "1", 0),
+                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "1           pork shoulder", 0))
+                    ])
+            ],
+            1,
+            null,
+            [
+                new RecipeStepIngredient
+                {
+                    Ingredient = new Ingredient
+                    {
+                        Name = "Pork shoulder"
+                    },
+                    QuantityType = QuantityType.Number,
+                    MinValue = null,
+                    MaxValue = null,
+                    NumberValue = 1M,
+                    Unit = MeasurementUnit.Unit,
+                    Notes = "(6-pound)",
+                    RawText = "1 (6-pound) pork shoulder"
                 }
             ]),
         new(
@@ -1910,47 +1302,15 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Chianti wine"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
                     NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1 (8 to 10-pound) smoked ham, bone-in, skin on",
-            [
-                new IngredientLine(
-                    "1 (8 to 10-pound) smoked ham, bone-in, skin on",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "1                 smoked ham, bone-in, skin on", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    Unit = MeasurementUnit.Bottle,
+                    Notes = "(750 ml)",
+                    RawText = "1 (750 ml) bottle Chianti wine"
                 }
             ]),
         new(
@@ -1974,54 +1334,22 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Cold whole milk"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1 1/2 cups (369 grams) whole milk",
-            [
-                new IngredientLine(
-                    "1 1/2 cups (369 grams) whole milk",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1 1/2", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1.5M, "1 1/2", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Cup, "cups", 6))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    NumberValue = 1.5M,
+                    Unit = MeasurementUnit.Cup,
+                    Notes = "(360 grams dairy or dairy-free)",
+                    RawText = "1 1/2 cups (360 grams) cold whole milk (dairy or dairy-free)"
                 }
             ]),
         new(
             "1 1/2 cups (375 milliliters) 2% or whole milk",
             [
                 new IngredientLine(
-                    "1 1/2 cups (375 milliliters) 2 or whole milk",
+                    "1 1/2 cups (375 milliliters) 2% or whole milk",
                     [
                         new QuantityLine(
                             new TokenMatch<QuantityType>(QuantityType.Number, "1 1/2", 0),
@@ -2038,111 +1366,15 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "2% or whole milk"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1 1/2 cups (375 milliliters) apple cider",
-            [
-                new IngredientLine(
-                    "1 1/2 cups (375 milliliters) apple cider",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1 1/2", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1.5M, "1 1/2", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Cup, "cups", 6))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1 1/2 cups (4 ounces) grated Italian Fontina cheese (6 ounces with rind)",
-            [
-                new IngredientLine(
-                    "1 1/2 cups (4 ounces) grated Italian Fontina cheese (6 ounces with rind)",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1 1/2", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1.5M, "1 1/2", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Cup, "cups", 6))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1 1/2 cups (500 grams) assorted preserves or chocolate spreads (see Cook's Note)�",
-            [
-                new IngredientLine(
-                    "1 1/2 cups (500 grams) assorted preserves or chocolate spreads (see Cook s Note)",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1 1/2", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1.5M, "1 1/2", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Cup, "cups", 6))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    NumberValue = 1.5M,
+                    Unit = MeasurementUnit.Cup,
+                    Notes = "(375 milliliters)",
+                    RawText = "1 1/2 cups (375 milliliters) 2% or whole milk"
                 }
             ]),
         new(
@@ -2166,15 +1398,15 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Grated American cheddar"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    NumberValue = 1.5M,
+                    Unit = MeasurementUnit.Cup,
+                    Notes = "(6 ounces) such as Goot Essa Mountain Valley, plus more for the top",
+                    RawText = "1 1/2 cups (6 ounces) grated American cheddar, such as Goot Essa Mountain Valley, plus more for the top"
                 }
             ]),
         new(
@@ -2198,111 +1430,15 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "All-purpose flour"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1 1/2 cups Arborio rice (10 ounces)",
-            [
-                new IngredientLine(
-                    "1 1/2 cups Arborio rice (10 ounces)",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1 1/2", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1.5M, "1 1/2", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Cup, "cups", 6))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1 1/2 cups Arborio rice or medium-grain white rice",
-            [
-                new IngredientLine(
-                    "1 1/2 cups Arborio rice or medium-grain white rice",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1 1/2", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1.5M, "1 1/2", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Cup, "cups", 6))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1 1/2 cups Arborio rice or short-grain white rice",
-            [
-                new IngredientLine(
-                    "1 1/2 cups Arborio rice or short-grain white rice",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1 1/2", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1.5M, "1 1/2", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Cup, "cups", 6))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    NumberValue = 1.5M,
+                    Unit = MeasurementUnit.Cup,
+                    Notes = "plus more for kneading",
+                    RawText = "1 1/2 cups all-purpose flour, plus more for kneading"
                 }
             ]),
         new(
@@ -2326,79 +1462,15 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Onion"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1 1/2 cups fresh corn, cut from 1 or 2 cobs. (frozen may be used, but when in season, you cannot beat fresh corn!)",
-            [
-                new IngredientLine(
-                    "1 1/2 cups fresh corn, cut from 1 or 2 cobs. (frozen may be used, but when in season, you cannot beat fresh corn!)",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1 1/2", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1.5M, "1 1/2", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Cup, "cups", 6))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1 1/2 cups frozen peas (not \"baby\" peas)",
-            [
-                new IngredientLine(
-                    "1 1/2 cups frozen peas (not baby peas)",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1 1/2", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1.5M, "1 1/2", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Cup, "cups", 6))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    NumberValue = 1.5M,
+                    Unit = MeasurementUnit.Cup,
+                    Notes = "chopped yellow (2 onions)",
+                    RawText = "1 1/2 cups chopped yellow onions (2 onions)"
                 }
             ]),
         new(
@@ -2422,15 +1494,15 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Gluten-free flour"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    NumberValue = 1.5M,
+                    Unit = MeasurementUnit.Cup,
+                    Notes = "such as Cup4Cup",
+                    RawText = "1 1/2 cups gluten-free flour, such as Cup4Cup"
                 }
             ]),
         new(
@@ -2454,15 +1526,15 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Zucchini"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    NumberValue = 1.25M,
+                    Unit = MeasurementUnit.Pound,
+                    Notes = "crookneck or pattypan squash, roughly chopped",
+                    RawText = "1 1/4 pounds zucchini, crookneck or pattypan squash, roughly chopped"
                 }
             ]),
         new(
@@ -2486,175 +1558,15 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Unsalted butter"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1 1/4 sticks (10 tablespoons) unsalted butter, cubed and at room temperature, plus more for the loaf pan and plastic wrap",
-            [
-                new IngredientLine(
-                    "1 1/4 sticks (10 tablespoons) unsalted butter, cubed and at room temperature, plus more for the loaf pan and plastic wrap",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1 1/4", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1.25M, "1 1/4", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Stick, "sticks", 6))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1 1/4 sticks unsalted butter, melted",
-            [
-                new IngredientLine(
-                    "1 1/4 sticks unsalted butter, melted",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1 1/4", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1.25M, "1 1/4", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Stick, "sticks", 6))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1 1/4 sticks unsalted butter",
-            [
-                new IngredientLine(
-                    "1 1/4 sticks unsalted butter",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1 1/4", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1.25M, "1 1/4", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Stick, "sticks", 6))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1 1/4 teaspoon baking soda",
-            [
-                new IngredientLine(
-                    "1 1/4 teaspoon baking soda",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1 1/4", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1.25M, "1 1/4", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.TeaSpoon, "teaspoon", 6))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1 14-ounce can chickpeas, drained and rinsed",
-            [
-                new IngredientLine(
-                    "1 14-ounce can chickpeas, drained and rinsed",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Can, "can", 11))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    NumberValue = 1.25M,
+                    Unit = MeasurementUnit.Stick,
+                    Notes = "(10 tablespoons) at room temperature, plus more for the bowls and pan",
+                    RawText = "1 1/4 sticks (10 tablespoons) unsalted butter, at room temperature, plus more for the bowls and pan"
                 }
             ]),
         new(
@@ -2678,29 +1590,29 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Tomatoes"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
                     NumberValue = 1M,
                     Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    Notes = "14.5-ounce no-salt-added diced",
+                    RawText = "1 14.5-ounce can no-salt-added diced tomatoes"
                 }
             ]),
         new(
-            "1 cucumber, peeled and sliced",
+            "�1 carrot, chopped",
             [
                 new IngredientLine(
-                    "1 cucumber, peeled and sliced",
+                    "1 carrot, chopped",
                     [
                         new QuantityLine(
                             new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
                             null,
                             null,
                             new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "1 cucumber, peeled and sliced", 0))
+                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "1 carrot, chopped", 0))
                     ])
             ],
             1,
@@ -2710,82 +1622,18 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Carrot"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
                     NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    Unit = MeasurementUnit.Unit,
+                    Notes = "chopped",
+                    RawText = "1 carrot, chopped"
                 }
             ]),
-        new(
-            "1 cup (1/4-inch) diced onion",
-            [
-                new IngredientLine(
-                    "1 cup (1/4-inch) diced onion",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Cup, "cup", 2))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1 cup (100 grams) pecan halves, toasted and chopped",
-            [
-                new IngredientLine(
-                    "1 cup (100 grams) pecan halves, toasted and chopped",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Cup, "cup", 2))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
+        /*new(
             "1 cup (100g) fresh or frozen (thawed) cranberries",
             [
                 new IngredientLine(
@@ -2806,49 +1654,17 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Fresh or frozen"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
                     NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    Unit = MeasurementUnit.Cup,
+                    Notes = "(100 g thawed) cranberries",
+                    RawText = "1 cup (100 g) fresh or frozen (thawed) cranberries"
                 }
-            ]),
-        new(
-            "1 cup (105 grams) blue cornmeal",
-            [
-                new IngredientLine(
-                    "1 cup (105 grams) blue cornmeal",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Cup, "cup", 2))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
+            ]),*/
         new(
             "1 cup (115 grams) grated mozzarella",
             [
@@ -2870,29 +1686,61 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Grated mozzarella"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
                     NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    Unit = MeasurementUnit.Cup,
+                    Notes = "(115 grams)",
+                    RawText = "1 cup (115 grams) grated mozzarella"
                 }
             ]),
-        new(
-            "1 medium zucchini, grated on the large holes of a box grater (about 1 cup)",
+        /*new(
+            "1 -inch piece fresh ginger, peeled and minced",
             [
                 new IngredientLine(
-                    "1 medium zucchini, grated on the large holes of a box grater (about 1 cup)",
+                    "1 -inch piece fresh ginger, peeled and minced",
                     [
                         new QuantityLine(
                             new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
                             null,
                             null,
                             new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "1 medium zucchini, grated on the large holes of a box grater              ", 0))
+                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Piece, "piece", 8))
+                    ])
+            ],
+            1,
+            null,
+            [
+                new RecipeStepIngredient
+                {
+                    Ingredient = new Ingredient
+                    {
+                        Name = "Fresh ginger"
+                    },
+                    QuantityType = QuantityType.Number,
+                    MinValue = null,
+                    MaxValue = null,
+                    NumberValue = 1M,
+                    Unit = MeasurementUnit.Piece,
+                    Notes = "1 -inch peeled and minced",
+                    RawText = "1 -inch piece fresh ginger, peeled and minced"
+                }
+            ]),*/
+        /*new(
+            "1 large (6 inches long or more) or 2 small (4 inches long or less) fish heads from cod or haddock, split lengthwise, gills removed and rinsed clean of any blood.",
+            [
+                new IngredientLine(
+                    "1 large (6 inches long or more) or 2 small (4 inches long or less) fish heads from cod or haddock, split lengthwise, gills removed and rinsed clean of any blood.",
+                    [
+                        new QuantityLine(
+                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
+                            null,
+                            null,
+                            new TokenMatch<decimal>(1M, "1", 0),
+                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "1 large                         or 2 small                         fish heads from cod or haddock, split lengthwise, gills removed and rinsed clean of any blood.", 0))
                     ])
             ],
             1,
@@ -2912,19 +1760,19 @@ public static class RecipeIngredientParserTests
                     Notes = "notes",
                     RawText = "Raw"
                 }
-            ]),
-        new(
-            "1 small avocado, sliced",
+            ]),*/
+        /*new(
+            "1 large or 2 medium Yukon Gold potatoes, peeled and diced",
             [
                 new IngredientLine(
-                    "1 small avocado, sliced",
+                    "1 large or 2 medium Yukon Gold potatoes, peeled and diced",
                     [
                         new QuantityLine(
                             new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
                             null,
                             null,
                             new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "1 small avocado, sliced", 0))
+                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "1 large or 2 medium Yukon Gold potatoes, peeled and diced", 0))
                     ])
             ],
             1,
@@ -2943,6 +1791,38 @@ public static class RecipeIngredientParserTests
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
+                }
+            ]),*/
+        new(
+            "1 medium red onion, thinly sliced, soaked in ice water for 10 minutes and drained",
+            [
+                new IngredientLine(
+                    "1 medium red onion, thinly sliced, soaked in ice water for 10 minutes and drained",
+                    [
+                        new QuantityLine(
+                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
+                            null,
+                            null,
+                            new TokenMatch<decimal>(1M, "1", 0),
+                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "1 medium red onion, thinly sliced, soaked in ice water for 10 minutes and drained", 0))
+                    ])
+            ],
+            1,
+            null,
+            [
+                new RecipeStepIngredient
+                {
+                    Ingredient = new Ingredient
+                    {
+                        Name = "Onion"
+                    },
+                    QuantityType = QuantityType.Number,
+                    MinValue = null,
+                    MaxValue = null,
+                    NumberValue = 1M,
+                    Unit = MeasurementUnit.Unit,
+                    Notes = "medium red thinly sliced, soaked in ice water for 10 minutes and drained",
+                    RawText = "1 medium red onion, thinly sliced, soaked in ice water for 10 minutes and drained"
                 }
             ]),
         new(
@@ -2966,111 +1846,15 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Beef stock"
                     },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1 to 2 fresh jalapeno peppers, seeded and finely diced",
-            [
-                new IngredientLine(
-                    "1 to 2 fresh jalapeno peppers, seeded and finely diced",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Range, "1 to 2", 0),
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<decimal>(2M, "2", 5),
-                            null,
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "1 to 2 fresh jalapeno peppers, seeded and finely diced", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1 to 2 leeks, washed and thinly sliced",
-            [
-                new IngredientLine(
-                    "1 to 2 leeks, washed and thinly sliced",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Range, "1 to 2", 0),
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<decimal>(2M, "2", 5),
-                            null,
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "1 to 2 leeks, washed and thinly sliced", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1 to 2 medium white potatoes, peeled and roughly cubed�",
-            [
-                new IngredientLine(
-                    "1 to 2 medium white potatoes, peeled and roughly cubed",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Range, "1 to 2", 0),
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<decimal>(2M, "2", 5),
-                            null,
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "1 to 2 medium white potatoes, peeled and roughly cubed", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    QuantityType = QuantityType.Range,
+                    MinValue = 1M,
+                    MaxValue = 1.5M,
+                    NumberValue = null,
+                    Unit = MeasurementUnit.Cup,
+                    Notes = "",
+                    RawText = "1 to 1 1/2 cups beef stock"
                 }
             ]),
         new(
@@ -3094,18 +1878,18 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Kalamata or nicoise olives"
                     },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    QuantityType = QuantityType.Range,
+                    MinValue = 1M,
+                    MaxValue = 3M,
+                    NumberValue = null,
+                    Unit = MeasurementUnit.Unit,
+                    Notes = "pitted and chopped",
+                    RawText = "1 to 3 kalamata or nicoise olives, pitted and chopped"
                 }
             ]),
-        new(
+        /*new(
             "1/2 cup heavy cream, plus 1 cup, for garnish",
             [
                 new IngredientLine(
@@ -3132,29 +1916,29 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Heavy cream"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    NumberValue = 1.5M,
+                    Unit = MeasurementUnit.Cup,
+                    Notes = "for garnish",
+                    RawText = "1/2 cup heavy cream, plus 1 cup, for garnish"
                 }
-            ]),
+            ]),*/
         new(
-            "1/4 cup dry shiitake mushrooms, rehydrated in warm water for 30 minutes and thinly�sliced�",
+            "1/2 head green cabbage, shredded (reserve remaining half for Round 2 Recipe, Bean and Cheese Chalupas)",
             [
                 new IngredientLine(
-                    "1/4 cup dry shiitake mushrooms, rehydrated in warm water for 30 minutes and thinly sliced",
+                    "1/2 head green cabbage, shredded (reserve remaining half for Round 2 Recipe, Bean and Cheese Chalupas)",
                     [
                         new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1/4", 0),
+                            new TokenMatch<QuantityType>(QuantityType.Number, "1/2", 0),
                             null,
                             null,
-                            new TokenMatch<decimal>(0.25M, "1/4", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Cup, "cup", 4))
+                            new TokenMatch<decimal>(0.5M, "1/2", 0),
+                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Head, "head", 4))
                     ])
             ],
             1,
@@ -3164,22 +1948,54 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Green cabbage"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    NumberValue = 0.5M,
+                    Unit = MeasurementUnit.Head,
+                    Notes = "shredded (reserve remaining half for Round 2 Recipe, Bean and Cheese Chalupas)",
+                    RawText = "1/2 head green cabbage, shredded (reserve remaining half for Round 2 Recipe, Bean and Cheese Chalupas)"
                 }
             ]),
+        /*new(
+            "1/2 to 1 serrano chile pepper, halved lengthwise and seeded",
+            [
+                new IngredientLine(
+                    "1/2 to 1 serrano chile pepper, halved lengthwise and seeded",
+                    [
+                        new QuantityLine(
+                            new TokenMatch<QuantityType>(QuantityType.Range, "1/2 to 1", 0),
+                            new TokenMatch<decimal>(0.5M, "1/2", 0),
+                            new TokenMatch<decimal>(1M, "1", 7),
+                            null,
+                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "1/2 to 1 serrano chile pepper, halved lengthwise and seeded", 0))
+                    ])
+            ],
+            1,
+            null,
+            [
+                new RecipeStepIngredient
+                {
+                    Ingredient = new Ingredient
+                    {
+                        Name = "Serrano chile pepper"
+                    },
+                    QuantityType = QuantityType.Range,
+                    MinValue = 0.5M,
+                    MaxValue = 1M,
+                    NumberValue = null,
+                    Unit = MeasurementUnit.Unit,
+                    Notes = "halved lengthwise and seeded",
+                    RawText = "1/2 to 1 serrano chile pepper, halved lengthwise and seeded"
+                }
+            ]),*/
         new(
             "1/4 cup dry vermouth (see Cook's Note)�",
             [
                 new IngredientLine(
-                    "1/4 cup dry vermouth (see Cook s Note)",
+                    "1/4 cup dry vermouth (see Cook's Note)",
                     [
                         new QuantityLine(
                             new TokenMatch<QuantityType>(QuantityType.Number, "1/4", 0),
@@ -3196,29 +2012,29 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Dry vermouth"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    NumberValue = 0.25M,
+                    Unit = MeasurementUnit.Cup,
+                    Notes = "(see Cook's Note)",
+                    RawText = "1/4 cup dry vermouth (see Cook's Note)"
                 }
             ]),
-        new(
-            "12 frozen home-style waffles",
+        /*new(
+            "12 large or 16 medium to small tomatillos, peeled, rinsed and halved",
             [
                 new IngredientLine(
-                    "12 frozen home-style waffles",
+                    "12 large or 16 medium to small tomatillos, peeled, rinsed and halved",
                     [
                         new QuantityLine(
                             new TokenMatch<QuantityType>(QuantityType.Number, "12", 0),
                             null,
                             null,
                             new TokenMatch<decimal>(12M, "12", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "12 frozen home-style waffles", 0))
+                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "12 large or 16 medium to small tomatillos, peeled, rinsed and halved", 0))
                     ])
             ],
             1,
@@ -3237,6 +2053,230 @@ public static class RecipeIngredientParserTests
                     Unit = MeasurementUnit.Can,
                     Notes = "notes",
                     RawText = "Raw"
+                }
+            ]),*/
+        new(
+            "�2 cloves garlic, chopped�",
+            [
+                new IngredientLine(
+                    "2 cloves garlic, chopped",
+                    [
+                        new QuantityLine(
+                            new TokenMatch<QuantityType>(QuantityType.Number, "2", 0),
+                            null,
+                            null,
+                            new TokenMatch<decimal>(2M, "2", 0),
+                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Clove, "cloves", 2))
+                    ])
+            ],
+            1,
+            null,
+            [
+                new RecipeStepIngredient
+                {
+                    Ingredient = new Ingredient
+                    {
+                        Name = "Garlic"
+                    },
+                    QuantityType = QuantityType.Number,
+                    MinValue = null,
+                    MaxValue = null,
+                    NumberValue = 2M,
+                    Unit = MeasurementUnit.Clove,
+                    Notes = "chopped",
+                    RawText = "2 cloves garlic, chopped"
+                }
+            ]),
+        new(
+            "�2 tablespoons minced garlic Fresh herbs, optional",
+            [
+                new IngredientLine(
+                    "2 tablespoons minced garlic Fresh herbs, optional",
+                    [
+                        new QuantityLine(
+                            new TokenMatch<QuantityType>(QuantityType.Number, "2", 0),
+                            null,
+                            null,
+                            new TokenMatch<decimal>(2M, "2", 0),
+                            new TokenMatch<MeasurementUnit>(MeasurementUnit.TableSpoon, "tablespoons", 2))
+                    ])
+            ],
+            1,
+            null,
+            [
+                new RecipeStepIngredient
+                {
+                    Ingredient = new Ingredient
+                    {
+                        Name = "Minced garlic Fresh herbs"
+                    },
+                    QuantityType = QuantityType.Number,
+                    MinValue = null,
+                    MaxValue = null,
+                    NumberValue = 2M,
+                    Unit = MeasurementUnit.TableSpoon,
+                    Notes = "optional",
+                    RawText = "2 tablespoons minced garlic Fresh herbs, optional"
+                }
+            ]),
+        new(
+            "2 teaspoons red food coloring",
+            [
+                new IngredientLine(
+                    "2 teaspoons red food coloring",
+                    [
+                        new QuantityLine(
+                            new TokenMatch<QuantityType>(QuantityType.Number, "2", 0),
+                            null,
+                            null,
+                            new TokenMatch<decimal>(2M, "2", 0),
+                            new TokenMatch<MeasurementUnit>(MeasurementUnit.TeaSpoon, "teaspoons", 2))
+                    ])
+            ],
+            1,
+            null,
+            [
+                new RecipeStepIngredient
+                {
+                    Ingredient = new Ingredient
+                    {
+                        Name = "Red food coloring"
+                    },
+                    QuantityType = QuantityType.Number,
+                    MinValue = null,
+                    MaxValue = null,
+                    NumberValue = 2M,
+                    Unit = MeasurementUnit.TeaSpoon,
+                    Notes = "",
+                    RawText = "2 teaspoons red food coloring"
+                }
+            ]),
+        new(
+            "�4 large eggs",
+            [
+                new IngredientLine(
+                    "4 large eggs",
+                    [
+                        new QuantityLine(
+                            new TokenMatch<QuantityType>(QuantityType.Number, "4", 0),
+                            null,
+                            null,
+                            new TokenMatch<decimal>(4M, "4", 0),
+                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "4 large eggs", 0))
+                    ])
+            ],
+            1,
+            null,
+            [
+                new RecipeStepIngredient
+                {
+                    Ingredient = new Ingredient
+                    {
+                        Name = "Large eggs"
+                    },
+                    QuantityType = QuantityType.Number,
+                    MinValue = null,
+                    MaxValue = null,
+                    NumberValue = 4M,
+                    Unit = MeasurementUnit.Unit,
+                    Notes = "",
+                    RawText = "4 large eggs"
+                }
+            ]),
+        new(
+            "4 medium garlic cloves, thinly sliced",
+            [
+                new IngredientLine(
+                    "4 medium garlic cloves, thinly sliced",
+                    [
+                        new QuantityLine(
+                            new TokenMatch<QuantityType>(QuantityType.Number, "4", 0),
+                            null,
+                            null,
+                            new TokenMatch<decimal>(4M, "4", 0),
+                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Clove, "cloves", 16))
+                    ])
+            ],
+            1,
+            null,
+            [
+                new RecipeStepIngredient
+                {
+                    Ingredient = new Ingredient
+                    {
+                        Name = "Medium garlic"
+                    },
+                    QuantityType = QuantityType.Number,
+                    MinValue = null,
+                    MaxValue = null,
+                    NumberValue = 4M,
+                    Unit = MeasurementUnit.Clove,
+                    Notes = "thinly sliced",
+                    RawText = "4 medium garlic cloves, thinly sliced"
+                }
+            ]),
+        new(
+            "�4 tablespoons unsalted butter, optional",
+            [
+                new IngredientLine(
+                    "4 tablespoons unsalted butter, optional",
+                    [
+                        new QuantityLine(
+                            new TokenMatch<QuantityType>(QuantityType.Number, "4", 0),
+                            null,
+                            null,
+                            new TokenMatch<decimal>(4M, "4", 0),
+                            new TokenMatch<MeasurementUnit>(MeasurementUnit.TableSpoon, "tablespoons", 2))
+                    ])
+            ],
+            1,
+            null,
+            [
+                new RecipeStepIngredient
+                {
+                    Ingredient = new Ingredient
+                    {
+                        Name = "Unsalted butter"
+                    },
+                    QuantityType = QuantityType.Number,
+                    MinValue = null,
+                    MaxValue = null,
+                    NumberValue = 4M,
+                    Unit = MeasurementUnit.TableSpoon,
+                    Notes = "optional",
+                    RawText = "4 tablespoons unsalted butter, optional"
+                }
+            ]),
+        new(
+            "�4 to 6 basil leaves",
+            [
+                new IngredientLine(
+                    "4 to 6 basil leaves",
+                    [
+                        new QuantityLine(
+                            new TokenMatch<QuantityType>(QuantityType.Range, "4 to 6", 0),
+                            new TokenMatch<decimal>(4M, "4", 0),
+                            new TokenMatch<decimal>(6M, "6", 5),
+                            null,
+                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "4 to 6 basil leaves", 0))
+                    ])
+            ],
+            1,
+            null,
+            [
+                new RecipeStepIngredient
+                {
+                    Ingredient = new Ingredient
+                    {
+                        Name = "Basil leaves"
+                    },
+                    QuantityType = QuantityType.Range,
+                    MinValue = 4M,
+                    MaxValue = 6M,
+                    NumberValue = null,
+                    Unit = MeasurementUnit.Unit,
+                    Notes = "",
+                    RawText = "4 to 6 basil leaves"
                 }
             ]),
         new(
@@ -3260,177 +2300,17 @@ public static class RecipeIngredientParserTests
                 {
                     Ingredient = new Ingredient
                     {
-                        Name = "Name"
+                        Name = "Corn tortillas"
                     },
                     QuantityType = QuantityType.Number,
                     MinValue = null,
                     MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
+                    NumberValue = 6M,
+                    Unit = MeasurementUnit.Unit,
+                    Notes = "",
+                    RawText = "6 corn tortillas"
                 }
-            ]),
-        new(
-            "6 cornichon, finely diced",
-            [
-                new IngredientLine(
-                    "6 cornichon, finely diced",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "6", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(6M, "6", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "6 cornichon, finely diced", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "6 cornichons, sliced",
-            [
-                new IngredientLine(
-                    "6 cornichons, sliced",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "6", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(6M, "6", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "6 cornichons, sliced", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "6 crimini mushrooms (baby portobellos) stems removed and finely chopped",
-            [
-                new IngredientLine(
-                    "6 crimini mushrooms (baby portobellos) stems removed and finely chopped",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "6", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(6M, "6", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "6 crimini mushrooms                    stems removed and finely chopped", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "6 croissants, sliced in half lengthwise",
-            [
-                new IngredientLine(
-                    "6 croissants, sliced in half lengthwise",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "6", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(6M, "6", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "6 croissants, sliced in half lengthwise", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "6 crostini",
-            [
-                new IngredientLine(
-                    "6 crostini",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "6", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(6M, "6", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "6 crostini", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
+            ]),/*******************/
         new(
             "6 cups (1 1/2 liters) vegetable broth",
             [
@@ -3475,1254 +2355,6 @@ public static class RecipeIngredientParserTests
                             null,
                             new TokenMatch<decimal>(8M, "8", 0),
                             new TokenMatch<MeasurementUnit>(MeasurementUnit.Cup, "cups", 2))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "8 cups canola oil",
-            [
-                new IngredientLine(
-                    "8 cups canola oil",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "8", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(8M, "8", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Cup, "cups", 2))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "8 cups cauliflower florets (from 1 head cauliflower; about 2 1/2 pounds)",
-            [
-                new IngredientLine(
-                    "8 cups cauliflower florets (from 1 head cauliflower: about 2 1/2 pounds)",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "8", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(8M, "8", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Cup, "cups", 2))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "�1 carrot, chopped",
-            [
-                new IngredientLine(
-                    "1 carrot, chopped",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "1 carrot, chopped", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "�1 green bell pepper, cut into 2-inch strips",
-            [
-                new IngredientLine(
-                    "1 green bell pepper, cut into 2-inch strips",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "1 green bell pepper, cut into 2-inch strips", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "�1/2 cup olive oil",
-            [
-                new IngredientLine(
-                    "1/2 cup olive oil",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1/2", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(0.5M, "1/2", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Cup, "cup", 4))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "�1/2 pound confectioners' sugar",
-            [
-                new IngredientLine(
-                    "1/2 pound confectioners sugar",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1/2", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(0.5M, "1/2", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Pound, "pound", 4))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "�1/2 eggplant, cut into rounds",
-            [
-                new IngredientLine(
-                    "1/2 eggplant, cut into rounds",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1/2", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(0.5M, "1/2", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "1/2 eggplant, cut into rounds", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1 bouquet garni (1 sprig each of basil, parsley and bay leaf)",
-            [
-                new IngredientLine(
-                    "1 bouquet garni (1 sprig each of basil, parsley and bay leaf)",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "1 bouquet garni                                              ", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1 bouquet garni (1 sprig each of bay leaf, thyme and parsley)",
-            [
-                new IngredientLine(
-                    "1 bouquet garni (1 sprig each of bay leaf, thyme and parsley)",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "1 bouquet garni                                              ", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1 head green cabbage, shredded (reserve half for Online Round 2 Recipe Cabbage and Pear Slaw)",
-            [
-                new IngredientLine(
-                    "1 head green cabbage, shredded (reserve half for Online Round 2 Recipe Cabbage and Pear Slaw)",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Head, "head", 2))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1 large (6 inches long or more) or 2 small (4 inches long or less) fish heads from cod or haddock, split lengthwise, gills removed and rinsed clean of any blood.",
-            [
-                new IngredientLine(
-                    "1 large (6 inches long or more) or 2 small (4 inches long or less) fish heads from cod or haddock, split lengthwise, gills removed and rinsed clean of any blood.",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "1 large                         or 2 small                         fish heads from cod or haddock, split lengthwise, gills removed and rinsed clean of any blood.", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1 large or 2 medium Yukon Gold potatoes, peeled and diced",
-            [
-                new IngredientLine(
-                    "1 large or 2 medium Yukon Gold potatoes, peeled and diced",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "1 large or 2 medium Yukon Gold potatoes, peeled and diced", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1 medium red onion, thinly sliced, soaked in ice water for 10 minutes and drained",
-            [
-                new IngredientLine(
-                    "1 medium red onion, thinly sliced, soaked in ice water for 10 minutes and drained",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "1 medium red onion, thinly sliced, soaked in ice water for 10 minutes and drained", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1 zucchini, cut in 1/2 lengthwise and cut on the bias",
-            [
-                new IngredientLine(
-                    "1 zucchini, cut in 1/2 lengthwise and cut on the bias",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "1", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "1 zucchini, cut in 1/2 lengthwise and cut on the bias", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1/2 head green cabbage, shredded (reserve remaining half for Round 2 Recipe, Bean and Cheese Chalupas)",
-            [
-                new IngredientLine(
-                    "1/2 head green cabbage, shredded (reserve remaining half for Round 2 Recipe, Bean and Cheese Chalupas)",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1/2", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(0.5M, "1/2", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Head, "head", 4))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1/2 red onion, cut in 1/2 and thinly sliced",
-            [
-                new IngredientLine(
-                    "1/2 red onion, cut in 1/2 and thinly sliced",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "1/2", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(0.5M, "1/2", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "1/2 red onion, cut in 1/2 and thinly sliced", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "1/2 to 1 serrano chile pepper, halved lengthwise and seeded",
-            [
-                new IngredientLine(
-                    "1/2 to 1 serrano chile pepper, halved lengthwise and seeded",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Range, "1/2 to 1", 0),
-                            new TokenMatch<decimal>(0.5M, "1/2", 0),
-                            new TokenMatch<decimal>(1M, "1", 7),
-                            null,
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "1/2 to 1 serrano chile pepper, halved lengthwise and seeded", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "12 large or 16 medium to small tomatillos, peeled, rinsed and halved",
-            [
-                new IngredientLine(
-                    "12 large or 16 medium to small tomatillos, peeled, rinsed and halved",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "12", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(12M, "12", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "12 large or 16 medium to small tomatillos, peeled, rinsed and halved", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "12 pickled pepperoncini (4 stemmed and thinly sliced, 8 left whole)",
-            [
-                new IngredientLine(
-                    "12 pickled pepperoncini (4 stemmed and thinly sliced, 8 left whole)",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "12", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(12M, "12", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "12 pickled pepperoncini                                            ", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "�2 (32-ounce) cans crushed tomatoes",
-            [
-                new IngredientLine(
-                    "2 (32-ounce) cans crushed tomatoes",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "2", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(2M, "2", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Can, "cans", 13))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "�2 carrots, grated",
-            [
-                new IngredientLine(
-                    "2 carrots, grated",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "2", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(2M, "2", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "2 carrots, grated", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "�2 cloves garlic, chopped�",
-            [
-                new IngredientLine(
-                    "2 cloves garlic, chopped",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "2", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(2M, "2", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Clove, "cloves", 2))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "�2 dried bay leaves",
-            [
-                new IngredientLine(
-                    "2 dried bay leaves",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "2", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(2M, "2", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "2 dried bay leaves", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "2 large leeks, washed and chopped (you can use the green tops, but wash them well since they are quite sandy)",
-            [
-                new IngredientLine(
-                    "2 large leeks, washed and chopped (you can use the green tops, but wash them well since they are quite sandy)",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "2", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(2M, "2", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "2 large leeks, washed and chopped                                                                            ", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "2 large leeks, white and light green parts chopped�",
-            [
-                new IngredientLine(
-                    "2 large leeks, white and light green parts chopped",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "2", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(2M, "2", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "2 large leeks, white and light green parts chopped", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "2 large leeks, white and light green parts only, coarsely chopped and thoroughly washed",
-            [
-                new IngredientLine(
-                    "2 large leeks, white and light green parts only, coarsely chopped and thoroughly washed",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "2", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(2M, "2", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "2 large leeks, white and light green parts only, coarsely chopped and thoroughly washed", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "2 pounds russet potatoes, peeled and cut into 1/8-inch-thick slices",
-            [
-                new IngredientLine(
-                    "2 pounds russet potatoes, peeled and cut into 1/8-inch-thick slices",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "2", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(2M, "2", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Pound, "pounds", 2))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "2 pounds russet potatoes, peeled and grated",
-            [
-                new IngredientLine(
-                    "2 pounds russet potatoes, peeled and grated",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "2", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(2M, "2", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Pound, "pounds", 2))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "2 pounds sauerkraut, rinsed and drained",
-            [
-                new IngredientLine(
-                    "2 pounds sauerkraut, rinsed and drained",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "2", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(2M, "2", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Pound, "pounds", 2))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "2 pounds shaved honey ham�",
-            [
-                new IngredientLine(
-                    "2 pounds shaved honey ham",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "2", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(2M, "2", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Pound, "pounds", 2))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "�2 tablespoons honey",
-            [
-                new IngredientLine(
-                    "2 tablespoons honey",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "2", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(2M, "2", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.TableSpoon, "tablespoons", 2))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "2 tablespoons masa harina�",
-            [
-                new IngredientLine(
-                    "2 tablespoons masa harina",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "2", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(2M, "2", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.TableSpoon, "tablespoons", 2))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "�2 tablespoons minced garlic Fresh herbs, optional",
-            [
-                new IngredientLine(
-                    "2 tablespoons minced garlic Fresh herbs, optional",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "2", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(2M, "2", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.TableSpoon, "tablespoons", 2))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "2 teaspoons red food coloring",
-            [
-                new IngredientLine(
-                    "2 teaspoons red food coloring",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "2", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(2M, "2", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.TeaSpoon, "teaspoons", 2))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "3/4 cup crushed tortilla chips",
-            [
-                new IngredientLine(
-                    "3/4 cup crushed tortilla chips",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "3/4", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(0.75M, "3/4", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Cup, "cup", 4))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "�4 large eggs",
-            [
-                new IngredientLine(
-                    "4 large eggs",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "4", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(4M, "4", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "4 large eggs", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "4 medium garlic cloves, thinly sliced",
-            [
-                new IngredientLine(
-                    "4 medium garlic cloves, thinly sliced",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "4", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(4M, "4", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Clove, "cloves", 16))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "�4 tablespoons unsalted butter, optional",
-            [
-                new IngredientLine(
-                    "4 tablespoons unsalted butter, optional",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "4", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(4M, "4", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.TableSpoon, "tablespoons", 2))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "�4 to 6 basil leaves",
-            [
-                new IngredientLine(
-                    "4 to 6 basil leaves",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Range, "4 to 6", 0),
-                            new TokenMatch<decimal>(4M, "4", 0),
-                            new TokenMatch<decimal>(6M, "6", 5),
-                            null,
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "4 to 6 basil leaves", 0))
                     ])
             ],
             1,
@@ -5160,134 +2792,6 @@ public static class RecipeIngredientParserTests
                 }
             ]),
         new(
-            "Eight 1/2-inch slices day-old challah or brioche�",
-            [
-                new IngredientLine(
-                    "8 1/2-inch slices day-old challah or brioche",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "8", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(8M, "8", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Slice, "slices", 11))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "Eight 1/2-inch slices sourdough or pain de mie�bread",
-            [
-                new IngredientLine(
-                    "8 1/2-inch slices sourdough or pain de mie bread",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "8", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(8M, "8", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Slice, "slices", 11))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "Eight 1/2-inch thick slices country-style white bread",
-            [
-                new IngredientLine(
-                    "8 1/2-inch thick slices country-style white bread",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "8", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(8M, "8", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Slice, "slices", 17))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "Eight 1/3- to 1/2-inch-thick slices brioche bread",
-            [
-                new IngredientLine(
-                    "8 1/3- to 1/2-inch-thick slices brioche bread",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "8", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(8M, "8", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Slice, "slices", 25))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
             "Eight 1/3- to 1/2-inch-thick slices Cuban sandwich bread, sliced on the diagonal",
             [
                 new IngredientLine(
@@ -5299,102 +2803,6 @@ public static class RecipeIngredientParserTests
                             null,
                             new TokenMatch<decimal>(8M, "8", 0),
                             new TokenMatch<MeasurementUnit>(MeasurementUnit.Slice, "slices", 25))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "Eight 1/3- to 1/2-inch-thick slices Pullman bread",
-            [
-                new IngredientLine(
-                    "8 1/3- to 1/2-inch-thick slices Pullman bread",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "8", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(8M, "8", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Slice, "slices", 25))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "Eight 1/4-inch-thick slices provolone",
-            [
-                new IngredientLine(
-                    "8 1/4-inch-thick slices provolone",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "8", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(8M, "8", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Slice, "slices", 17))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "Eight 10-inch flour tortillas�",
-            [
-                new IngredientLine(
-                    "8 10-inch flour tortillas",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "8", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(8M, "8", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "8 10-inch flour tortillas", 0))
                     ])
             ],
             1,
@@ -5448,38 +2856,6 @@ public static class RecipeIngredientParserTests
                 }
             ]),
         new(
-            "Eight 1-ounce slices Smoked Pork Belly, recipe follows",
-            [
-                new IngredientLine(
-                    "8 1-ounce slices Smoked Pork Belly, recipe follows",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "8", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(8M, "8", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Slice, "slices", 10))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
             "Eight 2-inch-wide by 1/2-inch-thick sausage patties�",
             [
                 new IngredientLine(
@@ -5491,38 +2867,6 @@ public static class RecipeIngredientParserTests
                             null,
                             new TokenMatch<decimal>(8M, "8", 0),
                             new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "8 2-inch-wide by 1/2-inch-thick sausage patties", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "Eight 3-ounce chicken cutlets",
-            [
-                new IngredientLine(
-                    "8 3-ounce chicken cutlets",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "8", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(8M, "8", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "8 3-ounce chicken cutlets", 0))
                     ])
             ],
             1,
@@ -5576,134 +2920,6 @@ public static class RecipeIngredientParserTests
                 }
             ]),
         new(
-            "Eight 4-inch flour tortillas�",
-            [
-                new IngredientLine(
-                    "8 4-inch flour tortillas",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "8", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(8M, "8", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "8 4-inch flour tortillas", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "Eight 6-inch all-beef hot dogs, ends trimmed, cut into fifths�",
-            [
-                new IngredientLine(
-                    "8 6-inch all-beef hot dogs, ends trimmed, cut into fifths",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "8", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(8M, "8", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "8 6-inch all-beef hot dogs, ends trimmed, cut into fifths", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "Eight 6-inch corn tortillas",
-            [
-                new IngredientLine(
-                    "8 6-inch corn tortillas",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "8", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(8M, "8", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "8 6-inch corn tortillas", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "Eight 8-inch flour tortillas",
-            [
-                new IngredientLine(
-                    "8 8-inch flour tortillas",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "8", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(8M, "8", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "8 8-inch flour tortillas", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
             "Extra-virgin olive oil, for the bowl�",
             [
                 new IngredientLine(
@@ -5715,102 +2931,6 @@ public static class RecipeIngredientParserTests
                             null,
                             new TokenMatch<decimal>(1M, "Extra-virgin olive oil, for the bowl", 0),
                             new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "Extra-virgin olive oil, for the bowl", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "Extra-virgin olive oil, for the casserole dish",
-            [
-                new IngredientLine(
-                    "Extra-virgin olive oil, for the casserole dish",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "Extra-virgin olive oil, for the casserole dish", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "Extra-virgin olive oil, for the casserole dish", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "Extra-virgin olive oil, for the casserole dish", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "Extra-virgin olive oil, for the pan",
-            [
-                new IngredientLine(
-                    "Extra-virgin olive oil, for the pan",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "Extra-virgin olive oil, for the pan", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "Extra-virgin olive oil, for the pan", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "Extra-virgin olive oil, for the pan", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "Extra-virgin olive oil, optional",
-            [
-                new IngredientLine(
-                    "Extra-virgin olive oil, optional",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "Extra-virgin olive oil, optional", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "Extra-virgin olive oil, optional", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "Extra-virgin olive oil, optional", 0))
                     ])
             ],
             1,
@@ -5902,102 +3022,6 @@ public static class RecipeIngredientParserTests
                 }
             ]),
         new(
-            "Extra-virgin olive oil, to coat",
-            [
-                new IngredientLine(
-                    "Extra-virgin olive oil, to coat",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "Extra-virgin olive oil, to coat", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "Extra-virgin olive oil, to coat", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "Extra-virgin olive oil, to coat", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "Extra-virgin olive oil, to drizzle",
-            [
-                new IngredientLine(
-                    "Extra-virgin olive oil, to drizzle",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "Extra-virgin olive oil, to drizzle", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "Extra-virgin olive oil, to drizzle", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "Extra-virgin olive oil, to drizzle", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "Extra-virgin olive oil",
-            [
-                new IngredientLine(
-                    "Extra-virgin olive oil",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "Extra-virgin olive oil", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "Extra-virgin olive oil", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "Extra-virgin olive oil", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
             "Fast Blue Cheese Dressing, recipe follows",
             [
                 new IngredientLine(
@@ -6041,38 +3065,6 @@ public static class RecipeIngredientParserTests
                             null,
                             new TokenMatch<decimal>(1M, "Favorite marinara sauce, warmed, for serving", 0),
                             new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "Favorite marinara sauce, warmed, for serving", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "Favorite pizza toppings, as desired",
-            [
-                new IngredientLine(
-                    "Favorite pizza toppings, as desired",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "Favorite pizza toppings, as desired", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "Favorite pizza toppings, as desired", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "Favorite pizza toppings, as desired", 0))
                     ])
             ],
             1,
@@ -6158,102 +3150,6 @@ public static class RecipeIngredientParserTests
                 }
             ]),
         new(
-            "Few dashes hot sauce, optional�",
-            [
-                new IngredientLine(
-                    "Few dashes hot sauce, optional",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "Few dashes hot sauce, optional", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "Few dashes hot sauce, optional", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Drop, "dashes", 4))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "Few dashes hot sauce, such as Cholula",
-            [
-                new IngredientLine(
-                    "Few dashes hot sauce, such as Cholula",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "Few dashes hot sauce, such as Cholula", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "Few dashes hot sauce, such as Cholula", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Drop, "dashes", 4))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "Few dashes hot sauce",
-            [
-                new IngredientLine(
-                    "Few dashes hot sauce",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "Few dashes hot sauce", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "Few dashes hot sauce", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Drop, "dashes", 4))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
             "Few drops hot sauce",
             [
                 new IngredientLine(
@@ -6264,70 +3160,6 @@ public static class RecipeIngredientParserTests
                             null,
                             null,
                             new TokenMatch<decimal>(1M, "Few drops hot sauce", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Drop, "drops", 4))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "Few drops lemon juice, optional",
-            [
-                new IngredientLine(
-                    "Few drops lemon juice, optional",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "Few drops lemon juice, optional", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "Few drops lemon juice, optional", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Drop, "drops", 4))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "Few drops white balsamic vinegar, optional",
-            [
-                new IngredientLine(
-                    "Few drops white balsamic vinegar, optional",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "Few drops white balsamic vinegar, optional", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "Few drops white balsamic vinegar, optional", 0),
                             new TokenMatch<MeasurementUnit>(MeasurementUnit.Drop, "drops", 4))
                     ])
             ],
@@ -6393,38 +3225,6 @@ public static class RecipeIngredientParserTests
                             null,
                             new TokenMatch<decimal>(1M, "Few grinds black pepper", 0),
                             new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "Few grinds black pepper", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "Few leaves fresh basil, torn",
-            [
-                new IngredientLine(
-                    "Few leaves fresh basil, torn",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "Few leaves fresh basil, torn", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "Few leaves fresh basil, torn", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "Few leaves fresh basil, torn", 0))
                     ])
             ],
             1,
@@ -6606,198 +3406,6 @@ public static class RecipeIngredientParserTests
                 }
             ]),
         new(
-            "Finely chopped chives, for serving",
-            [
-                new IngredientLine(
-                    "Finely chopped chives, for serving",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "Finely chopped chives, for serving", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "Finely chopped chives, for serving", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "Finely chopped chives, for serving", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "Finely chopped chives",
-            [
-                new IngredientLine(
-                    "Finely chopped chives",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "Finely chopped chives", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "Finely chopped chives", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "Finely chopped chives", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "Finely chopped fresh chives, for garnish�",
-            [
-                new IngredientLine(
-                    "Finely chopped fresh chives, for garnish",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "Finely chopped fresh chives, for garnish", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "Finely chopped fresh chives, for garnish", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "Finely chopped fresh chives, for garnish", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "Finely chopped fresh chives, for garnish",
-            [
-                new IngredientLine(
-                    "Finely chopped fresh chives, for garnish",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "Finely chopped fresh chives, for garnish", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "Finely chopped fresh chives, for garnish", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "Finely chopped fresh chives, for garnish", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "Finely chopped fresh chives",
-            [
-                new IngredientLine(
-                    "Finely chopped fresh chives",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "Finely chopped fresh chives", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "Finely chopped fresh chives", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "Finely chopped fresh chives", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "Finely chopped fresh dill or other fresh herbs, as needed",
-            [
-                new IngredientLine(
-                    "Finely chopped fresh dill or other fresh herbs, as needed",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "Finely chopped fresh dill or other fresh herbs, as needed", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "Finely chopped fresh dill or other fresh herbs, as needed", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "Finely chopped fresh dill or other fresh herbs, as needed", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
             "Finely chopped fresh flat-leaf parsley, optional, for garnish",
             [
                 new IngredientLine(
@@ -6809,102 +3417,6 @@ public static class RecipeIngredientParserTests
                             null,
                             new TokenMatch<decimal>(1M, "Finely chopped fresh flat-leaf parsley, optional, for garnish", 0),
                             new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "Finely chopped fresh flat-leaf parsley, optional, for garnish", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "Finely chopped fresh thyme",
-            [
-                new IngredientLine(
-                    "Finely chopped fresh thyme",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "Finely chopped fresh thyme", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "Finely chopped fresh thyme", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "Finely chopped fresh thyme", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "Finely chopped lettuce, for garnish",
-            [
-                new IngredientLine(
-                    "Finely chopped lettuce, for garnish",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "Finely chopped lettuce, for garnish", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "Finely chopped lettuce, for garnish", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "Finely chopped lettuce, for garnish", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "Finely chopped parsley",
-            [
-                new IngredientLine(
-                    "Finely chopped parsley",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "Finely chopped parsley", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "Finely chopped parsley", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "Finely chopped parsley", 0))
                     ])
             ],
             1,
@@ -7022,38 +3534,6 @@ public static class RecipeIngredientParserTests
                 }
             ]),
         new(
-            "Finely shaved onion, for serving (optional)",
-            [
-                new IngredientLine(
-                    "Finely shaved onion, for serving (optional)",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "Finely shaved onion, for serving           ", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "Finely shaved onion, for serving           ", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "Finely shaved onion, for serving           ", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
             "Fish sauce",
             [
                 new IngredientLine(
@@ -7150,38 +3630,6 @@ public static class RecipeIngredientParserTests
                 }
             ]),
         new(
-            "Five 8-ounce packages fresh mozzarella, sliced",
-            [
-                new IngredientLine(
-                    "5 8-ounce packages fresh mozzarella, sliced",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "5", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(5M, "5", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Package, "packages", 10))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
             "Five Vegetable Slaw Salad, recipe follows",
             [
                 new IngredientLine(
@@ -7214,38 +3662,6 @@ public static class RecipeIngredientParserTests
                 }
             ]),
         new(
-            "Flaked coconut, for garnish",
-            [
-                new IngredientLine(
-                    "Flaked coconut, for garnish",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "Flaked coconut, for garnish", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "Flaked coconut, for garnish", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "Flaked coconut, for garnish", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
             "Flaked sea salt, for garnish",
             [
                 new IngredientLine(
@@ -7257,70 +3673,6 @@ public static class RecipeIngredientParserTests
                             null,
                             new TokenMatch<decimal>(1M, "Flaked sea salt, for garnish", 0),
                             new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "Flaked sea salt, for garnish", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "Flaked sea salt, such as Maldon, for serving",
-            [
-                new IngredientLine(
-                    "Flaked sea salt, such as Maldon, for serving",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "Flaked sea salt, such as Maldon, for serving", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "Flaked sea salt, such as Maldon, for serving", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "Flaked sea salt, such as Maldon, for serving", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "Flaked sea salt, such as Maldon, for sprinkling",
-            [
-                new IngredientLine(
-                    "Flaked sea salt, such as Maldon, for sprinkling",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "Flaked sea salt, such as Maldon, for sprinkling", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "Flaked sea salt, such as Maldon, for sprinkling", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "Flaked sea salt, such as Maldon, for sprinkling", 0))
                     ])
             ],
             1,
@@ -7385,38 +3737,6 @@ public static class RecipeIngredientParserTests
                             null,
                             new TokenMatch<decimal>(1M, "For serving: lettuce, sliced tomato, pickles, sliced red onion", 0),
                             new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "For serving: lettuce, sliced tomato, pickles, sliced red onion", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "For serving: Slider buns, coleslaw, baked beans, dill pickle slices, BBQ sauce",
-            [
-                new IngredientLine(
-                    "For serving: Slider buns, coleslaw, baked beans, dill pickle slices, BBQ sauce",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "For serving: Slider buns, coleslaw, baked beans, dill pickle slices, BBQ sauce", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "For serving: Slider buns, coleslaw, baked beans, dill pickle slices, BBQ sauce", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "For serving: Slider buns, coleslaw, baked beans, dill pickle slices, BBQ sauce", 0))
                     ])
             ],
             1,
@@ -7647,70 +3967,6 @@ public static class RecipeIngredientParserTests
                             null,
                             new TokenMatch<decimal>(1M, "Zest of one lemon", 0),
                             new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "Zest of one lemon", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "Zesty Dipping Sauce, recipe follows",
-            [
-                new IngredientLine(
-                    "Zesty Dipping Sauce, recipe follows",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "Zesty Dipping Sauce, recipe follows", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "Zesty Dipping Sauce, recipe follows", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "Zesty Dipping Sauce, recipe follows", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "Zucchini Pesto, recipe follows",
-            [
-                new IngredientLine(
-                    "Zucchini Pesto, recipe follows",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "Zucchini Pesto, recipe follows", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "Zucchini Pesto, recipe follows", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "Zucchini Pesto, recipe follows", 0))
                     ])
             ],
             1,
@@ -7964,38 +4220,6 @@ public static class RecipeIngredientParserTests
                 }
             ]),
         new(
-            "All-purpose flour, for bench and pizza peel�",
-            [
-                new IngredientLine(
-                    "All-purpose flour, for bench and pizza peel",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "All-purpose flour, for bench and pizza peel", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "All-purpose flour, for bench and pizza peel", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "All-purpose flour, for bench and pizza peel", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
             "All-purpose flour, for bench and pizza peel",
             [
                 new IngredientLine(
@@ -8007,38 +4231,6 @@ public static class RecipeIngredientParserTests
                             null,
                             new TokenMatch<decimal>(1M, "All-purpose flour, for bench and pizza peel", 0),
                             new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "All-purpose flour, for bench and pizza peel", 0))
-                    ])
-            ],
-            1,
-            null,
-            [
-                new RecipeStepIngredient
-                {
-                    Ingredient = new Ingredient
-                    {
-                        Name = "Name"
-                    },
-                    QuantityType = QuantityType.Number,
-                    MinValue = null,
-                    MaxValue = null,
-                    NumberValue = 1M,
-                    Unit = MeasurementUnit.Can,
-                    Notes = "notes",
-                    RawText = "Raw"
-                }
-            ]),
-        new(
-            "Applesauce and steamed vegetables, for serving",
-            [
-                new IngredientLine(
-                    "Applesauce and steamed vegetables, for serving",
-                    [
-                        new QuantityLine(
-                            new TokenMatch<QuantityType>(QuantityType.Number, "Applesauce and steamed vegetables, for serving", 0),
-                            null,
-                            null,
-                            new TokenMatch<decimal>(1M, "Applesauce and steamed vegetables, for serving", 0),
-                            new TokenMatch<MeasurementUnit>(MeasurementUnit.Unit, "Applesauce and steamed vegetables, for serving", 0))
                     ])
             ],
             1,
