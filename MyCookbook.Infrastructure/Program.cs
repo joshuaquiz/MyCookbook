@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using Amazon.CDK;
 using Microsoft.Extensions.Configuration;
 using Environment = System.Environment;
 
@@ -20,7 +19,7 @@ internal sealed class Program
             .Build()
             .Bind(rootConfig);
         StackBuilder.Build(
-            new App(),
+            new Amazon.CDK.App(),
             new StackBuilderProps
             {
                 Description = "Infrastructure for the MyCookbook application",

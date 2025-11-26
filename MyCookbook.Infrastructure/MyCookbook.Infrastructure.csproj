@@ -8,22 +8,28 @@
     <NeutralLanguage>en-US</NeutralLanguage>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="cdk.out\**" />
+    <EmbeddedResource Remove="cdk.out\**" />
+    <None Remove="cdk.out\**" />
+  </ItemGroup>
+  <ItemGroup>
     <None Remove="index.zip" />
-    <None Update="appsettings.json">
+    <None Update="src\appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="appsettings.Staging.json">
+    <None Update="src\appsettings.Development.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="src\appsettings.Staging.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Amazon.CDK.Lib" Version="2.218.0" />
-    <PackageReference Include="Amazon.Jsii.Analyzers" Version="1.115.0" PrivateAssets="all" />
-    <PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="4.0.4.1" />
-    <PackageReference Include="Constructs" Version="10.4.2" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="9.0.9" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.9" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.9" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="9.0.9" />
+    <PackageReference Include="Amazon.CDK.Lib" Version="2.229.1" />
+    <PackageReference Include="Amazon.Jsii.Analyzers" Version="1.120.0" PrivateAssets="all" />
+    <PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="4.0.6.4" />
+    <PackageReference Include="Constructs" Version="10.4.3" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="10.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="10.0.0" />
   </ItemGroup>
 </Project>

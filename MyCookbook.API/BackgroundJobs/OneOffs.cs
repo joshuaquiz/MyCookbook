@@ -1,16 +1,10 @@
-using HtmlAgilityPack;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using MyCookbook.API.Implementations;
 using MyCookbook.Common.Database;
 using System;
-using System.Collections.Generic;
-using System.Data.Common;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
