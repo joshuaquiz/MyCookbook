@@ -77,21 +77,19 @@ public partial class HomePage
         _isSearchBarVisible = false;
         FilterSection.IsVisible = false;
         SearchGrid.HeightRequest = 0;
-        SearchGrid.TranslateToAsync(0, -SearchGrid.Height - 20, 500, Easing.CubicOut);
+        SearchGrid.TranslateToAsync(0, -SearchGrid.Height - 20, 1000, Easing.CubicOut);
     }
 
     private void ShowSearchBar()
     {
         _isSearchBarVisible = true;
         SearchGrid.HeightRequest = -1; // Reset to Auto
-        SearchGrid.TranslateToAsync(0, 0, 500, Easing.CubicOut);
+        SearchGrid.TranslateToAsync(0, 0, 1000, Easing.CubicOut);
     }
 
     private void OnSearchTimerElapsed(object? sender, ElapsedEventArgs e) =>
-        MainThread.InvokeOnMainThreadAsync(async () =>
-        {
-            await RecipeList.RefreshData(CancellationToken.None);
-        });
+        MainThread.InvokeOnMainThreadAsync(() =>
+            RecipeList.RefreshData(CancellationToken.None));
 
     private async void HomeBar_OnNavigate(string arg)
     {
@@ -123,7 +121,7 @@ public partial class HomePage
         {
             data = _httpClient.Get<List<RecipeSummaryViewModel>>(
                 new Uri(
-                    $"/api/Search/Global?term={TextSearchEntry.Text}&category=&ingredient=&take={_pageSize}&skip={pageNumber * _pageSize}",
+                    $"/api/Search/Global?term={TextSearchEntry.Text}&category=&ingredient={IncludeIngredientsEntry.Text}&exclude={ExcludeIngredientsEntry.Text}&take={_pageSize}&skip={pageNumber * _pageSize}",
                     UriKind.Absolute),
                 cancellationToken);
         }
@@ -162,6 +160,7 @@ public partial class HomePage
 
     private void ClearButton_OnClicked(object? sender, EventArgs e)
     {
+        var oldValue = TextSearchEntry.Text;
         TextSearchEntry.Text = string.Empty;
         IncludeIngredientsEntry.Text = string.Empty;
         ExcludeIngredientsEntry.Text = string.Empty;
@@ -169,6 +168,7 @@ public partial class HomePage
         // Trigger refresh
         _searchTimer?.Stop();
         _searchTimer?.Start();
+        TextSearchEntry_OnTextChanged(TextSearchEntry, new TextChangedEventArgs(oldValue, string.Empty));
     }
 
     private void FilterButton_OnClicked(object? sender, EventArgs e)

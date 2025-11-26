@@ -30,6 +30,25 @@
                     ItemsSource="{Binding Items, Source={Reference Root}}"
                     RemainingItemsThreshold="5"
                     RemainingItemsThresholdReachedCommand="{Binding GetNextPageCommand, Source={Reference Root}}">
+                    <CollectionView.EmptyView>
+                        <VerticalStackLayout
+                            Padding="20"
+                            Spacing="10"
+                            VerticalOptions="CenterAndExpand"
+                            IsVisible="{Binding IsIdle, Source={Reference Root}}">
+                            <Image
+                                Source="search"
+                                WidthRequest="18"
+                                HeightRequest="18"
+                                VerticalOptions="Center"
+                                HorizontalOptions="Center"
+                                Aspect="AspectFill" />
+                            <Label
+                                Text="No results"
+                                FontSize="Title"
+                                HorizontalOptions="Center" />
+                        </VerticalStackLayout>
+                    </CollectionView.EmptyView>
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <recipeSummary:RecipeSummaryComponent

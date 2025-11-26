@@ -43,6 +43,15 @@ public partial class RecipeSummaryListControl
         set => SetValue(IsRefreshingProperty, value);
     }
 
+    public static readonly BindableProperty IsIdleProperty =
+        BindableProperty.Create(nameof(IsIdle), typeof(bool), typeof(RecipeSummaryListControl));
+
+    public bool IsIdle
+    {
+        get => (bool)GetValue(IsIdleProperty);
+        set => SetValue(IsIdleProperty, value);
+    }
+
     public static readonly BindableProperty ItemsProperty =
         BindableProperty.Create(nameof(Items), typeof(ObservableCollection<RecipeSummaryViewModel>), typeof(RecipeSummaryListControl));
 
@@ -79,6 +88,7 @@ public partial class RecipeSummaryListControl
         CancellationToken cancellationToken)
     {
         IsRefreshing = true;
+        _endOfList = false;
         Items.Clear();
         Count = 0;
         _pageNumber = 0;
@@ -99,6 +109,7 @@ public partial class RecipeSummaryListControl
             return;
         }
 
+        IsIdle = false;
         IsBusy = true;
         var scrollToTop = !Items.Any();
         const int maxItems = 250;
@@ -136,6 +147,7 @@ public partial class RecipeSummaryListControl
         _pageNumber++;
         IsBusy = false;
         PagingTimeout = DateTimeOffset.UtcNow.AddMilliseconds(5);
+        IsIdle = true;
     }
 
     public DateTimeOffset PagingTimeout { get; set; }

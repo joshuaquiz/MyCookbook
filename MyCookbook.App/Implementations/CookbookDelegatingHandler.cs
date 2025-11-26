@@ -219,9 +219,13 @@ public sealed partial class CookbookDelegatingHandler : BaseDelegatingHandler
                                 ? string.Empty
                                 : " AND 1 = 1";
                             var ingredient = queryParams["ingredient"]?.Trim() ?? string.Empty;
+                            var exclude = queryParams["exclude"]?.Trim() ?? string.Empty;
                             var ingredientQuery = string.IsNullOrEmpty(ingredient)
                                 ? string.Empty
                                 : $" AND i.name = '{ingredient}'";
+                            var excludeQuery = string.IsNullOrEmpty(exclude)
+                                ? string.Empty
+                                : $" AND i.name NOT LIKE '%{exclude}%'";
                             var popularRecipeItems = await connection.QueryAsync<RecipeSummaryViewModel>(
                                 $"""
                                 
@@ -297,7 +301,7 @@ public sealed partial class CookbookDelegatingHandler : BaseDelegatingHandler
                                     LEFT JOIN AuthorPrimaryImage AS ai
                                         ON ai.author_id = r.author_id
                                 WHERE
-                                    {termQuery}{categoryQuery}{ingredientQuery}
+                                    {termQuery}{categoryQuery}{ingredientQuery}{excludeQuery}
                                 LIMIT
                                     ?
                                 OFFSET

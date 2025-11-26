@@ -10,7 +10,7 @@
     Title="Home"
     Shell.NavBarIsVisible="False"
     Shell.PresentationMode="NotAnimated"
-    BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Black}}">
+    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Black}}">
     <Grid
         ColumnDefinitions="*"
         RowDefinitions="Auto,*,50">
