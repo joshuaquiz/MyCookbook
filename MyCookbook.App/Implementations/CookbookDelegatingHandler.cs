@@ -383,12 +383,14 @@ public sealed partial class CookbookDelegatingHandler : BaseDelegatingHandler
                             var context = CreateNewContext(
                                 connection.DatabasePath);
                             var recipe = await context.Recipes
+                                .Include(x => x.RawDataSource)
                                 .Include(x => x.EntityImages).ThenInclude(x => x.Image)
                                 .Include(x => x.Author).ThenInclude(x => x.EntityImages).ThenInclude(x => x.Image)
                                 .Include(x => x.Steps).ThenInclude(x => x.StepIngredients).ThenInclude(x => x.Ingredient).ThenInclude(x => x.EntityImages).ThenInclude(x => x.Image)
                                 .FirstAsync(x => x.RecipeId == guid, cancellationToken);
                             var recipeItem = new RecipeModel(
                                 recipe.RecipeId,
+                                recipe.RawDataSource.Url,
                                 recipe.EntityImages.FirstOrDefault(x => x.Image.ImageType == ImageType.Main)?.Image.Url,
                                 recipe.Title,
                                 recipe.PrepTimeMinutes.HasValue

@@ -12,6 +12,12 @@
     Shell.NavBarIsVisible="True"
     Shell.PresentationMode="Animated"
     Title="{Binding Name}">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem
+            Text="Share"
+            IconImageSource="share"
+            Command="{Binding ShareCommand}" />
+    </ContentPage.ToolbarItems>
     <ContentPage.Resources>
         <converters:IngredientToStringConverter x:Key="IngredientToStringConverter" />
         <converters:TimeSpanToStringConverter x:Key="TimeSpanToStringConverter" />

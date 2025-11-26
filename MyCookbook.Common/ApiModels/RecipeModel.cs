@@ -6,6 +6,7 @@ namespace MyCookbook.Common.ApiModels;
 
 public readonly record struct RecipeModel(
     Guid Guid,
+    Uri Url,
     Uri? Image,
     string Name,
     TimeSpan? PrepTime,

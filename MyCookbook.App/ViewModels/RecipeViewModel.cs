@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.ApplicationModel.DataTransfer;
 using Microsoft.Maui.Controls;
 using MyCookbook.App.Implementations;
 using MyCookbook.Common.ApiModels;
@@ -132,5 +133,23 @@ public partial class RecipeViewModel(
                 UriKind.Absolute),
             CancellationToken.None);
         IsBusy = false;
+    }
+
+    [RelayCommand]
+    private async Task Share()
+    {
+        if (Recipe?.Url == null || string.IsNullOrEmpty(Name))
+        {
+            return;
+        }
+
+        await Microsoft.Maui.ApplicationModel.DataTransfer.Share.Default
+            .RequestAsync(
+                new ShareTextRequest
+                {
+                    Uri = Recipe?.Url.AbsoluteUri,
+                    Title = Name,
+                    Text = $"Check out this recipe: {Name}"
+                });
     }
 }
