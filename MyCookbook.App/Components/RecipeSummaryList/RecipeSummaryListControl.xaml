@@ -16,13 +16,13 @@
                 Grid.Row="0"
                 Grid.Column="0"
                 Margin="0"
-                Padding="10"
+                Padding="0"
                 IsRefreshing="{Binding IsRefreshing, Source={Reference Root}}"
                 Command="{Binding RefreshCommand, Source={Reference Root}}"
                 RefreshColor="{StaticResource Primary}">
                 <CollectionView
                     x:Name="Cv"
-                    Margin="0,5"
+                    Margin="0"
                     ItemsLayout="VerticalList"
                     ItemsUpdatingScrollMode="KeepScrollOffset"
                     HorizontalScrollBarVisibility="Never"

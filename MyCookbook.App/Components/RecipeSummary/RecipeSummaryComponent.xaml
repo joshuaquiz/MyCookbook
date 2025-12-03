@@ -8,19 +8,13 @@
     x:Name="Root"
     HorizontalOptions="Fill"
     VerticalOptions="End"
-    Padding="5,10"
+    Padding="0,0,0,8"
     BindingContext="{recipeSummary:RecipeSummaryViewModel}">
     <ContentView.Resources>
         <converters:NullToBooleanConverter x:Key="NullToBooleanConverter" />
         <converters:DefaultValueConverter x:Key="DefaultValueConverter" />
+        <converters:TimeWithPrepConverter x:Key="TimeWithPrepConverter" />
     </ContentView.Resources>
-    <ContentView.Shadow>
-        <Shadow
-            Brush="{StaticResource Black}"
-            Offset="0,2"
-            Radius="2"
-            Opacity="0.5" />
-    </ContentView.Shadow>
     <Border
         StrokeThickness="0"
         HorizontalOptions="Fill"
@@ -34,138 +28,299 @@
             <TapGestureRecognizer
                 Tapped="OnTapped" />
         </Border.GestureRecognizers>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="CommonStates">
+                <VisualState x:Name="Normal">
+                    <VisualState.Setters>
+                        <Setter Property="Opacity" Value="1" />
+                        <Setter Property="Scale" Value="1" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Pressed">
+                    <VisualState.Setters>
+                        <Setter Property="Opacity" Value="0.7" />
+                        <Setter Property="Scale" Value="0.98" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
         <Grid
-            RowDefinitions="150,10,30,10,20,10,20,10,20,10"
-            ColumnDefinitions="10,*,10,70,10"
+            RowDefinitions="Auto,10,Auto,10,1,225,1,10,Auto"
+            ColumnDefinitions="10,*,10"
             HorizontalOptions="Fill"
             VerticalOptions="Fill"
             BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}">
-            <Image
-                x:Name="RecipeImage"
-                Grid.Row="0"
-                Grid.Column="0"
-                Grid.ColumnSpan="5"
-                Source="{Binding ImageUrl, TargetNullValue=apple}"
-                HorizontalOptions="Fill"
-                VerticalOptions="Fill">
-                <Image.Triggers>
-                    <DataTrigger
-                        TargetType="Image"
-                        Binding="{Binding ImageUrl, Converter={StaticResource NullToBooleanConverter}}"
-                        Value="True">
-                        <DataTrigger.Setters>
-                            <Setter Property="Source" Value="apple" />
-                            <Setter Property="Aspect" Value="AspectFit" />
-                        </DataTrigger.Setters>
-                    </DataTrigger>
-                    <DataTrigger
-                        TargetType="Image"
-                        Binding="{Binding ImageUrl, Converter={StaticResource NullToBooleanConverter}}"
-                        Value="False">
-                        <DataTrigger.Setters>
-                            <Setter Property="Source" Value="{Binding ImageUrl}" />
-                            <Setter Property="Aspect" Value="AspectFill" />
-                        </DataTrigger.Setters>
-                    </DataTrigger>
-                </Image.Triggers>
-            </Image>
+
+            <!-- Recipe Name Header -->
             <Label
-                Grid.Row="2"
+                Grid.Row="0"
                 Grid.Column="1"
-                Grid.ColumnSpan="3"
                 Text="{Binding Name}"
                 VerticalOptions="Center"
                 HorizontalOptions="Start"
                 LineBreakMode="TailTruncation"
-                FontSize="25" />
-            <HorizontalStackLayout
-                Grid.Row="4"
-                Grid.Column="1">
-                <HorizontalStackLayout
-                    Margin="0,0,12,0">
-                    <Image
-                        Source="timer"
-                        Margin="0,0,5,0"
-                        HeightRequest="15"
-                        WidthRequest="15"
-                        VerticalOptions="Center"
-                        Aspect="AspectFit" />
-                    <Label
-                        VerticalOptions="Center"
-                        HorizontalOptions="Start"
-                        Text="{Binding TotalTime, Converter={converters:TimeSpanToStringConverter}}" />
-                </HorizontalStackLayout>
-                <Label
+                FontSize="28"
+                FontAttributes="Bold"
+                Margin="0,5,0,0" />
+
+            <!-- Author Section -->
+            <Grid
+                Grid.Row="2"
+                Grid.Column="1"
+                ColumnDefinitions="Auto,*,Auto">
+                <Border
+                    Grid.Column="0"
+                    StrokeThickness="0"
+                    HeightRequest="50"
+                    WidthRequest="50"
                     VerticalOptions="Center"
-                    HorizontalOptions="Start">
-                    <Label.Text>
-                        <MultiBinding StringFormat="{}{0} Servings">
-                            <Binding Path="Servings"></Binding>
-                        </MultiBinding>
-                    </Label.Text>
-                    <Label.Triggers>
+                    Margin="0,0,10,0">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="25" />
+                    </Border.StrokeShape>
+                    <Border.Triggers>
                         <DataTrigger
-                            TargetType="Label"
-                            Binding="{Binding Servings, Converter={StaticResource DefaultValueConverter}}"
+                            TargetType="Border"
+                            Binding="{Binding AuthorImageUrl, Converter={StaticResource NullToBooleanConverter}}"
                             Value="True">
                             <Setter Property="IsVisible" Value="False" />
                         </DataTrigger>
-                    </Label.Triggers>
-                </Label>
-            </HorizontalStackLayout>
-            <Border
+                    </Border.Triggers>
+                    <Image
+                        Source="{Binding AuthorImageUrl}"
+                        Aspect="AspectFill"
+                        HeightRequest="50"
+                        WidthRequest="50"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}" />
+                </Border>
+                <VerticalStackLayout
+                    Grid.Column="1"
+                    VerticalOptions="Center"
+                    Spacing="2">
+                    <Label
+                        Text="{Binding AuthorName}"
+                        FontSize="18"
+                        FontAttributes="Bold"
+                        LineBreakMode="TailTruncation" />
+                    <Label
+                        Text="{Binding ItemUrl.Host}"
+                        FontSize="14"
+                        TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}"
+                        LineBreakMode="TailTruncation">
+                        <Label.Triggers>
+                            <DataTrigger
+                                TargetType="Label"
+                                Binding="{Binding ItemUrl, Converter={StaticResource NullToBooleanConverter}}"
+                                Value="True">
+                                <Setter Property="IsVisible" Value="False" />
+                            </DataTrigger>
+                        </Label.Triggers>
+                    </Label>
+                </VerticalStackLayout>
+                <Label
+                    Grid.Column="2"
+                    Text="{Binding Difficulty}"
+                    VerticalOptions="Center"
+                    HorizontalOptions="End"
+                    FontSize="16"
+                    TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}"
+                    Margin="10,0,0,0" />
+            </Grid>
+
+            <!-- Border above image -->
+            <BoxView
                 Grid.Row="4"
-                Grid.RowSpan="5"
-                Grid.Column="3"
-                StrokeThickness="0"
-                HeightRequest="70"
-                WidthRequest="70"
-                Margin="0,0,8,0">
-                <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="5" />
-                </Border.StrokeShape>
-                <Image
-                    Aspect="AspectFill"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}">
-                    <Image.Triggers>
-                        <DataTrigger
-                            TargetType="Image"
-                            Binding="{Binding AuthorImageUrl, Converter={StaticResource NullToBooleanConverter}}"
-                            Value="True">
-                            <DataTrigger.Setters>
-                                <Setter Property="Source" Value="profile" />
-                                <Setter Property="HeightRequest" Value="60" />
-                                <Setter Property="WidthRequest" Value="60" />
-                            </DataTrigger.Setters>
-                        </DataTrigger>
-                        <DataTrigger
-                            TargetType="Image"
-                            Binding="{Binding AuthorImageUrl, Converter={StaticResource NullToBooleanConverter}}"
-                            Value="False">
-                            <DataTrigger.Setters>
-                                <Setter Property="Source" Value="{Binding AuthorImageUrl}" />
-                                <Setter Property="HeightRequest" Value="70" />
-                                <Setter Property="WidthRequest" Value="70" />
-                            </DataTrigger.Setters>
-                        </DataTrigger>
-                    </Image.Triggers>
-                </Image>
-            </Border>
-            <Label
-                Grid.Row="6"
-                Grid.Column="1"
+                Grid.Column="0"
                 Grid.ColumnSpan="3"
-                Text="Lunch, Snack"
-                VerticalOptions="Center"
-                HorizontalOptions="Start" />
-            <Label
+                HeightRequest="1"
+                Color="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}" />
+
+            <!-- Recipe Image Carousel -->
+            <Grid
+                x:Name="ImageCarouselContainer"
+                Grid.Row="5"
+                Grid.Column="0"
+                Grid.ColumnSpan="3"
+                HorizontalOptions="Fill"
+                VerticalOptions="Fill">
+                <Grid.Triggers>
+                    <DataTrigger
+                        TargetType="Grid"
+                        Binding="{Binding ImageUrls, Converter={StaticResource NullToBooleanConverter}}"
+                        Value="True">
+                        <Setter Property="IsVisible" Value="False" />
+                    </DataTrigger>
+                </Grid.Triggers>
+
+                <CarouselView
+                    x:Name="ImageCarousel"
+                    ItemsSource="{Binding ImageUrls}"
+                    IndicatorView="ImageIndicator"
+                    Position="0"
+                    HorizontalOptions="Fill"
+                    VerticalOptions="Fill"
+                    Loop="False"
+                    HorizontalScrollBarVisibility="Never">
+                    <CarouselView.ItemTemplate>
+                        <DataTemplate>
+                            <Image
+                                Source="{Binding .}"
+                                Aspect="AspectFill"
+                                HorizontalOptions="Fill"
+                                VerticalOptions="Fill">
+                                <Image.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Tapped="OnImageTapped" />
+                                </Image.GestureRecognizers>
+                            </Image>
+                        </DataTemplate>
+                    </CarouselView.ItemTemplate>
+                </CarouselView>
+
+                <!-- Dot Indicators -->
+                <IndicatorView
+                    x:Name="ImageIndicator"
+                    VerticalOptions="End"
+                    HorizontalOptions="Center"
+                    Margin="0,0,0,10"
+                    IndicatorColor="{StaticResource Gray400}"
+                    SelectedIndicatorColor="{StaticResource Tertiary}"
+                    IndicatorSize="8">
+                    <IndicatorView.Triggers>
+                        <DataTrigger
+                            TargetType="IndicatorView"
+                            Binding="{Binding ImageUrls.Count}"
+                            Value="1">
+                            <Setter Property="IsVisible" Value="False" />
+                        </DataTrigger>
+                        <DataTrigger
+                            TargetType="IndicatorView"
+                            Binding="{Binding ImageUrls.Count}"
+                            Value="0">
+                            <Setter Property="IsVisible" Value="False" />
+                        </DataTrigger>
+                    </IndicatorView.Triggers>
+                </IndicatorView>
+            </Grid>
+
+            <!-- Border below image -->
+            <BoxView
+                Grid.Row="6"
+                Grid.Column="0"
+                Grid.ColumnSpan="3"
+                HeightRequest="1"
+                Color="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}" />
+
+            <!-- Summary Info Section -->
+            <VerticalStackLayout
                 Grid.Row="8"
                 Grid.Column="1"
-                Grid.ColumnSpan="3"
-                Text="chicken, Beef, Fun, Snack"
-                VerticalOptions="Center"
-                HorizontalOptions="Start"
-                LineBreakMode="TailTruncation" />
+                Spacing="8"
+                Margin="0,0,0,10">
+
+                <!-- Row 1: Duration (left) and Category (right) -->
+                <Grid
+                    ColumnDefinitions="*,Auto">
+                    <HorizontalStackLayout
+                        Grid.Column="0"
+                        Spacing="5"
+                        HorizontalOptions="Start">
+                        <Image
+                            Source="timer"
+                            HeightRequest="18"
+                            WidthRequest="18"
+                            VerticalOptions="Center"
+                            Aspect="AspectFit" />
+                        <Label
+                            VerticalOptions="Center"
+                            FontSize="16">
+                            <Label.Text>
+                                <MultiBinding Converter="{StaticResource TimeWithPrepConverter}">
+                                    <Binding Path="TotalTime" />
+                                    <Binding Path="PrepTime" />
+                                </MultiBinding>
+                            </Label.Text>
+                        </Label>
+                    </HorizontalStackLayout>
+                    <Label
+                        Grid.Column="1"
+                        Text="{Binding Category}"
+                        VerticalOptions="Center"
+                        HorizontalOptions="End"
+                        FontSize="16"
+                        TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}"
+                        LineBreakMode="TailTruncation" />
+                </Grid>
+
+                <!-- Row 2: Servings (left) and Calories (right) -->
+                <Grid
+                    ColumnDefinitions="*,Auto">
+                    <Label
+                        Grid.Column="0"
+                        VerticalOptions="Center"
+                        HorizontalOptions="Start"
+                        FontSize="16">
+                        <Label.Text>
+                            <MultiBinding StringFormat="{}{0} Servings">
+                                <Binding Path="Servings"></Binding>
+                            </MultiBinding>
+                        </Label.Text>
+                        <Label.Triggers>
+                            <DataTrigger
+                                TargetType="Label"
+                                Binding="{Binding Servings, Converter={StaticResource DefaultValueConverter}}"
+                                Value="True">
+                                <Setter Property="IsVisible" Value="False" />
+                            </DataTrigger>
+                        </Label.Triggers>
+                    </Label>
+                    <Label
+                        Grid.Column="1"
+                        VerticalOptions="Center"
+                        HorizontalOptions="End"
+                        FontSize="16"
+                        TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}">
+                        <Label.Text>
+                            <MultiBinding StringFormat="{}~{0} cal">
+                                <Binding Path="Calories"></Binding>
+                            </MultiBinding>
+                        </Label.Text>
+                        <Label.Triggers>
+                            <DataTrigger
+                                TargetType="Label"
+                                Binding="{Binding Calories, Converter={StaticResource DefaultValueConverter}}"
+                                Value="True">
+                                <Setter Property="IsVisible" Value="False" />
+                            </DataTrigger>
+                        </Label.Triggers>
+                    </Label>
+                </Grid>
+
+                <!-- Row 3: Hearts (left) and Tags (right) -->
+                <Grid
+                    ColumnDefinitions="Auto,*">
+                    <Label
+                        Grid.Column="0"
+                        VerticalOptions="Center"
+                        HorizontalOptions="Start"
+                        FontSize="16"
+                        Margin="0,0,10,0">
+                        <Label.Text>
+                            <MultiBinding StringFormat="{}❤️ {0}">
+                                <Binding Path="Hearts"></Binding>
+                            </MultiBinding>
+                        </Label.Text>
+                    </Label>
+                    <Label
+                        Grid.Column="1"
+                        Text="{Binding Tags}"
+                        VerticalOptions="Center"
+                        HorizontalOptions="Start"
+                        FontSize="14"
+                        TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray500}}"
+                        LineBreakMode="TailTruncation" />
+                </Grid>
+            </VerticalStackLayout>
         </Grid>
     </Border>
 </ContentView>

@@ -6,6 +6,7 @@
     xmlns:views="using:MyCookbook.App.Views"
     xmlns:viewModels="clr-namespace:MyCookbook.App.ViewModels"
     xmlns:converters="clr-namespace:MyCookbook.App.Converters"
+    xmlns:system="clr-namespace:System;assembly=System.Runtime"
     x:Class="MyCookbook.App.Views.RecipePage"
     x:DataType="viewModels:RecipeViewModel"
     x:Name="Root"
@@ -21,7 +22,17 @@
     <ContentPage.Resources>
         <converters:IngredientToStringConverter x:Key="IngredientToStringConverter" />
         <converters:TimeSpanToStringConverter x:Key="TimeSpanToStringConverter" />
-        <DataTemplate 
+        <converters:NullToBooleanConverter x:Key="NullToBooleanConverter" />
+        <DataTemplate
+            x:Key="RecipeImageTemplate"
+            x:DataType="system:Uri">
+            <Image
+                Source="{Binding .}"
+                Aspect="AspectFill"
+                HorizontalOptions="Fill"
+                VerticalOptions="Fill" />
+        </DataTemplate>
+        <DataTemplate
             x:Key="RecipeIngredientTemplate"
             x:DataType="viewModels:RecipeIngredientViewModel">
             <VerticalStackLayout>
@@ -117,82 +128,267 @@
             </VerticalStackLayout>
         </DataTemplate>
     </ContentPage.Resources>
-    <AbsoluteLayout>
-        <ActivityIndicator
-            IsVisible="{Binding IsBusy}"
-            IsEnabled="{Binding IsBusy}" />
-        <Image
-            AbsoluteLayout.LayoutFlags="XProportional,YProportional,WidthProportional"
-            AbsoluteLayout.LayoutBounds="0,0,1,200"
-            IsVisible="{Binding IsNotBusy}"
-            Source="{Binding Image}"
-            Aspect="AspectFill" />
-        <ScrollView
-            AbsoluteLayout.LayoutFlags="XProportional,YProportional,WidthProportional,HeightProportional"
-            AbsoluteLayout.LayoutBounds="0,0,1,1"
-            IsVisible="{Binding IsNotBusy}">
-            <VerticalStackLayout
-                Margin="0,175,0,0"
-                BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}">
+    <ScrollView>
+        <VerticalStackLayout
+            BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}">
+
+            <!-- Recipe Image Carousel Container -->
+            <Grid
+                x:Name="ImageCarouselContainer"
+                HeightRequest="220">
+                <CarouselView
+                    x:Name="ImageCarousel"
+                    ItemsSource="{Binding ImageUrls}"
+                    ItemTemplate="{StaticResource RecipeImageTemplate}"
+                    IndicatorView="ImageIndicator"
+                    Position="0"
+                    PeekAreaInsets="0"
+                    Loop="False"
+                    HorizontalScrollBarVisibility="Never"
+                    IsSwipeEnabled="True" />
+
+                <!-- Dot Indicators -->
+                <IndicatorView
+                    x:Name="ImageIndicator"
+                    VerticalOptions="End"
+                    HorizontalOptions="Center"
+                    Margin="0,0,0,10"
+                    IndicatorColor="{StaticResource Gray400}"
+                    SelectedIndicatorColor="{StaticResource Tertiary}"
+                    IndicatorSize="8"
+                    InputTransparent="True">
+                    <IndicatorView.Triggers>
+                        <DataTrigger
+                            TargetType="IndicatorView"
+                            Binding="{Binding ImageUrls.Count}"
+                            Value="1">
+                            <Setter Property="IsVisible" Value="False" />
+                        </DataTrigger>
+                        <DataTrigger
+                            TargetType="IndicatorView"
+                            Binding="{Binding ImageUrls.Count}"
+                            Value="0">
+                            <Setter Property="IsVisible" Value="False" />
+                        </DataTrigger>
+                    </IndicatorView.Triggers>
+                </IndicatorView>
+            </Grid>
+                <!-- Author and Servings Row -->
+                <Grid
+                    Margin="20,10,20,0"
+                    ColumnDefinitions="Auto,Auto,*,Auto">
+                    <!-- Author Image (Left) -->
+                    <Border
+                        Grid.Column="0"
+                        StrokeThickness="0"
+                        HeightRequest="50"
+                        WidthRequest="50"
+                        VerticalOptions="Center"
+                        Margin="0,0,10,0">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="25" />
+                        </Border.StrokeShape>
+                        <Border.Triggers>
+                            <DataTrigger
+                                TargetType="Border"
+                                Binding="{Binding UserProfile.ProfileImageUri, Converter={StaticResource NullToBooleanConverter}}"
+                                Value="True">
+                                <Setter Property="IsVisible" Value="False" />
+                            </DataTrigger>
+                        </Border.Triggers>
+                        <Image
+                            Source="{Binding UserProfile.ProfileImageUri}"
+                            Aspect="AspectFill"
+                            HeightRequest="50"
+                            WidthRequest="50"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}" />
+                    </Border>
+                    <!-- Author Name and Location (Left) -->
+                    <VerticalStackLayout
+                        Grid.Column="1"
+                        VerticalOptions="Center"
+                        Spacing="2">
+                        <Label
+                            Text="{Binding UserProfile.FirstName}"
+                            FontSize="18"
+                            FontAttributes="Bold"
+                            LineBreakMode="TailTruncation" />
+                        <Label
+                            Text="{Binding Url.Host}"
+                            FontSize="14"
+                            TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}"
+                            LineBreakMode="TailTruncation">
+                            <Label.Triggers>
+                                <DataTrigger
+                                    TargetType="Label"
+                                    Binding="{Binding Url, Converter={StaticResource NullToBooleanConverter}}"
+                                    Value="True">
+                                    <Setter Property="IsVisible" Value="False" />
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+                    </VerticalStackLayout>
+                    <!-- Servings (Right) -->
+                    <HorizontalStackLayout
+                        Grid.Column="3"
+                        VerticalOptions="Center"
+                        HorizontalOptions="End"
+                        Spacing="5">
+                        <Label
+                            Text="Servings:"
+                            VerticalTextAlignment="Center"
+                            FontSize="16" />
+                        <Picker
+                            x:Name="ServingsPicker"
+                            SelectedItem="{Binding Servings, StringFormat='{0}'}"
+                            SelectedIndexChanged="ServingsPicker_SelectedIndexChanged"
+                            WidthRequest="30"
+                            IsEnabled="True"
+                            BackgroundColor="Transparent"
+                            FontSize="16">
+                            <Picker.Items>
+                                <x:String>1</x:String>
+                                <x:String>2</x:String>
+                                <x:String>3</x:String>
+                                <x:String>4</x:String>
+                                <x:String>5</x:String>
+                                <x:String>6</x:String>
+                                <x:String>7</x:String>
+                                <x:String>8</x:String>
+                                <x:String>9</x:String>
+                                <x:String>10</x:String>
+                                <x:String>12</x:String>
+                                <x:String>15</x:String>
+                                <x:String>20</x:String>
+                                <x:String>25</x:String>
+                                <x:String>30</x:String>
+                                <x:String>40</x:String>
+                                <x:String>50</x:String>
+                            </Picker.Items>
+                        </Picker>
+                    </HorizontalStackLayout>
+                </Grid>
+                <!-- Time, Calories, and Rating Row -->
                 <Border
-                    MinimumHeightRequest="100"
+                    MinimumHeightRequest="80"
                     HorizontalOptions="Fill"
+                    Margin="0,10,0,0"
                     Stroke="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
                     BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
                     StrokeThickness="0">
                     <Grid
-                        Margin="20"
+                        Margin="20,10"
                         RowDefinitions="Auto,Auto"
-                        ColumnDefinitions="*">
-                        <Label
+                        ColumnDefinitions="Auto,*,Auto">
+                        <!-- Timer Icon (Left, centered vertically) -->
+                        <Image
                             Grid.Row="0"
+                            Grid.RowSpan="2"
                             Grid.Column="0"
-                            VerticalOptions="End"
-                            HorizontalOptions="Start"
-                            Text="{Binding TotalTime, Converter={StaticResource TimeSpanToStringConverter}}" />
+                            Source="timer"
+                            HeightRequest="24"
+                            WidthRequest="24"
+                            VerticalOptions="Center"
+                            Margin="0,0,10,0"
+                            Aspect="AspectFit" />
+                        <!-- Prep Time (Top Left) -->
                         <HorizontalStackLayout
                             Grid.Row="0"
-                            Grid.Column="0"
-                            VerticalOptions="End"
-                            HorizontalOptions="End"
-                            Spacing="5">
+                            Grid.Column="1"
+                            Spacing="5"
+                            VerticalOptions="Center">
+                            <HorizontalStackLayout.Triggers>
+                                <DataTrigger
+                                    TargetType="HorizontalStackLayout"
+                                    Binding="{Binding PrepTime}"
+                                    Value="{x:Null}">
+                                    <Setter Property="IsVisible" Value="False" />
+                                </DataTrigger>
+                            </HorizontalStackLayout.Triggers>
                             <Label
-                                Text="Servings:"
-                                VerticalTextAlignment="Center" />
-                            <Picker
-                                x:Name="ServingsPicker"
-                                SelectedItem="{Binding Servings, StringFormat='{0}'}"
-                                SelectedIndexChanged="ServingsPicker_SelectedIndexChanged"
-                                WidthRequest="30"
-                                HorizontalOptions="End"
-                                IsEnabled="True"
-                                BackgroundColor="Transparent">
-                                <Picker.Items>
-                                    <x:String>1</x:String>
-                                    <x:String>2</x:String>
-                                    <x:String>3</x:String>
-                                    <x:String>4</x:String>
-                                    <x:String>5</x:String>
-                                    <x:String>6</x:String>
-                                    <x:String>7</x:String>
-                                    <x:String>8</x:String>
-                                    <x:String>9</x:String>
-                                    <x:String>10</x:String>
-                                    <x:String>12</x:String>
-                                    <x:String>15</x:String>
-                                    <x:String>20</x:String>
-                                    <x:String>25</x:String>
-                                    <x:String>30</x:String>
-                                    <x:String>40</x:String>
-                                    <x:String>50</x:String>
-                                </Picker.Items>
-                            </Picker>
+                                Text="Prep:"
+                                VerticalOptions="Center"
+                                FontSize="16"
+                                FontAttributes="Bold" />
+                            <Label
+                                Text="{Binding PrepTime, Converter={StaticResource TimeSpanToStringConverter}}"
+                                VerticalOptions="Center"
+                                FontSize="16" />
                         </HorizontalStackLayout>
+                        <!-- Cook Time (Bottom Left) -->
+                        <HorizontalStackLayout
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Spacing="5"
+                            VerticalOptions="Center">
+                            <HorizontalStackLayout.Triggers>
+                                <DataTrigger
+                                    TargetType="HorizontalStackLayout"
+                                    Binding="{Binding CookTime}"
+                                    Value="{x:Null}">
+                                    <Setter Property="IsVisible" Value="False" />
+                                </DataTrigger>
+                            </HorizontalStackLayout.Triggers>
+                            <Label
+                                Text="Cook:"
+                                VerticalOptions="Center"
+                                FontSize="16"
+                                FontAttributes="Bold" />
+                            <Label
+                                Text="{Binding CookTime, Converter={StaticResource TimeSpanToStringConverter}}"
+                                VerticalOptions="Center"
+                                FontSize="16" />
+                        </HorizontalStackLayout>
+                        <!-- Calories (Top Right) -->
+                        <Label
+                            Grid.Row="0"
+                            Grid.Column="2"
+                            VerticalOptions="Center"
+                            HorizontalOptions="End"
+                            FontSize="16"
+                            TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}">
+                            <Label.Text>
+                                <MultiBinding StringFormat="{}~{0} cal">
+                                    <Binding Path="PreviewCalories"></Binding>
+                                </MultiBinding>
+                            </Label.Text>
+                            <Label.Triggers>
+                                <DataTrigger
+                                    TargetType="Label"
+                                    Binding="{Binding PreviewCalories, Converter={StaticResource NullToBooleanConverter}}"
+                                    Value="True">
+                                    <Setter Property="IsVisible" Value="False" />
+                                </DataTrigger>
+                                <DataTrigger
+                                    TargetType="Label"
+                                    Binding="{Binding PreviewCalories}"
+                                    Value="">
+                                    <Setter Property="IsVisible" Value="False" />
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+                        <!-- Rating placeholder (Bottom Right) - can be added later -->
                         <Label
                             Grid.Row="1"
-                            Grid.Column="0"
-                            Text="{Binding Description}" />
+                            Grid.Column="2"
+                            Text="⭐ 4.5"
+                            VerticalOptions="Center"
+                            HorizontalOptions="End"
+                            FontSize="16"
+                            IsVisible="False" />
                     </Grid>
+                </Border>
+                <!-- Description -->
+                <Border
+                    MinimumHeightRequest="50"
+                    HorizontalOptions="Fill"
+                    Stroke="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
+                    StrokeThickness="0">
+                    <Label
+                        Margin="20,10"
+                        Text="{Binding Description}"
+                        FontSize="16" />
                 </Border>
                 <toolkit:Expander
                     IsExpanded="True">
@@ -224,7 +420,7 @@
                         ItemTemplate="{StaticResource RecipeIngredientTemplate}" />
                 </toolkit:Expander>
                 <toolkit:Expander
-                    IsVisible="{Binding Recipe.HasPrep}"
+                    IsVisible="{Binding HasPrep}"
                     Margin="0,15,0,0"
                     IsExpanded="True"
                     BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Black}}">
@@ -288,7 +484,6 @@
                         ItemsLayout="VerticalList"
                         ItemTemplate="{StaticResource RecipeStepTemplate}" />
                 </toolkit:Expander>
-            </VerticalStackLayout>
-        </ScrollView>
-    </AbsoluteLayout>
+        </VerticalStackLayout>
+    </ScrollView>
 </views:BasePage>

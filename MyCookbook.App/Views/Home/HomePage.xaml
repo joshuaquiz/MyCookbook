@@ -10,7 +10,7 @@
     Title="Home"
     Shell.NavBarIsVisible="False"
     Shell.PresentationMode="NotAnimated"
-    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Black}}">
+    BackgroundColor="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Black}}">
     <Grid
         ColumnDefinitions="*"
         RowDefinitions="Auto,*,50">
@@ -18,14 +18,16 @@
             x:Name="SearchGrid"
             Grid.Row="0"
             Grid.Column="0"
-            ColumnDefinitions="10,18,8,*,10,20,10,20,10"
-            RowDefinitions="10,25,Auto">
+            ColumnDefinitions="10,20,8,*,10,22,10,22,10"
+            RowDefinitions="10,28,Auto,10,2"
+            Padding="0"
+            BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Black}}">
             <Image
                 Grid.Row="1"
                 Grid.Column="1"
                 Source="search"
-                WidthRequest="18"
-                HeightRequest="18"
+                WidthRequest="20"
+                HeightRequest="20"
                 VerticalOptions="Center"
                 HorizontalOptions="Center"
                 Aspect="AspectFill" />
@@ -33,7 +35,8 @@
                 x:Name="TextSearchEntry"
                 Grid.Row="1"
                 Grid.Column="3"
-                HeightRequest="25"
+                HeightRequest="28"
+                FontSize="16"
                 Placeholder="Start searching"
                 HorizontalOptions="Fill"
                 VerticalOptions="Center"
@@ -43,8 +46,8 @@
                 Grid.Row="1"
                 Grid.Column="5"
                 Source="close"
-                WidthRequest="20"
-                HeightRequest="20"
+                WidthRequest="22"
+                HeightRequest="22"
                 VerticalOptions="Center"
                 HorizontalOptions="Center"
                 Aspect="AspectFill"
@@ -56,8 +59,8 @@
                 Grid.Row="1"
                 Grid.Column="7"
                 Source="filter"
-                WidthRequest="20"
-                HeightRequest="20"
+                WidthRequest="22"
+                HeightRequest="22"
                 VerticalOptions="Center"
                 HorizontalOptions="Center"
                 Aspect="AspectFill"
@@ -99,6 +102,13 @@
                     Placeholder="Enter ingredients to exclude"
                     TextChanged="ExcludeIngredientsEntry_OnTextChanged" />
             </StackLayout>
+            <BoxView
+                Grid.Row="4"
+                Grid.Column="0"
+                Grid.ColumnSpan="9"
+                HeightRequest="2"
+                HorizontalOptions="Fill"
+                Color="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}" />
         </Grid>
         <recipeSummaryList:RecipeSummaryListControl
             x:Name="RecipeList"
@@ -111,7 +121,7 @@
             Margin="10,0,10,10"
             Navigate="HomeBar_OnNavigate" />
         <Rectangle
-            Grid.Row="3"
+            Grid.Row="2"
             Grid.Column="0"
             HorizontalOptions="Fill"
             VerticalOptions="Fill"

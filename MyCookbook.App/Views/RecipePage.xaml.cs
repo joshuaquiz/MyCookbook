@@ -14,6 +14,18 @@ public partial class RecipePage
         InitializeComponent();
         ViewModel = viewModel;
         BindingContext = ViewModel;
+
+        // Subscribe to Loaded event to load data after page is fully rendered
+        Loaded += OnPageLoaded;
+    }
+
+    private void OnPageLoaded(object? sender, EventArgs e)
+    {
+        // Unsubscribe to prevent multiple calls
+        Loaded -= OnPageLoaded;
+
+        // Load the full recipe data - the method itself handles async execution
+        ViewModel.PrePopulateFromPreviewData();
     }
 
     private void ServingsPicker_SelectedIndexChanged(

@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -14,6 +16,17 @@ namespace MyCookbook.App.ViewModels;
 
 [QueryProperty(nameof(Recipe), nameof(Recipe))]
 [QueryProperty(nameof(Guid), nameof(Guid))]
+[QueryProperty(nameof(PreviewName), nameof(PreviewName))]
+[QueryProperty(nameof(PreviewImageUrl), nameof(PreviewImageUrl))]
+[QueryProperty(nameof(PreviewAuthorName), nameof(PreviewAuthorName))]
+[QueryProperty(nameof(PreviewAuthorImageUrl), nameof(PreviewAuthorImageUrl))]
+[QueryProperty(nameof(PreviewTotalMinutes), nameof(PreviewTotalMinutes))]
+[QueryProperty(nameof(PreviewPrepMinutes), nameof(PreviewPrepMinutes))]
+[QueryProperty(nameof(PreviewServings), nameof(PreviewServings))]
+[QueryProperty(nameof(PreviewDifficulty), nameof(PreviewDifficulty))]
+[QueryProperty(nameof(PreviewCategory), nameof(PreviewCategory))]
+[QueryProperty(nameof(PreviewCalories), nameof(PreviewCalories))]
+[QueryProperty(nameof(PreviewItemUrl), nameof(PreviewItemUrl))]
 public partial class RecipeViewModel(
     CookbookHttpClient httpClient)
     : BaseViewModel
@@ -25,7 +38,10 @@ public partial class RecipeViewModel(
     private Guid _recipeGuid;
 
     [ObservableProperty]
-    private Uri? _image;
+    private ObservableCollection<Uri> _imageUrls = [];
+
+    [ObservableProperty]
+    private Uri? _url;
 
     [ObservableProperty]
     private string? _name;
@@ -71,20 +87,69 @@ public partial class RecipeViewModel(
 
     private int? _originalServings;
 
+    // Preview properties from summary card (all optional except Guid)
+    // All are strings because Shell navigation passes query parameters as strings
+    [ObservableProperty]
+    private string? _previewName;
+
+    [ObservableProperty]
+    private string? _previewImageUrl;
+
+    [ObservableProperty]
+    private string? _previewAuthorName;
+
+    [ObservableProperty]
+    private string? _previewAuthorImageUrl;
+
+    [ObservableProperty]
+    private string? _previewTotalMinutes;
+
+    [ObservableProperty]
+    private string? _previewPrepMinutes;
+
+    [ObservableProperty]
+    private string? _previewServings;
+
+    [ObservableProperty]
+    private string? _previewDifficulty;
+
+    [ObservableProperty]
+    private string? _previewCategory;
+
+    [ObservableProperty]
+    private string? _previewCalories;
+
+    [ObservableProperty]
+    private string? _previewItemUrl;
+
+    private bool _hasLoadedFullRecipe;
+    private bool _hasPrePopulated;
+
     partial void OnRecipeChanged(RecipeModel? value)
     {
         if (value.HasValue)
         {
             var recipe = value.Value;
             RecipeGuid = recipe.Guid;
-            Image = recipe.Image;
+
+            // Update ImageUrls collection
+            ImageUrls.Clear();
+            if (recipe.ImageUrls?.Count > 0)
+            {
+                foreach (var imageUrl in recipe.ImageUrls)
+                {
+                    ImageUrls.Add(imageUrl);
+                }
+            }
+
+            Url = recipe.Url;
             Name = recipe.Name;
             PrepTime = recipe.PrepTime;
             CookTime = recipe.CookTime;
             Servings = recipe.Servings;
             Description = recipe.Description;
-            UserProfile = recipe.UserProfile.HasValue 
-                ? new UserProfileViewModel(recipe.UserProfile.Value) 
+            UserProfile = recipe.UserProfile.HasValue
+                ? new UserProfileViewModel(recipe.UserProfile.Value)
                 : null;
 
             PrepSteps.Clear();
@@ -120,25 +185,146 @@ public partial class RecipeViewModel(
 
     partial void OnGuidChanged(string? value)
     {
-        GetRecipeCommand.Execute(null);
+        // Set RecipeGuid for API calls
+        if (!string.IsNullOrEmpty(value) && System.Guid.TryParse(value, out var guid))
+        {
+            RecipeGuid = guid;
+        }
+
+        // Don't pre-populate here - wait for all preview properties to be set
+        // PrePopulateFromPreviewData will be called after the last preview property is set
+    }
+
+    public void PrePopulateFromPreviewData()
+    {
+        if (_hasPrePopulated || _hasLoadedFullRecipe)
+        {
+            return;
+        }
+
+        // Pre-populate with any available preview data
+        if (!string.IsNullOrEmpty(PreviewName))
+        {
+            Name = PreviewName;
+        }
+
+        if (!string.IsNullOrEmpty(PreviewImageUrl))
+        {
+            // Update ImageUrls collection for preview
+            ImageUrls.Clear();
+
+            // Try to parse as JSON array first (multiple URLs)
+            try
+            {
+                var urls = JsonSerializer.Deserialize<List<string>>(PreviewImageUrl);
+                if (urls != null)
+                {
+                    foreach (var url in urls)
+                    {
+                        if (Uri.TryCreate(url, UriKind.Absolute, out var uri))
+                        {
+                            ImageUrls.Add(uri);
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // If JSON parsing fails, treat as single URL (backward compatibility)
+                if (Uri.TryCreate(PreviewImageUrl, UriKind.Absolute, out var imageUri))
+                {
+                    ImageUrls.Add(imageUri);
+                }
+            }
+        }
+
+        if (!string.IsNullOrEmpty(PreviewItemUrl) && Uri.TryCreate(PreviewItemUrl, UriKind.Absolute, out var itemUri))
+        {
+            Url = itemUri;
+        }
+
+        if (!string.IsNullOrEmpty(PreviewAuthorName))
+        {
+            // Create a basic UserProfile with just the name and image
+            Uri? authorImageUri = null;
+            if (!string.IsNullOrEmpty(PreviewAuthorImageUrl) && Uri.TryCreate(PreviewAuthorImageUrl, UriKind.Absolute, out var tempUri))
+            {
+                authorImageUri = tempUri;
+            }
+
+            // Create a minimal UserProfileModel for preview
+            var previewUserProfile = new UserProfileModel(
+                Guid: System.Guid.Empty,
+                BackgroundImageUri: null,
+                ProfileImageUri: authorImageUri,
+                FirstName: PreviewAuthorName,
+                LastName: string.Empty,
+                Country: string.Empty,
+                City: string.Empty,
+                Age: 0,
+                RecipesAdded: 0,
+                Description: null,
+                IsPremium: false,
+                IsFollowed: false,
+                RecentRecipes: Array.Empty<PopularItem>()
+            );
+
+            UserProfile = new UserProfileViewModel(previewUserProfile);
+        }
+
+        // Parse numeric preview values from strings
+        if (!string.IsNullOrEmpty(PreviewPrepMinutes) && long.TryParse(PreviewPrepMinutes, out var prepMinutes))
+        {
+            PrepTime = TimeSpan.FromMinutes(prepMinutes);
+        }
+
+        if (!string.IsNullOrEmpty(PreviewTotalMinutes) && long.TryParse(PreviewTotalMinutes, out var totalMinutes))
+        {
+            var totalTime = TimeSpan.FromMinutes(totalMinutes);
+            if (PrepTime.HasValue)
+            {
+                CookTime = totalTime - PrepTime.Value;
+            }
+            else
+            {
+                // If we only have total time, assume it's all cook time
+                CookTime = totalTime;
+            }
+        }
+
+        if (!string.IsNullOrEmpty(PreviewServings) && int.TryParse(PreviewServings, out var servings))
+        {
+            Servings = servings;
+            _originalServings = servings;
+        }
+
+        _hasPrePopulated = true;
+        _ = GetRecipeCommand.ExecuteAsync(null);
     }
 
     [RelayCommand]
     private async Task GetRecipe()
     {
         IsBusy = true;
-        Recipe = await httpClient.Get<RecipeModel>(
-            new Uri(
-                $"/api/Recipe/{Guid}",
-                UriKind.Absolute),
-            CancellationToken.None);
-        IsBusy = false;
+        try
+        {
+            Recipe = await httpClient.Get<RecipeModel>(
+                new Uri(
+                    $"/api/Recipe/{Guid}",
+                    UriKind.Absolute),
+                CancellationToken.None);
+            _hasLoadedFullRecipe = true;
+        }
+        finally
+        {
+            IsBusy = false;
+        }
     }
 
     [RelayCommand]
     private async Task Share()
     {
-        if (Recipe?.Url == null || string.IsNullOrEmpty(Name))
+        if (Url == null || string.IsNullOrEmpty(Name))
         {
             return;
         }
@@ -147,7 +333,7 @@ public partial class RecipeViewModel(
             .RequestAsync(
                 new ShareTextRequest
                 {
-                    Uri = Recipe?.Url.AbsoluteUri,
+                    Uri = Url.AbsoluteUri,
                     Title = Name,
                     Text = $"Check out this recipe: {Name}"
                 });
