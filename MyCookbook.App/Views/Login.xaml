@@ -5,9 +5,28 @@
     x:Class="MyCookbook.App.Views.Login"
     Shell.NavBarIsVisible="False"
     Shell.PresentationMode="NotAnimated">
-    <Grid
-        RowDefinitions="*,10,50,5,50,5,50,30,50,10,*"
-        ColumnDefinitions="*,10,125,125,10,*">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="10" />
+            <RowDefinition Height="50" />
+            <RowDefinition Height="5" />
+            <RowDefinition Height="50" />
+            <RowDefinition Height="5" />
+            <RowDefinition Height="50" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="50" />
+            <RowDefinition Height="10" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="10" />
+            <ColumnDefinition Width="125" />
+            <ColumnDefinition Width="125" />
+            <ColumnDefinition Width="10" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
         <Image
             Grid.Row="0"
             Grid.RowSpan="11"
@@ -20,28 +39,28 @@
             Grid.Row="2"
             Grid.Column="2"
             Grid.ColumnSpan="2"
-            FontSize="20"
+            FontSize="{StaticResource FontSizeTitleLarge}"
             FontAttributes="Bold"
             VerticalTextAlignment="Center"
             HorizontalTextAlignment="Start"
             Placeholder="Username"
-            TextColor="Black" />
+            TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColorLight}, Dark={StaticResource TextPrimaryColorDark}}" />
         <Entry
             x:Name="Password"
             Grid.Row="4"
             Grid.Column="2"
             Grid.ColumnSpan="2"
-            FontSize="20"
+            FontSize="{StaticResource FontSizeTitleLarge}"
             FontAttributes="Bold"
             VerticalTextAlignment="Center"
             HorizontalTextAlignment="Start"
             Placeholder="Password"
-            TextColor="Black" />
+            TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColorLight}, Dark={StaticResource TextPrimaryColorDark}}" />
         <Button
             Grid.Row="6"
             Grid.Column="2"
             Grid.ColumnSpan="2"
-            FontSize="20"
+            FontSize="{StaticResource FontSizeTitleLarge}"
             FontAttributes="Bold"
             Text="Log in"
             Clicked="Button_OnClicked" />

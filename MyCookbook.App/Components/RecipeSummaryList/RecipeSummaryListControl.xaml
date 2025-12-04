@@ -8,10 +8,13 @@
     HorizontalOptions="Fill"
     VerticalOptions="Fill">
     <ContentView.Content>
-        <Grid
-            HorizontalOptions="Fill"
-            ColumnDefinitions="*"
-            RowDefinitions="*">
+        <Grid HorizontalOptions="Fill">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
             <RefreshView
                 Grid.Row="0"
                 Grid.Column="0"

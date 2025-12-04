@@ -1,3 +1,9 @@
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.ApplicationModel.DataTransfer;
+using Microsoft.Maui.Controls;
+using MyCookbook.App.Implementations;
+using MyCookbook.Common.ApiModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -5,12 +11,6 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using Microsoft.Maui.ApplicationModel.DataTransfer;
-using Microsoft.Maui.Controls;
-using MyCookbook.App.Implementations;
-using MyCookbook.Common.ApiModels;
 
 namespace MyCookbook.App.ViewModels;
 
@@ -27,6 +27,8 @@ namespace MyCookbook.App.ViewModels;
 [QueryProperty(nameof(PreviewCategory), nameof(PreviewCategory))]
 [QueryProperty(nameof(PreviewCalories), nameof(PreviewCalories))]
 [QueryProperty(nameof(PreviewItemUrl), nameof(PreviewItemUrl))]
+[QueryProperty(nameof(PreviewHearts), nameof(PreviewHearts))]
+[QueryProperty(nameof(PreviewRating), nameof(PreviewRating))]
 public partial class RecipeViewModel(
     CookbookHttpClient httpClient)
     : BaseViewModel
@@ -64,6 +66,7 @@ public partial class RecipeViewModel(
     private UserProfileViewModel? _userProfile;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasPrep))]
     private ObservableCollection<StepViewModel> _prepSteps = [];
 
     [ObservableProperty]
@@ -72,12 +75,19 @@ public partial class RecipeViewModel(
     [ObservableProperty]
     private ObservableCollection<RecipeIngredientViewModel> _recipeIngredients = [];
 
+    [ObservableProperty]
+    private int _recipeHearts;
+
+    [ObservableProperty]
+    private decimal? _rating;
+
+    [ObservableProperty]
+    private bool _hasPrep;
+
     public TimeSpan? TotalTime =>
         !PrepTime.HasValue && !CookTime.HasValue
             ? null
             : (PrepTime ?? TimeSpan.Zero) + (CookTime ?? TimeSpan.Zero);
-
-    public bool HasPrep => PrepSteps.Count > 0;
 
     [ObservableProperty]
     private string? _guid;
@@ -122,6 +132,12 @@ public partial class RecipeViewModel(
     [ObservableProperty]
     private string? _previewItemUrl;
 
+    [ObservableProperty]
+    private string? _previewHearts;
+
+    [ObservableProperty]
+    private string? _previewRating;
+
     private bool _hasLoadedFullRecipe;
     private bool _hasPrePopulated;
 
@@ -148,6 +164,8 @@ public partial class RecipeViewModel(
             CookTime = recipe.CookTime;
             Servings = recipe.Servings;
             Description = recipe.Description;
+            RecipeHearts = recipe.RecipeHearts;
+            Rating = recipe.Rating;
             UserProfile = recipe.UserProfile.HasValue
                 ? new UserProfileViewModel(recipe.UserProfile.Value)
                 : null;
@@ -156,6 +174,7 @@ public partial class RecipeViewModel(
             foreach (var step in recipe.PrepSteps.OrderBy(x => x.StepNumber))
             {
                 PrepSteps.Add(new StepViewModel(step));
+                HasPrep = true;
             }
 
             CookingSteps.Clear();
@@ -266,8 +285,7 @@ public partial class RecipeViewModel(
                 Description: null,
                 IsPremium: false,
                 IsFollowed: false,
-                RecentRecipes: Array.Empty<PopularItem>()
-            );
+                RecentRecipes: []);
 
             UserProfile = new UserProfileViewModel(previewUserProfile);
         }
@@ -296,6 +314,16 @@ public partial class RecipeViewModel(
         {
             Servings = servings;
             _originalServings = servings;
+        }
+
+        if (!string.IsNullOrEmpty(PreviewHearts) && int.TryParse(PreviewHearts, out var hearts))
+        {
+            RecipeHearts = hearts;
+        }
+
+        if (!string.IsNullOrEmpty(PreviewRating) && decimal.TryParse(PreviewRating, out var rating))
+        {
+            Rating = rating;
         }
 
         _hasPrePopulated = true;

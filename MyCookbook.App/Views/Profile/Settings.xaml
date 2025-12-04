@@ -9,9 +9,20 @@
         HasShadow="True"
         Padding="0"
         Margin="0">
-        <Grid
-            RowDefinitions="50,2,20,40,20"
-            ColumnDefinitions="20,100,125,20">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50" />
+                <RowDefinition Height="2" />
+                <RowDefinition Height="20" />
+                <RowDefinition Height="40" />
+                <RowDefinition Height="20" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="20" />
+                <ColumnDefinition Width="100" />
+                <ColumnDefinition Width="125" />
+                <ColumnDefinition Width="20" />
+            </Grid.ColumnDefinitions>
             <Label
                 Grid.Row="0"
                 Grid.Column="1"

@@ -1,14 +1,25 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <?xaml-comp compile="true" ?>
-<ResourceDictionary 
+<ResourceDictionary
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
+    <!-- ========================================
+         PRIMARY BRAND COLORS
+         ======================================== -->
     <Color x:Key="Primary">#e40015</Color>
     <Color x:Key="Secondary">#ffeb38</Color>
     <Color x:Key="Tertiary">#46d8ae</Color>
+
+    <!-- ========================================
+         BASE COLORS
+         ======================================== -->
     <Color x:Key="White">White</Color>
     <Color x:Key="Black">Black</Color>
+
+    <!-- ========================================
+         GRAY SCALE
+         ======================================== -->
     <Color x:Key="Gray100">#E1E1E1</Color>
     <Color x:Key="Gray200">#C8C8C8</Color>
     <Color x:Key="Gray300">#ACACAC</Color>
@@ -17,6 +28,32 @@
     <Color x:Key="Gray600">#404040</Color>
     <Color x:Key="Gray900">#212121</Color>
     <Color x:Key="Gray950">#141414</Color>
+
+    <!-- ========================================
+         ACCENT COLORS
+         ======================================== -->
+    <Color x:Key="Yellow100Accent">#F7B548</Color>
+    <Color x:Key="Yellow200Accent">#FFD590</Color>
+    <Color x:Key="Yellow300Accent">#FFE5B9</Color>
+    <Color x:Key="Cyan100Accent">#28C2D1</Color>
+    <Color x:Key="Cyan200Accent">#7BDDEF</Color>
+    <Color x:Key="Cyan300Accent">#C3F2F4</Color>
+    <Color x:Key="Blue100Accent">#3E8EED</Color>
+    <Color x:Key="Blue200Accent">#72ACF1</Color>
+    <Color x:Key="Blue300Accent">#A7CBF6</Color>
+
+    <!-- ========================================
+         ADDITIONAL UI COLORS
+         ======================================== -->
+    <Color x:Key="LightGray">#D3D3D3</Color>
+    <Color x:Key="LightBackground">#F5F5F5</Color>
+    <Color x:Key="ProgressBackground">#E0E0E0</Color>
+    <Color x:Key="ProgressColor">#2196F3</Color>
+    <Color x:Key="ProfileAccent">#383b67</Color>
+
+    <!-- ========================================
+         SOLID COLOR BRUSHES
+         ======================================== -->
     <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}"/>
     <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource Secondary}"/>
     <SolidColorBrush x:Key="TertiaryBrush" Color="{StaticResource Tertiary}"/>
@@ -31,14 +68,71 @@
     <SolidColorBrush x:Key="Gray900Brush" Color="{StaticResource Gray900}"/>
     <SolidColorBrush x:Key="Gray950Brush" Color="{StaticResource Gray950}"/>
 
-    <Color x:Key="Yellow100Accent">#F7B548</Color>
-    <Color x:Key="Yellow200Accent">#FFD590</Color>
-    <Color x:Key="Yellow300Accent">#FFE5B9</Color>
-    <Color x:Key="Cyan100Accent">#28C2D1</Color>
-    <Color x:Key="Cyan200Accent">#7BDDEF</Color>
-    <Color x:Key="Cyan300Accent">#C3F2F4</Color>
-    <Color x:Key="Blue100Accent">#3E8EED</Color>
-    <Color x:Key="Blue200Accent">#72ACF1</Color>
-    <Color x:Key="Blue300Accent">#A7CBF6</Color>
+    <!-- ========================================
+         THEME-AWARE SEMANTIC COLORS (Light Theme)
+         ======================================== -->
+    <!-- Page Backgrounds - Light -->
+    <Color x:Key="PageBackgroundColorLight">#FFFFFF</Color>
+    <Color x:Key="SurfaceColorLight">#FFFFFF</Color>
+    <Color x:Key="CardBackgroundColorLight">#FFFFFF</Color>
+    <Color x:Key="ListBackgroundColorLight">#C8C8C8</Color>
+
+    <!-- Text Colors - Light -->
+    <Color x:Key="TextPrimaryColorLight">#212121</Color>
+    <Color x:Key="TextSecondaryColorLight">#404040</Color>
+    <Color x:Key="TextTertiaryColorLight">#6E6E6E</Color>
+    <Color x:Key="TextOnPrimaryColorLight">#FFFFFF</Color>
+
+    <!-- Border & Divider Colors - Light -->
+    <Color x:Key="BorderColorLight">#C8C8C8</Color>
+    <Color x:Key="DividerColorLight">#ACACAC</Color>
+    <Color x:Key="SeparatorColorLight">#D3D3D3</Color>
+
+    <!-- Interactive Element Colors - Light -->
+    <Color x:Key="ButtonBackgroundColorLight">#e40015</Color>
+    <Color x:Key="ButtonTextColorLight">#FFFFFF</Color>
+    <Color x:Key="PlaceholderColorLight">#C8C8C8</Color>
+
+    <!-- Loading & Progress Colors - Light -->
+    <Color x:Key="LoadingBackgroundColorLight">#F5F5F5</Color>
+    <Color x:Key="LoadingTextColorLight">#000000</Color>
+    <Color x:Key="ProgressBarBackgroundColorLight">#E0E0E0</Color>
+    <Color x:Key="ProgressBarColorLight">#2196F3</Color>
+
+    <!-- ========================================
+         THEME-AWARE SEMANTIC COLORS (Dark Theme)
+         ======================================== -->
+    <!-- Page Backgrounds - Dark -->
+    <Color x:Key="PageBackgroundColorDark">#000000</Color>
+    <Color x:Key="SurfaceColorDark">#212121</Color>
+    <Color x:Key="CardBackgroundColorDark">#212121</Color>
+    <Color x:Key="ListBackgroundColorDark">#000000</Color>
+
+    <!-- Text Colors - Dark -->
+    <Color x:Key="TextPrimaryColorDark">#FFFFFF</Color>
+    <Color x:Key="TextSecondaryColorDark">#919191</Color>
+    <Color x:Key="TextTertiaryColorDark">#6E6E6E</Color>
+    <Color x:Key="TextOnPrimaryColorDark">#e40015</Color>
+
+    <!-- Border & Divider Colors - Dark -->
+    <Color x:Key="BorderColorDark">#6E6E6E</Color>
+    <Color x:Key="DividerColorDark">#404040</Color>
+    <Color x:Key="SeparatorColorDark">#404040</Color>
+
+    <!-- Interactive Element Colors - Dark -->
+    <Color x:Key="ButtonBackgroundColorDark">#FFFFFF</Color>
+    <Color x:Key="ButtonTextColorDark">#e40015</Color>
+    <Color x:Key="PlaceholderColorDark">#6E6E6E</Color>
+
+    <!-- Loading & Progress Colors - Dark -->
+    <Color x:Key="LoadingBackgroundColorDark">#141414</Color>
+    <Color x:Key="LoadingTextColorDark">#FFFFFF</Color>
+    <Color x:Key="ProgressBarBackgroundColorDark">#404040</Color>
+    <Color x:Key="ProgressBarColorDark">#46d8ae</Color>
+
+    <!-- ========================================
+         INPUT BACKGROUND (No Theme Variation)
+         ======================================== -->
+    <Color x:Key="InputBackgroundColor">Transparent</Color>
 
 </ResourceDictionary>

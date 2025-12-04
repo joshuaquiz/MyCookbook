@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Humanizer;
 using Microsoft.EntityFrameworkCore;
 using MyCookbook.API.Exceptions;
 using MyCookbook.API.Interfaces;
@@ -130,6 +131,8 @@ public sealed partial class RecipeWebSiteWrapperProcessor(
         var recipe = await db.Recipes
             .Include(x => x.Steps)
             .Include(x => x.EntityImages)
+            .Include(x => x.RecipeTags)
+            .Include(x => x.RecipeCategories)
             .FirstOrDefaultAsync(
                 x => x.Title == recipeName,
                 cancellationToken);
@@ -141,7 +144,9 @@ public sealed partial class RecipeWebSiteWrapperProcessor(
                     Title = recipeName,
                     RawDataSource = rawDataSource,
                     EntityImages = [],
-                    Steps = []
+                    Steps = [],
+                    RecipeTags = [],
+                    RecipeCategories = []
                 },
                 cancellationToken);
             recipe = fromDb.Entity;
@@ -290,6 +295,78 @@ public sealed partial class RecipeWebSiteWrapperProcessor(
                         int.Parse(servingsMatch.Groups["R1"].Value),
                         int.Parse(servingsMatch.Groups["R2"].Value)
                     }.Average());
+            }
+        }
+
+        if (wrapperRecipe.AggregateRating != default)
+        {
+            var aggregateRating = wrapperRecipe.AggregateRating.ToArray().FirstOrDefault();
+            if (aggregateRating is { RatingValue.HasValue: true })
+            {
+                var ratingValue = aggregateRating.RatingValue;
+                if (ratingValue.HasValue1)
+                {
+                    recipe.Rating = (decimal?)ratingValue.Value1.First();
+                }
+                else if (ratingValue.HasValue2)
+                {
+                    if (decimal.TryParse(ratingValue.Value2.First(), out var parsedRating))
+                    {
+                        recipe.Rating = parsedRating;
+                    }
+                }
+            }
+        }
+
+        if (wrapperRecipe.Keywords != default)
+        {
+            var keywords = new List<string>();
+            if (wrapperRecipe.Keywords.HasValue1)
+            {
+                keywords.AddRange(
+                    wrapperRecipe.Keywords
+                        .Value1
+                        .ToArray()
+                        .SelectMany(
+                            x =>
+                                x.Split(
+                                    ',',
+                                    StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)));
+            }
+
+            foreach (var keyword in keywords)
+            {
+                var tag = await db.Tags.FirstOrDefaultAsync(t => t.TagName == keyword, cancellationToken);
+                if (tag == null)
+                {
+                    tag = new Tag { TagName = keyword };
+                    await db.Tags.AddAsync(tag, cancellationToken);
+                }
+
+                if (recipe.RecipeTags.All(rt => rt.TagId != tag.TagId))
+                {
+                    recipe.RecipeTags.Add(new RecipeTag { RecipeId = recipe.RecipeId, Tag = tag });
+                }
+            }
+        }
+
+        if (wrapperRecipe.RecipeCategory != default)
+        {
+            var categories = wrapperRecipe.RecipeCategory.ToArray();
+            foreach (var categoryName in categories)
+            {
+                var casedCategoryName = categoryName.Transform(To.SentenceCase);
+                var category = await db.Categories.FirstOrDefaultAsync(c => c.CategoryName == casedCategoryName, cancellationToken);
+                if (category == null)
+                {
+                    category = new Category { CategoryName = casedCategoryName };
+                    await db.Categories.AddAsync(category, cancellationToken);
+                }
+
+                if (recipe.RecipeCategories.All(rc => rc.CategoryId != category.CategoryId))
+                {
+                    recipe.RecipeCategories.Add(new RecipeCategory { RecipeId = recipe.RecipeId, Category = category });
+                }
             }
         }
 

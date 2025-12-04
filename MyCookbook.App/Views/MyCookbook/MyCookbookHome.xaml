@@ -10,10 +10,16 @@
     Title="{Binding Title}"
     Shell.NavBarIsVisible="False"
     Shell.PresentationMode="ModalAnimated">
-    <Grid
-        ColumnDefinitions="*,Auto"
-        RowDefinitions="Auto,*,50"
-        BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Black}}">
+    <Grid BackgroundColor="{AppThemeBinding Light={StaticResource ListBackgroundColorLight}, Dark={StaticResource ListBackgroundColorDark}}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="{StaticResource HeightMedium}" />
+        </Grid.RowDefinitions>
         <SearchBar
             x:Name="TextSearchBar"
             Grid.Row="0"
@@ -27,16 +33,23 @@
             Grid.Row="0"
             Grid.Column="1"
             HorizontalOptions="End"
-            HeightRequest="30"
-            WidthRequest="30"
-            Margin="10"
-            Source="profile" />
-        <RefreshView 
+            HeightRequest="{StaticResource WidthSmall}"
+            WidthRequest="{StaticResource WidthSmall}"
+            Source="profile">
+            <ImageButton.Margin>
+                <Thickness>
+                    <OnPlatform x:TypeArguments="Thickness">
+                        <On Platform="iOS, Android, WinUI, MacCatalyst">10</On>
+                    </OnPlatform>
+                </Thickness>
+            </ImageButton.Margin>
+        </ImageButton>
+        <RefreshView
             Grid.Row="1"
             Grid.Column="0"
             Grid.ColumnSpan="2"
             Margin="0"
-            Padding="10"
+            Padding="{StaticResource PaddingMedium}"
             IsRefreshing="{Binding IsRefreshing}"
             Command="{Binding GetRecipesCommand}"
             CommandParameter="{x:Reference TextSearchBar}"

@@ -57,11 +57,13 @@ public partial class RecipeSummaryViewModel
 
     public string Difficulty { get; init; } = "Medium";
 
-    public string Category { get; init; } = "Lunch, Snack";
+    public string Category { get; init; }
 
     public int? Calories { get; init; }
 
     public int Hearts { get; init; }
 
-    public string Tags { get; init; } = "#chicken #Beef #Fun #Snack";
+    public decimal? Rating { get; init; }
+
+    public string Tags { get; init; }
 }

@@ -144,6 +144,40 @@ public sealed partial class CookbookDelegatingHandler : BaseDelegatingHandler
                                             ei.entity_type = 3
                                         GROUP BY
                                             ei.entity_id
+                                    ),
+                                    AggregatedTags AS (
+                                        -- Aggregates tags for each recipe
+                                        SELECT
+                                            rt.recipe_id,
+                                            GROUP_CONCAT('#' || t.tag_name, ' ') AS tags
+                                        FROM
+                                            RecipeTags AS rt
+                                            INNER JOIN Tags AS t
+                                                ON t.tag_id = rt.tag_id
+                                        GROUP BY
+                                            rt.recipe_id
+                                    ),
+                                    AggregatedCategories AS (
+                                        -- Aggregates categories for each recipe
+                                        SELECT
+                                            rc.recipe_id,
+                                            GROUP_CONCAT(c.category_name, ', ') AS categories
+                                        FROM
+                                            RecipeCategories AS rc
+                                            INNER JOIN Categories AS c
+                                                ON c.category_id = rc.category_id
+                                        GROUP BY
+                                            rc.recipe_id
+                                    ),
+                                    AggregatedHearts AS (
+                                        -- Counts hearts for each recipe
+                                        SELECT
+                                            rh.recipe_id,
+                                            COUNT(*) AS heart_count
+                                        FROM
+                                            RecipeHearts AS rh
+                                        GROUP BY
+                                            rh.recipe_id
                                     )
                                     SELECT
                                         r.recipe_id AS Guid,
@@ -153,7 +187,11 @@ public sealed partial class CookbookDelegatingHandler : BaseDelegatingHandler
                                         ai.image_url AS AuthorImageUrlRaw,
                                         a.name AS AuthorName,
                                         CAST(COALESCE(r.prep_time, 0) + COALESCE(r.cook_time, 0) AS BIGINT) AS TotalMinutes,
-                                        u.url AS ItemUrlRaw
+                                        u.url AS ItemUrlRaw,
+                                        CAST(COALESCE(ah.heart_count, 0) AS INTEGER) AS Hearts,
+                                        COALESCE(r.rating, 0) AS Rating,
+                                        COALESCE(atags.tags, '') AS Tags,
+                                        COALESCE(acat.categories, '') AS Category
                                     FROM
                                         Recipes AS r
                                         INNER JOIN Authors AS a
@@ -168,6 +206,12 @@ public sealed partial class CookbookDelegatingHandler : BaseDelegatingHandler
                                             ON bri.recipe_id = r.recipe_id
                                         LEFT JOIN AuthorPrimaryImage AS ai
                                             ON ai.author_id = r.author_id
+                                        LEFT JOIN AggregatedTags AS atags
+                                            ON atags.recipe_id = r.recipe_id
+                                        LEFT JOIN AggregatedCategories AS acat
+                                            ON acat.recipe_id = r.recipe_id
+                                        LEFT JOIN AggregatedHearts AS ah
+                                            ON ah.recipe_id = r.recipe_id
                                     LIMIT
                                         ?
                                     OFFSET
@@ -308,6 +352,40 @@ public sealed partial class CookbookDelegatingHandler : BaseDelegatingHandler
                                             ei.entity_type = 3
                                         GROUP BY
                                             ei.entity_id
+                                    ),
+                                    AggregatedTags AS (
+                                        -- Aggregates tags for each recipe
+                                        SELECT
+                                            rt.recipe_id,
+                                            GROUP_CONCAT('#' || t.tag_name, ' ') AS tags
+                                        FROM
+                                            RecipeTags AS rt
+                                            INNER JOIN Tags AS t
+                                                ON t.tag_id = rt.tag_id
+                                        GROUP BY
+                                            rt.recipe_id
+                                    ),
+                                    AggregatedCategories AS (
+                                        -- Aggregates categories for each recipe
+                                        SELECT
+                                            rc.recipe_id,
+                                            GROUP_CONCAT(c.category_name, ', ') AS categories
+                                        FROM
+                                            RecipeCategories AS rc
+                                            INNER JOIN Categories AS c
+                                                ON c.category_id = rc.category_id
+                                        GROUP BY
+                                            rc.recipe_id
+                                    ),
+                                    AggregatedHearts AS (
+                                        -- Counts hearts for each recipe
+                                        SELECT
+                                            rh.recipe_id,
+                                            COUNT(*) AS heart_count
+                                        FROM
+                                            RecipeHearts AS rh
+                                        GROUP BY
+                                            rh.recipe_id
                                     )
                                     SELECT DISTINCT
                                         r.recipe_id AS Guid,
@@ -317,7 +395,11 @@ public sealed partial class CookbookDelegatingHandler : BaseDelegatingHandler
                                         ai.image_url AS AuthorImageUrlRaw,
                                         a.name AS AuthorName,
                                         CAST(COALESCE(r.prep_time, 0) + COALESCE(r.cook_time, 0) AS BIGINT) AS TotalMinutes,
-                                        u.url AS ItemUrlRaw
+                                        u.url AS ItemUrlRaw,
+                                        CAST(COALESCE(ah.heart_count, 0) AS INTEGER) AS Hearts,
+                                        COALESCE(r.rating, 0) AS Rating,
+                                        COALESCE(atags.tags, '') AS Tags,
+                                        COALESCE(acat.categories, '') AS Category
                                     FROM
                                         Ingredients AS i
                                         INNER JOIN RecipeStepIngredients AS rsi
@@ -338,6 +420,12 @@ public sealed partial class CookbookDelegatingHandler : BaseDelegatingHandler
                                             ON bri.recipe_id = r.recipe_id
                                         LEFT JOIN AuthorPrimaryImage AS ai
                                             ON ai.author_id = r.author_id
+                                        LEFT JOIN AggregatedTags AS atags
+                                            ON atags.recipe_id = r.recipe_id
+                                        LEFT JOIN AggregatedCategories AS acat
+                                            ON acat.recipe_id = r.recipe_id
+                                        LEFT JOIN AggregatedHearts AS ah
+                                            ON ah.recipe_id = r.recipe_id
                                     WHERE
                                         {termQuery}{categoryQuery}{ingredientQuery}{excludeQuery}
                                     LIMIT
@@ -431,6 +519,9 @@ public sealed partial class CookbookDelegatingHandler : BaseDelegatingHandler
                                     .Include(x => x.EntityImages).ThenInclude(x => x.Image)
                                     .Include(x => x.Author).ThenInclude(x => x.EntityImages).ThenInclude(x => x.Image)
                                     .Include(x => x.Steps).ThenInclude(x => x.StepIngredients).ThenInclude(x => x.Ingredient).ThenInclude(x => x.EntityImages).ThenInclude(x => x.Image)
+                                    .Include(x => x.RecipeTags).ThenInclude(x => x.Tag)
+                                    .Include(x => x.RecipeCategories).ThenInclude(x => x.Category)
+                                    .Include(x => x.RecipeHearts)
                                     .FirstAsync(x => x.RecipeId == guid, cancellationToken);
                                 var recipeItem = new RecipeModel(
                                     recipe.RecipeId,
@@ -445,6 +536,10 @@ public sealed partial class CookbookDelegatingHandler : BaseDelegatingHandler
                                         : TimeSpan.Zero,
                                     recipe.Servings ?? 4,
                                     recipe.Description,
+                                    recipe.RecipeHearts.Count,
+                                    recipe.Rating,
+                                    recipe.RecipeTags.Select(x => $"#{x.Tag.TagName}").ToList(),
+                                    recipe.RecipeCategories.Select(x => x.Category.CategoryName).ToList(),
                                     new UserProfileModel(
                                         recipe.Author.AuthorId,
                                         recipe.Author.EntityImages.FirstOrDefault(x => x.Image.ImageType == ImageType.Background)?.Image.Url,

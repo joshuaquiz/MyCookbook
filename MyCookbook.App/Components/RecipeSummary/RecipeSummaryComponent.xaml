@@ -45,11 +45,25 @@
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
         <Grid
-            RowDefinitions="Auto,10,Auto,10,1,225,1,10,Auto"
-            ColumnDefinitions="10,*,10"
             HorizontalOptions="Fill"
             VerticalOptions="Fill"
             BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="1" />
+                <RowDefinition Height="235" />
+                <RowDefinition Height="1" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="10" />
+            </Grid.ColumnDefinitions>
 
             <!-- Recipe Name Header -->
             <Label
@@ -66,8 +80,12 @@
             <!-- Author Section -->
             <Grid
                 Grid.Row="2"
-                Grid.Column="1"
-                ColumnDefinitions="Auto,*,Auto">
+                Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
                 <Border
                     Grid.Column="0"
                     StrokeThickness="0"
@@ -219,8 +237,11 @@
                 Margin="0,0,0,10">
 
                 <!-- Row 1: Duration (left) and Category (right) -->
-                <Grid
-                    ColumnDefinitions="*,Auto">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
                     <HorizontalStackLayout
                         Grid.Column="0"
                         Spacing="5"
@@ -253,8 +274,11 @@
                 </Grid>
 
                 <!-- Row 2: Servings (left) and Calories (right) -->
-                <Grid
-                    ColumnDefinitions="*,Auto">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
                     <Label
                         Grid.Column="0"
                         VerticalOptions="Center"
@@ -296,9 +320,14 @@
                     </Label>
                 </Grid>
 
-                <!-- Row 3: Hearts (left) and Tags (right) -->
-                <Grid
-                    ColumnDefinitions="Auto,*">
+                <!-- Row 3: Hearts, Rating (left) and Tags (right) -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="10" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
                     <Label
                         Grid.Column="0"
                         VerticalOptions="Center"
@@ -313,6 +342,18 @@
                     </Label>
                     <Label
                         Grid.Column="1"
+                        VerticalOptions="Center"
+                        HorizontalOptions="Start"
+                        FontSize="16"
+                        Margin="0,0,0,0">
+                        <Label.Text>
+                            <MultiBinding StringFormat="{}⭐ {0:F1}">
+                                <Binding Path="Rating"></Binding>
+                            </MultiBinding>
+                        </Label.Text>
+                    </Label>
+                    <Label
+                        Grid.Column="3"
                         Text="{Binding Tags}"
                         VerticalOptions="Center"
                         HorizontalOptions="Start"

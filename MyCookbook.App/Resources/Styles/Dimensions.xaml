@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<?xaml-comp compile="true" ?>
+<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!-- ========================================
+         SPACING & MARGINS
+         ======================================== -->
+    <x:Double x:Key="SpacingXSmall">2</x:Double>
+    <x:Double x:Key="SpacingSmall">5</x:Double>
+    <x:Double x:Key="SpacingMedium">10</x:Double>
+    <x:Double x:Key="SpacingLarge">15</x:Double>
+    <x:Double x:Key="SpacingXLarge">20</x:Double>
+    <x:Double x:Key="SpacingXXLarge">30</x:Double>
+    
+    <!-- Thickness values for common spacing patterns -->
+    <Thickness x:Key="ThicknessXSmall">2</Thickness>
+    <Thickness x:Key="ThicknessSmall">5</Thickness>
+    <Thickness x:Key="ThicknessMedium">10</Thickness>
+    <Thickness x:Key="ThicknessLarge">15</Thickness>
+    <Thickness x:Key="ThicknessXLarge">20</Thickness>
+
+    <!-- Common Margin/Padding Patterns -->
+    <Thickness x:Key="MarginHorizontalXLarge">20,0</Thickness>
+    <Thickness x:Key="MarginHorizontalMedium">10,0</Thickness>
+    <Thickness x:Key="MarginVerticalMedium">0,10</Thickness>
+    <Thickness x:Key="MarginVerticalSmall">0,5</Thickness>
+    <Thickness x:Key="MarginVerticalLarge">0,15</Thickness>
+    <Thickness x:Key="MarginTopMedium">0,10,0,0</Thickness>
+    <Thickness x:Key="MarginTopSmall">0,5,0,0</Thickness>
+    <Thickness x:Key="MarginBottomMedium">0,0,0,10</Thickness>
+    <Thickness x:Key="MarginRightMedium">0,0,10,0</Thickness>
+    <Thickness x:Key="MarginLeftMedium">0,0,0,10</Thickness>
+    <Thickness x:Key="MarginLeftXLarge">20,0,0,0</Thickness>
+    <Thickness x:Key="MarginStandard">20,10</Thickness>
+    <Thickness x:Key="MarginStandardTop">20,10,20,0</Thickness>
+    <Thickness x:Key="MarginCompact">20,8</Thickness>
+    <Thickness x:Key="MarginNegativeSmall">-3,0</Thickness>
+    <Thickness x:Key="MarginIcon">5,0,10,0</Thickness>
+    <Thickness x:Key="MarginIconRight">0,0,10,0</Thickness>
+
+    <!-- Common Padding Patterns -->
+    <Thickness x:Key="PaddingStandard">20,10</Thickness>
+    <Thickness x:Key="PaddingMedium">10</Thickness>
+    <Thickness x:Key="PaddingLarge">20</Thickness>
+    
+    <!-- ========================================
+         FONT SIZES
+         ======================================== -->
+    <x:Double x:Key="FontSizeCaption">12</x:Double>
+    <x:Double x:Key="FontSizeBody">14</x:Double>
+    <x:Double x:Key="FontSizeBodyLarge">15</x:Double>
+    <x:Double x:Key="FontSizeSubtitle">16</x:Double>
+    <x:Double x:Key="FontSizeTitle">18</x:Double>
+    <x:Double x:Key="FontSizeTitleLarge">20</x:Double>
+    <x:Double x:Key="FontSizeHeading">24</x:Double>
+    <x:Double x:Key="FontSizeHeadingLarge">28</x:Double>
+    <x:Double x:Key="FontSizeDisplay">32</x:Double>
+    
+    <!-- ========================================
+         COMMON DIMENSIONS
+         ======================================== -->
+    <!-- Icon Sizes -->
+    <x:Double x:Key="IconSizeSmall">18</x:Double>
+    <x:Double x:Key="IconSizeMedium">20</x:Double>
+    <x:Double x:Key="IconSizeLarge">22</x:Double>
+    <x:Double x:Key="IconSizeXLarge">24</x:Double>
+    
+    <!-- Touch Target Sizes (Minimum 44x44 for accessibility) -->
+    <x:Double x:Key="TouchTargetSize">44</x:Double>
+    <x:Double x:Key="TouchTargetSizeLarge">50</x:Double>
+    
+    <!-- Common Heights -->
+    <x:Double x:Key="HeightSmall">28</x:Double>
+    <x:Double x:Key="HeightMedium">50</x:Double>
+    <x:Double x:Key="HeightLarge">70</x:Double>
+    <x:Double x:Key="HeightXLarge">100</x:Double>
+    <x:Double x:Key="HeightXXLarge">150</x:Double>
+    <x:Double x:Key="HeightHero">160</x:Double>
+    <x:Double x:Key="HeightImage">200</x:Double>
+    <x:Double x:Key="HeightImageCarousel">230</x:Double>
+    
+    <!-- Common Widths -->
+    <x:Double x:Key="WidthSmall">30</x:Double>
+    <x:Double x:Key="WidthMedium">50</x:Double>
+    <x:Double x:Key="WidthLarge">125</x:Double>
+    <x:Double x:Key="WidthXLarge">150</x:Double>
+    
+    <!-- ========================================
+         BORDER & CORNER RADIUS
+         ======================================== -->
+    <x:Double x:Key="BorderThicknessNone">0</x:Double>
+    <x:Double x:Key="BorderThicknessThin">1</x:Double>
+    <x:Double x:Key="BorderThicknessMedium">2</x:Double>
+    
+    <x:Double x:Key="CornerRadiusSmall">4</x:Double>
+    <x:Double x:Key="CornerRadiusMedium">6</x:Double>
+    <x:Double x:Key="CornerRadiusLarge">8</x:Double>
+    <x:Double x:Key="CornerRadiusXLarge">12</x:Double>
+    <x:Double x:Key="CornerRadiusCircle">75</x:Double>
+    
+    <!-- ========================================
+         OPACITY VALUES
+         ======================================== -->
+    <x:Double x:Key="OpacityDisabled">0.5</x:Double>
+    <x:Double x:Key="OpacityMedium">0.7</x:Double>
+    <x:Double x:Key="OpacityFull">1.0</x:Double>
+
+</ResourceDictionary>
+

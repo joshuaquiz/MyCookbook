@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.ApplicationModel;
 using MyCookbook.App.Interfaces;
 using MyCookbook.App.ViewModels;
@@ -11,24 +12,28 @@ namespace MyCookbook.App;
 public partial class App
 {
     private readonly ICookbookStorage _cookbookStorage;
-    private readonly LoadingViewModel _loadingViewModel;
-    private readonly Login _login;
+    private readonly IServiceProvider _serviceProvider;
+    private LoadingViewModel _loadingViewModel;
+    private Login _login;
 
 
     public App(
         ICookbookStorage cookbookStorage,
-        LoadingScreen loadingScreen,
-        LoadingViewModel loadingViewModel,
-        Login login)
+        IServiceProvider serviceProvider)
     {
         _cookbookStorage = cookbookStorage;
-        _loadingViewModel = loadingViewModel;
-        _login = login;
+        _serviceProvider = serviceProvider;
 
-        // Show loading screen first
-        MainPage = loadingScreen;
-
+        // Initialize resources FIRST before resolving any pages
         InitializeComponent();
+
+        // NOW resolve pages after resources are loaded
+        _loadingViewModel = _serviceProvider.GetRequiredService<LoadingViewModel>();
+        var loadingScreen = _serviceProvider.GetRequiredService<LoadingScreen>();
+        _login = _serviceProvider.GetRequiredService<Login>();
+
+        // Show loading screen after resources are loaded
+        MainPage = loadingScreen;
 
         //CrossMauiMTAdmob.Current.UserPersonalizedAds = true;
         //CrossMauiMTAdmob.Current.ComplyWithFamilyPolicies = true;

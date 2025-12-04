@@ -1,18 +1,30 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:viewModels="clr-namespace:MyCookbook.App.ViewModels"
     x:Class="MyCookbook.App.Views.LoadingScreen"
     Shell.NavBarIsVisible="False"
     Shell.PresentationMode="NotAnimated"
-    BackgroundColor="#F5F5F5"
+    BackgroundColor="{AppThemeBinding Light={StaticResource LoadingBackgroundColorLight}, Dark={StaticResource LoadingBackgroundColorDark}}"
     x:DataType="viewModels:LoadingViewModel">
     <Grid
         HorizontalOptions="Fill"
-        VerticalOptions="Fill"
-        RowDefinitions="*,20,10,20,10,20,*"
-        ColumnDefinitions="20,*,20">
+        VerticalOptions="Fill">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="{StaticResource SpacingXLarge}" />
+            <RowDefinition Height="{StaticResource SpacingMedium}" />
+            <RowDefinition Height="{StaticResource SpacingXLarge}" />
+            <RowDefinition Height="{StaticResource SpacingMedium}" />
+            <RowDefinition Height="{StaticResource SpacingXLarge}" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="{StaticResource SpacingXLarge}" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="{StaticResource SpacingXLarge}" />
+        </Grid.ColumnDefinitions>
         <Image
             Grid.Row="0"
             Grid.RowSpan="7"
@@ -24,20 +36,20 @@
             Grid.Row="1"
             Grid.Column="1"
             Text="{Binding LoadingMessage}"
-            FontSize="18"
+            FontSize="{StaticResource FontSizeTitle}"
             FontAttributes="Bold"
-            TextColor="Black"
+            TextColor="{AppThemeBinding Light={StaticResource LoadingTextColorLight}, Dark={StaticResource LoadingTextColorDark}}"
             HorizontalTextAlignment="Center" />
         <Border
             Grid.Row="3"
             Grid.Column="1"
-            StrokeShape="RoundRectangle 6"
-            StrokeThickness="0"
-            BackgroundColor="#E0E0E0"
+            StrokeShape="RoundRectangle {StaticResource CornerRadiusMedium}"
+            StrokeThickness="{StaticResource BorderThicknessNone}"
+            BackgroundColor="{AppThemeBinding Light={StaticResource ProgressBarBackgroundColorLight}, Dark={StaticResource ProgressBarBackgroundColorDark}}"
             HeightRequest="12">
             <ProgressBar
                 Progress="{Binding LoadingProgress}"
-                ProgressColor="#2196F3"
+                ProgressColor="{AppThemeBinding Light={StaticResource ProgressBarColorLight}, Dark={StaticResource ProgressBarColorDark}}"
                 BackgroundColor="Transparent"
                 HeightRequest="12" />
         </Border>
@@ -45,8 +57,8 @@
             Grid.Row="5"
             Grid.Column="1"
             Text="{Binding LoadingProgress, StringFormat='{0:P0}'}"
-            FontSize="14"
-            TextColor="Black"
+            FontSize="{StaticResource FontSizeBody}"
+            TextColor="{AppThemeBinding Light={StaticResource LoadingTextColorLight}, Dark={StaticResource LoadingTextColorDark}}"
             HorizontalTextAlignment="Center"
             VerticalTextAlignment="Center" />
     </Grid>

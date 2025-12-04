@@ -27,6 +27,10 @@ public class MyCookbookContext(
 
     public DbSet<RecipeTag> RecipeTags { get; set; }
 
+    public DbSet<Category> Categories { get; set; }
+
+    public DbSet<RecipeCategory> RecipeCategories { get; set; }
+
     public DbSet<RecipeHeart> RecipeHearts { get; set; }
 
     public DbSet<Image> Images { get; set; }
@@ -92,6 +96,10 @@ public class MyCookbookContext(
         // RecipeTag (Many-to-Many setup with Composite Key)
         modelBuilder.Entity<RecipeTag>()
             .HasKey(rt => new { rt.RecipeId, rt.TagId });
+
+        // RecipeCategory (Many-to-Many setup with Composite Key)
+        modelBuilder.Entity<RecipeCategory>()
+            .HasKey(rc => new { rc.RecipeId, rc.CategoryId });
 
         // RecipeHeart (Many-to-Many setup with Composite Key)
         modelBuilder.Entity<RecipeHeart>()

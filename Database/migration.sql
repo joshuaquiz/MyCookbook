@@ -147,6 +147,49 @@ CREATE TABLE AuthorLinks (
     FOREIGN KEY (author_id) REFERENCES Authors(author_id)
 );
 
+-- 13. Tags Table: Master list of tags
+CREATE TABLE Tags (
+    tag_id TEXT PRIMARY KEY NOT NULL, -- GUID
+    tag_name TEXT NOT NULL UNIQUE
+);
+
+-- 14. RecipeTags Table: Many-to-many relationship between recipes and tags
+CREATE TABLE RecipeTags (
+    recipe_id TEXT NOT NULL,
+    tag_id TEXT NOT NULL,
+
+    PRIMARY KEY (recipe_id, tag_id),
+    FOREIGN KEY (recipe_id) REFERENCES Recipes(recipe_id),
+    FOREIGN KEY (tag_id) REFERENCES Tags(tag_id)
+);
+
+-- 15. Categories Table: Master list of categories
+CREATE TABLE Categories (
+    category_id TEXT PRIMARY KEY NOT NULL, -- GUID
+    category_name TEXT NOT NULL UNIQUE
+);
+
+-- 16. RecipeCategories Table: Many-to-many relationship between recipes and categories
+CREATE TABLE RecipeCategories (
+    recipe_id TEXT NOT NULL,
+    category_id TEXT NOT NULL,
+
+    PRIMARY KEY (recipe_id, category_id),
+    FOREIGN KEY (recipe_id) REFERENCES Recipes(recipe_id),
+    FOREIGN KEY (category_id) REFERENCES Categories(category_id)
+);
+
+-- 17. RecipeHearts Table: Tracks which users have hearted which recipes
+CREATE TABLE RecipeHearts (
+    user_id TEXT NOT NULL,
+    recipe_id TEXT NOT NULL,
+    hearted_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    PRIMARY KEY (user_id, recipe_id),
+    FOREIGN KEY (user_id) REFERENCES Users(user_id),
+    FOREIGN KEY (recipe_id) REFERENCES Recipes(recipe_id)
+);
+
 -- Index for efficient lookup of links by author
 CREATE INDEX idx_authorlinks_author_id ON AuthorLinks(author_id);
 
@@ -160,6 +203,12 @@ CREATE INDEX idx_recipestepingredients_ingredient_id ON RecipeStepIngredients(in
 CREATE INDEX idx_entityimages_entity_id ON EntityImages(entity_id);
 CREATE INDEX idx_entityimages_image_id ON EntityImages(image_id);
 CREATE INDEX idx_popularity_entity_id_type ON Popularity(entity_id, entity_type);
+CREATE INDEX idx_recipetags_recipe_id ON RecipeTags(recipe_id);
+CREATE INDEX idx_recipetags_tag_id ON RecipeTags(tag_id);
+CREATE INDEX idx_recipecategories_recipe_id ON RecipeCategories(recipe_id);
+CREATE INDEX idx_recipecategories_category_id ON RecipeCategories(category_id);
+CREATE INDEX idx_recipehearts_recipe_id ON RecipeHearts(recipe_id);
+CREATE INDEX idx_recipehearts_user_id ON RecipeHearts(user_id);
 
 
 -- 4. Migrate old RecipeUrls data to the new RawDataSources table

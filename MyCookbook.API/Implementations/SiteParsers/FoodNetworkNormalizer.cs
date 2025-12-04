@@ -68,38 +68,50 @@ public sealed partial class FoodNetworkNormalizer
         {
             if (!wrapper.Recipes[0].Image.HasValue)
             {
-                var extractedUrl = NormalizeImageUrl(
-                    "https:" + wrapper.HtmlDocument.DocumentNode
-                        .SelectNodes("//div[@class='recipeLead']//img")
-                        .FirstOrDefault()
-                        ?.Attributes
-                        .FirstOrDefault(x =>
-                            x.Name == "src")
-                        ?.Value);
-                if (extractedUrl != null)
+                var src = wrapper.HtmlDocument.DocumentNode
+                    .SelectNodes("//div[@class='recipeLead']//img")
+                    .FirstOrDefault()
+                    ?.Attributes
+                    .FirstOrDefault(x =>
+                        x.Name == "src")
+                    ?.Value;
+                var srcSet = wrapper.HtmlDocument.DocumentNode
+                    .SelectNodes("//div[@class='recipeLead']//img")
+                    .FirstOrDefault()
+                    ?.Attributes
+                    .FirstOrDefault(x =>
+                        x.Name == "srcset")
+                    ?.Value;
+                var urls = new List<Uri>();
+                if (!string.IsNullOrWhiteSpace(src))
                 {
-                    wrapper.Recipes[0].Image = new Values<IImageObject, Uri>(extractedUrl);
+                    var normalizeImageUrl = NormalizeImageUrl(
+                        "https:" + src);
+                    if (normalizeImageUrl != null)
+                    {
+                        urls.Add(
+                            normalizeImageUrl);
+                    }
+                }
+
+                if (!string.IsNullOrWhiteSpace(srcSet))
+                {
+                    var srcSetUrls = srcSet
+                        .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                        .Select(x => x.Split(' ', StringSplitOptions.RemoveEmptyEntries).First())
+                        .Distinct();
+                    urls.AddRange(srcSetUrls.Select(url => NormalizeImageUrl("https:" + url)).OfType<Uri>());
+                }
+
+                if (urls.Count > 0)
+                {
+                    wrapper.Recipes[0].Image = new Values<IImageObject, Uri>(urls);
                 }
             }
 
             if (!wrapper.Recipes[0].Video.HasValue)
             {
-                var extractedUrl = NormalizeImageUrl(
-                    "https:" + wrapper.HtmlDocument.DocumentNode
-                        .SelectNodes("//div[@class='recipeLead']//img")
-                        .FirstOrDefault()
-                        ?.Attributes
-                        .FirstOrDefault(x =>
-                            x.Name == "src")
-                        ?.Value);
-                if (extractedUrl != null)
-                {
-                    wrapper.Recipes[0].Video = new Values<IClip, IVideoObject>(
-                        new VideoObject
-                        {
-                            Url = extractedUrl
-                        });
-                }
+                
             }
         }
 

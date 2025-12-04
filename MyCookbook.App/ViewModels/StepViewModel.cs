@@ -28,7 +28,7 @@ public partial class StepViewModel : ObservableObject
         StepNumber = model.StepNumber;
         ImageUri = model.ImageUri;
         Description = model.Instructions;
-        
+
         Ingredients.Clear();
         foreach (var ingredient in model.Ingredients)
         {

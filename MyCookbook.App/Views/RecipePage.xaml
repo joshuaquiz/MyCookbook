@@ -36,19 +36,25 @@
             x:Key="RecipeIngredientTemplate"
             x:DataType="viewModels:RecipeIngredientViewModel">
             <VerticalStackLayout>
-                <Grid
-                    RowDefinitions="50"
-                    ColumnDefinitions="*,150">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="{StaticResource HeightMedium}" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="{StaticResource WidthXLarge}" />
+                    </Grid.ColumnDefinitions>
                     <Label
                         Grid.Row="0"
                         Grid.Column="0"
                         VerticalOptions="Fill"
                         VerticalTextAlignment="Center"
-                        Padding="20,0,0,0">
+                        Padding="{StaticResource MarginLeftXLarge}"
+                        FontSize="{StaticResource FontSizeTitle}">
                         <Label.Text>
                             <MultiBinding Converter="{StaticResource IngredientToStringConverter}">
                                 <Binding Path="." />
-                                <Binding 
+                                <Binding
                                     Path="BindingContext.ServingsMultiplier"
                                     Source="{x:Reference Root}" />
                             </MultiBinding>
@@ -59,8 +65,8 @@
                         Grid.Column="2"
                         Source="{Binding ImageUri, TargetNullValue=carrot}"
                         Aspect="AspectFill"
-                        HeightRequest="50"
-                        WidthRequest="150" />
+                        HeightRequest="{StaticResource HeightMedium}"
+                        WidthRequest="{StaticResource WidthXLarge}" />
                     <Rectangle
                         Grid.Row="0"
                         Grid.Column="2">
@@ -79,52 +85,68 @@
                     </Rectangle>
                 </Grid>
                 <Rectangle
-                    Fill="LightGray"
-                    HeightRequest="2"
+                    Fill="{AppThemeBinding Light={StaticResource SeparatorColorLight}, Dark={StaticResource SeparatorColorDark}}"
+                    HeightRequest="{StaticResource BorderThicknessMedium}"
                     HorizontalOptions="Fill" />
             </VerticalStackLayout>
         </DataTemplate>
         <DataTemplate
             x:Key="RecipeStepTemplate"
             x:DataType="viewModels:StepViewModel">
-            <VerticalStackLayout>
-                <Grid
-                    RowDefinitions="10,100,10"
-                    ColumnDefinitions="10,80,*">
-                    <Image
-                        Grid.Row="0"
-                        Grid.RowSpan="3"
-                        Grid.Column="0"
-                        Grid.ColumnSpan="3"
-                        Source="{Binding ImageUri}"
-                        Aspect="AspectFill" />
+            <VerticalStackLayout
+                Spacing="{StaticResource SpacingMedium}"
+                Margin="{StaticResource MarginVerticalMedium}">
+                <!-- Step Number and Instructions -->
+                <Grid Margin="{StaticResource MarginHorizontalXLarge}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="{StaticResource HeightMedium}" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <!-- Step Number Circle -->
                     <Ellipse
-                        Grid.Row="1"
-                        Grid.Column="1"
+                        Grid.Column="0"
                         Fill="{DynamicResource Tertiary}"
-                        WidthRequest="80"
-                        HeightRequest="80"
-                        HorizontalOptions="Fill"
-                        VerticalOptions="Fill" />
+                        WidthRequest="{StaticResource HeightMedium}"
+                        HeightRequest="{StaticResource HeightMedium}"
+                        HorizontalOptions="Start"
+                        VerticalOptions="Start" />
                     <Label
-                        Grid.Row="1"
-                        Grid.Column="1"
+                        Grid.Column="0"
                         VerticalTextAlignment="Center"
                         HorizontalTextAlignment="Center"
                         Text="{Binding StepNumber}"
-                        FontSize="30" />
+                        FontSize="{StaticResource FontSizeHeading}"
+                        FontAttributes="Bold"
+                        WidthRequest="{StaticResource HeightMedium}"
+                        HeightRequest="{StaticResource HeightMedium}"
+                        VerticalOptions="Start"
+                        HorizontalOptions="Start" />
+                    <!-- Instructions Text -->
+                    <Label
+                        Grid.Column="1"
+                        FontSize="{StaticResource FontSizeTitleLarge}"
+                        Text="{Binding Description}"
+                        Margin="{StaticResource MarginHorizontalMedium}"
+                        VerticalOptions="Start" />
                 </Grid>
-                <Label
-                    Margin="20"
-                    FontSize="18"
-                    Text="{Binding Description}" />
-                <!--<Label
-                    Margin="10"
-                    Text="Ingredients for this step:" />
-                <CollectionView
-                    ItemsSource="{Binding Ingredients}"
-                    ItemsLayout="VerticalList"
-                    ItemTemplate="{StaticResource RecipeIngredientTemplate}" />-->
+                <!-- Step Image (Full Width) -->
+                <Image
+                    Source="{Binding ImageUri}"
+                    Aspect="AspectFill"
+                    HeightRequest="{StaticResource HeightImage}"
+                    Margin="{StaticResource MarginHorizontalXLarge}"
+                    HorizontalOptions="Fill">
+                    <Image.Triggers>
+                        <DataTrigger
+                            TargetType="Image"
+                            Binding="{Binding ImageUri, Converter={StaticResource NullToBooleanConverter}}"
+                            Value="True">
+                            <Setter Property="IsVisible" Value="False" />
+                            <Setter Property="HeightRequest" Value="0" />
+                            <Setter Property="Margin" Value="0" />
+                        </DataTrigger>
+                    </Image.Triggers>
+                </Image>
             </VerticalStackLayout>
         </DataTemplate>
     </ContentPage.Resources>
@@ -135,7 +157,7 @@
             <!-- Recipe Image Carousel Container -->
             <Grid
                 x:Name="ImageCarouselContainer"
-                HeightRequest="220">
+                HeightRequest="{StaticResource HeightImageCarousel}">
                 <CarouselView
                     x:Name="ImageCarousel"
                     ItemsSource="{Binding ImageUrls}"
@@ -152,7 +174,7 @@
                     x:Name="ImageIndicator"
                     VerticalOptions="End"
                     HorizontalOptions="Center"
-                    Margin="0,0,0,10"
+                    Margin="{StaticResource MarginBottomMedium}"
                     IndicatorColor="{StaticResource Gray400}"
                     SelectedIndicatorColor="{StaticResource Tertiary}"
                     IndicatorSize="8"
@@ -174,17 +196,21 @@
                 </IndicatorView>
             </Grid>
                 <!-- Author and Servings Row -->
-                <Grid
-                    Margin="20,10,20,0"
-                    ColumnDefinitions="Auto,Auto,*,Auto">
+                <Grid Margin="{StaticResource MarginStandardTop}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
                     <!-- Author Image (Left) -->
                     <Border
                         Grid.Column="0"
-                        StrokeThickness="0"
-                        HeightRequest="50"
-                        WidthRequest="50"
-                        VerticalOptions="Center"
-                        Margin="0,0,10,0">
+                        StrokeThickness="{StaticResource BorderThicknessNone}"
+                        HeightRequest="{StaticResource HeightMedium}"
+                        WidthRequest="{StaticResource HeightMedium}"
+                        Margin="{StaticResource MarginRightMedium}"
+                        VerticalOptions="Center">
                         <Border.StrokeShape>
                             <RoundRectangle CornerRadius="25" />
                         </Border.StrokeShape>
@@ -199,24 +225,24 @@
                         <Image
                             Source="{Binding UserProfile.ProfileImageUri}"
                             Aspect="AspectFill"
-                            HeightRequest="50"
-                            WidthRequest="50"
-                            BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}" />
+                            HeightRequest="{StaticResource HeightMedium}"
+                            WidthRequest="{StaticResource HeightMedium}"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceColorLight}, Dark={StaticResource SurfaceColorDark}}" />
                     </Border>
                     <!-- Author Name and Location (Left) -->
                     <VerticalStackLayout
                         Grid.Column="1"
                         VerticalOptions="Center"
-                        Spacing="2">
+                        Spacing="{StaticResource SpacingXSmall}">
                         <Label
                             Text="{Binding UserProfile.FirstName}"
-                            FontSize="18"
+                            FontSize="{StaticResource FontSizeTitleLarge}"
                             FontAttributes="Bold"
                             LineBreakMode="TailTruncation" />
                         <Label
                             Text="{Binding Url.Host}"
-                            FontSize="14"
-                            TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}"
+                            FontSize="{StaticResource FontSizeSubtitle}"
+                            TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColorLight}, Dark={StaticResource TextSecondaryColorDark}}"
                             LineBreakMode="TailTruncation">
                             <Label.Triggers>
                                 <DataTrigger
@@ -228,122 +254,49 @@
                             </Label.Triggers>
                         </Label>
                     </VerticalStackLayout>
-                    <!-- Servings (Right) -->
-                    <HorizontalStackLayout
+                    <!-- Servings and Calories (Right) -->
+                    <VerticalStackLayout
                         Grid.Column="3"
                         VerticalOptions="Center"
                         HorizontalOptions="End"
-                        Spacing="5">
-                        <Label
-                            Text="Servings:"
-                            VerticalTextAlignment="Center"
-                            FontSize="16" />
-                        <Picker
-                            x:Name="ServingsPicker"
-                            SelectedItem="{Binding Servings, StringFormat='{0}'}"
-                            SelectedIndexChanged="ServingsPicker_SelectedIndexChanged"
-                            WidthRequest="30"
-                            IsEnabled="True"
-                            BackgroundColor="Transparent"
-                            FontSize="16">
-                            <Picker.Items>
-                                <x:String>1</x:String>
-                                <x:String>2</x:String>
-                                <x:String>3</x:String>
-                                <x:String>4</x:String>
-                                <x:String>5</x:String>
-                                <x:String>6</x:String>
-                                <x:String>7</x:String>
-                                <x:String>8</x:String>
-                                <x:String>9</x:String>
-                                <x:String>10</x:String>
-                                <x:String>12</x:String>
-                                <x:String>15</x:String>
-                                <x:String>20</x:String>
-                                <x:String>25</x:String>
-                                <x:String>30</x:String>
-                                <x:String>40</x:String>
-                                <x:String>50</x:String>
-                            </Picker.Items>
-                        </Picker>
-                    </HorizontalStackLayout>
-                </Grid>
-                <!-- Time, Calories, and Rating Row -->
-                <Border
-                    MinimumHeightRequest="80"
-                    HorizontalOptions="Fill"
-                    Margin="0,10,0,0"
-                    Stroke="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
-                    StrokeThickness="0">
-                    <Grid
-                        Margin="20,10"
-                        RowDefinitions="Auto,Auto"
-                        ColumnDefinitions="Auto,*,Auto">
-                        <!-- Timer Icon (Left, centered vertically) -->
-                        <Image
-                            Grid.Row="0"
-                            Grid.RowSpan="2"
-                            Grid.Column="0"
-                            Source="timer"
-                            HeightRequest="24"
-                            WidthRequest="24"
-                            VerticalOptions="Center"
-                            Margin="0,0,10,0"
-                            Aspect="AspectFit" />
-                        <!-- Prep Time (Top Left) -->
+                        Spacing="2">
                         <HorizontalStackLayout
-                            Grid.Row="0"
-                            Grid.Column="1"
-                            Spacing="5"
-                            VerticalOptions="Center">
-                            <HorizontalStackLayout.Triggers>
-                                <DataTrigger
-                                    TargetType="HorizontalStackLayout"
-                                    Binding="{Binding PrepTime}"
-                                    Value="{x:Null}">
-                                    <Setter Property="IsVisible" Value="False" />
-                                </DataTrigger>
-                            </HorizontalStackLayout.Triggers>
+                            HorizontalOptions="End"
+                            Spacing="5">
                             <Label
-                                Text="Prep:"
-                                VerticalOptions="Center"
-                                FontSize="16"
-                                FontAttributes="Bold" />
-                            <Label
-                                Text="{Binding PrepTime, Converter={StaticResource TimeSpanToStringConverter}}"
-                                VerticalOptions="Center"
-                                FontSize="16" />
+                                Text="Servings:"
+                                VerticalTextAlignment="Center"
+                                FontSize="18" />
+                            <Picker
+                                x:Name="ServingsPicker"
+                                SelectedItem="{Binding Servings, StringFormat='{0}'}"
+                                SelectedIndexChanged="ServingsPicker_SelectedIndexChanged"
+                                WidthRequest="30"
+                                IsEnabled="True"
+                                BackgroundColor="Transparent"
+                                FontSize="18">
+                                <Picker.Items>
+                                    <x:String>1</x:String>
+                                    <x:String>2</x:String>
+                                    <x:String>3</x:String>
+                                    <x:String>4</x:String>
+                                    <x:String>5</x:String>
+                                    <x:String>6</x:String>
+                                    <x:String>7</x:String>
+                                    <x:String>8</x:String>
+                                    <x:String>9</x:String>
+                                    <x:String>10</x:String>
+                                    <x:String>12</x:String>
+                                    <x:String>15</x:String>
+                                    <x:String>20</x:String>
+                                    <x:String>25</x:String>
+                                    <x:String>30</x:String>
+                                    <x:String>40</x:String>
+                                    <x:String>50</x:String>
+                                </Picker.Items>
+                            </Picker>
                         </HorizontalStackLayout>
-                        <!-- Cook Time (Bottom Left) -->
-                        <HorizontalStackLayout
-                            Grid.Row="1"
-                            Grid.Column="1"
-                            Spacing="5"
-                            VerticalOptions="Center">
-                            <HorizontalStackLayout.Triggers>
-                                <DataTrigger
-                                    TargetType="HorizontalStackLayout"
-                                    Binding="{Binding CookTime}"
-                                    Value="{x:Null}">
-                                    <Setter Property="IsVisible" Value="False" />
-                                </DataTrigger>
-                            </HorizontalStackLayout.Triggers>
-                            <Label
-                                Text="Cook:"
-                                VerticalOptions="Center"
-                                FontSize="16"
-                                FontAttributes="Bold" />
-                            <Label
-                                Text="{Binding CookTime, Converter={StaticResource TimeSpanToStringConverter}}"
-                                VerticalOptions="Center"
-                                FontSize="16" />
-                        </HorizontalStackLayout>
-                        <!-- Calories (Top Right) -->
                         <Label
-                            Grid.Row="0"
-                            Grid.Column="2"
-                            VerticalOptions="Center"
                             HorizontalOptions="End"
                             FontSize="16"
                             TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}">
@@ -367,41 +320,150 @@
                                 </DataTrigger>
                             </Label.Triggers>
                         </Label>
-                        <!-- Rating placeholder (Bottom Right) - can be added later -->
+                    </VerticalStackLayout>
+                </Grid>
+                <!-- Time, Hearts, and Rating Row -->
+                <Border
+                    MinimumHeightRequest="70"
+                    HorizontalOptions="Fill"
+                    Margin="{StaticResource MarginTopSmall}"
+                    Stroke="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
+                    StrokeThickness="0">
+                    <Grid
+                        Margin="{StaticResource MarginCompact}"
+                        RowDefinitions="Auto,Auto"
+                        ColumnDefinitions="Auto,*,Auto">
+                        <!-- Timer Icon (Left, centered vertically) -->
+                        <Image
+                            Grid.Row="0"
+                            Grid.RowSpan="2"
+                            Grid.Column="0"
+                            Source="timer"
+                            HeightRequest="24"
+                            WidthRequest="24"
+                            VerticalOptions="Center"
+                            Margin="{StaticResource MarginIconRight}"
+                            Aspect="AspectFit" />
+                        <!-- Prep Time (Top Left) -->
+                        <HorizontalStackLayout
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Spacing="5"
+                            VerticalOptions="Center">
+                            <HorizontalStackLayout.Triggers>
+                                <DataTrigger
+                                    TargetType="HorizontalStackLayout"
+                                    Binding="{Binding PrepTime}"
+                                    Value="{x:Null}">
+                                    <Setter Property="IsVisible" Value="False" />
+                                </DataTrigger>
+                            </HorizontalStackLayout.Triggers>
+                            <Label
+                                Text="Prep:"
+                                VerticalOptions="Center"
+                                FontSize="18"
+                                FontAttributes="Bold" />
+                            <Label
+                                Text="{Binding PrepTime, Converter={StaticResource TimeSpanToStringConverter}}"
+                                VerticalOptions="Center"
+                                FontSize="18" />
+                        </HorizontalStackLayout>
+                        <!-- Cook Time (Bottom Left) -->
+                        <HorizontalStackLayout
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Spacing="5"
+                            VerticalOptions="Center">
+                            <HorizontalStackLayout.Triggers>
+                                <DataTrigger
+                                    TargetType="HorizontalStackLayout"
+                                    Binding="{Binding CookTime}"
+                                    Value="{x:Null}">
+                                    <Setter Property="IsVisible" Value="False" />
+                                </DataTrigger>
+                            </HorizontalStackLayout.Triggers>
+                            <Label
+                                Text="Cook:"
+                                VerticalOptions="Center"
+                                FontSize="18"
+                                FontAttributes="Bold" />
+                            <Label
+                                Text="{Binding CookTime, Converter={StaticResource TimeSpanToStringConverter}}"
+                                VerticalOptions="Center"
+                                FontSize="18" />
+                        </HorizontalStackLayout>
+                        <!-- Hearts (Top Right) -->
+                        <Label
+                            Grid.Row="0"
+                            Grid.Column="2"
+                            VerticalOptions="Center"
+                            HorizontalOptions="End"
+                            FontSize="18">
+                            <Label.Text>
+                                <MultiBinding StringFormat="{}❤️ {0}">
+                                    <Binding Path="RecipeHearts"></Binding>
+                                </MultiBinding>
+                            </Label.Text>
+                        </Label>
+                        <!-- Rating (Bottom Right) -->
                         <Label
                             Grid.Row="1"
                             Grid.Column="2"
-                            Text="⭐ 4.5"
                             VerticalOptions="Center"
                             HorizontalOptions="End"
-                            FontSize="16"
-                            IsVisible="False" />
+                            FontSize="18">
+                            <Label.Text>
+                                <MultiBinding StringFormat="{}⭐ {0:F1}">
+                                    <Binding Path="Rating"></Binding>
+                                </MultiBinding>
+                            </Label.Text>
+                            <Label.Triggers>
+                                <DataTrigger
+                                    TargetType="Label"
+                                    Binding="{Binding Rating, Converter={StaticResource NullToBooleanConverter}}"
+                                    Value="True">
+                                    <Setter Property="IsVisible" Value="False" />
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
                     </Grid>
                 </Border>
                 <!-- Description -->
                 <Border
                     MinimumHeightRequest="50"
                     HorizontalOptions="Fill"
+                    Margin="{StaticResource MarginTopSmall}"
                     Stroke="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
                     BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
                     StrokeThickness="0">
-                    <Label
-                        Margin="20,10"
-                        Text="{Binding Description}"
-                        FontSize="16" />
+                    <Grid>
+                        <Label
+                            Margin="{StaticResource MarginStandard}"
+                            Text="{Binding Description}"
+                            FontSize="18"
+                            IsVisible="{Binding IsNotBusy}" />
+                        <ActivityIndicator
+                            IsRunning="{Binding IsBusy}"
+                            IsVisible="{Binding IsBusy}"
+                            VerticalOptions="Center"
+                            HorizontalOptions="Center"
+                            Margin="{StaticResource MarginStandard}"
+                            Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Primary}}" />
+                    </Grid>
                 </Border>
                 <toolkit:Expander
                     IsExpanded="True">
                     <toolkit:Expander.Header>
                         <Border
-                            Padding="10"
-                            Margin="-3,0">
+                            Padding="{StaticResource PaddingMedium}"
+                            Margin="{StaticResource MarginNegativeSmall}">
                             <HorizontalStackLayout>
                                 <Image
                                     Source="arrow_down"
                                     HeightRequest="20"
                                     WidthRequest="20"
-                                    Margin="5,0,10,0">
+                                    Margin="{StaticResource MarginIcon}">
                                     <Image.Behaviors>
                                         <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Light=Black, Dark=White}" />
                                     </Image.Behaviors>
@@ -409,7 +471,7 @@
                                 <Label
                                     Text="Ingredients"
                                     FontAttributes="Bold"
-                                    FontSize="18"
+                                    FontSize="20"
                                     VerticalTextAlignment="Center" />
                             </HorizontalStackLayout>
                         </Border>
@@ -417,24 +479,37 @@
                     <CollectionView
                         ItemsSource="{Binding RecipeIngredients}"
                         ItemsLayout="VerticalList"
-                        ItemTemplate="{StaticResource RecipeIngredientTemplate}" />
+                        ItemTemplate="{StaticResource RecipeIngredientTemplate}">
+                        <CollectionView.EmptyView>
+                            <Grid
+                                MinimumHeightRequest="100"
+                                Padding="{StaticResource PaddingLarge}">
+                                <ActivityIndicator
+                                    IsRunning="{Binding IsBusy}"
+                                    IsVisible="{Binding IsBusy}"
+                                    VerticalOptions="Center"
+                                    HorizontalOptions="Center"
+                                    Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Primary}}" />
+                            </Grid>
+                        </CollectionView.EmptyView>
+                    </CollectionView>
                 </toolkit:Expander>
                 <toolkit:Expander
                     IsVisible="{Binding HasPrep}"
-                    Margin="0,15,0,0"
+                    Margin="{StaticResource MarginVerticalLarge}"
                     IsExpanded="True"
                     BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Black}}">
                     <toolkit:Expander.Header>
                         <Border
-                            Padding="10"
-                            Margin="-3,0"
+                            Padding="{StaticResource PaddingMedium}"
+                            Margin="{StaticResource MarginNegativeSmall}"
                             BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}">
                             <HorizontalStackLayout>
                                 <Image
                                     Source="arrow_down"
                                     HeightRequest="20"
                                     WidthRequest="20"
-                                    Margin="5,0,10,0">
+                                    Margin="{StaticResource MarginIcon}">
                                     <Image.Behaviors>
                                         <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Light=Black, Dark=White}" />
                                     </Image.Behaviors>
@@ -442,7 +517,7 @@
                                 <Label
                                     Text="Prep"
                                     FontAttributes="Bold"
-                                    FontSize="18"
+                                    FontSize="20"
                                     VerticalTextAlignment="Center" />
                             </HorizontalStackLayout>
                         </Border>
@@ -450,23 +525,36 @@
                     <CollectionView
                         ItemsSource="{Binding PrepSteps}"
                         ItemsLayout="VerticalList"
-                        ItemTemplate="{StaticResource RecipeStepTemplate}" />
+                        ItemTemplate="{StaticResource RecipeStepTemplate}">
+                        <CollectionView.EmptyView>
+                            <Grid
+                                MinimumHeightRequest="100"
+                                Padding="{StaticResource PaddingLarge}">
+                                <ActivityIndicator
+                                    IsRunning="{Binding IsBusy}"
+                                    IsVisible="{Binding IsBusy}"
+                                    VerticalOptions="Center"
+                                    HorizontalOptions="Center"
+                                    Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Primary}}" />
+                            </Grid>
+                        </CollectionView.EmptyView>
+                    </CollectionView>
                 </toolkit:Expander>
                 <toolkit:Expander
-                    Margin="0,15,0,0"
+                    Margin="{StaticResource MarginVerticalLarge}"
                     IsExpanded="True"
                     BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}">
                     <toolkit:Expander.Header>
                         <Border
-                            Padding="10"
-                            Margin="-3,0"
+                            Padding="{StaticResource PaddingMedium}"
+                            Margin="{StaticResource MarginNegativeSmall}"
                             BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}">
                             <HorizontalStackLayout>
                                 <Image
                                     Source="arrow_down"
                                     HeightRequest="20"
                                     WidthRequest="20"
-                                    Margin="5,0,10,0">
+                                    Margin="{StaticResource MarginIcon}">
                                     <Image.Behaviors>
                                         <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Light=Black, Dark=White}" />
                                     </Image.Behaviors>
@@ -474,7 +562,7 @@
                                 <Label
                                     Text="Cook"
                                     FontAttributes="Bold"
-                                    FontSize="18"
+                                    FontSize="20"
                                     VerticalTextAlignment="Center" />
                             </HorizontalStackLayout>
                         </Border>
@@ -482,7 +570,20 @@
                     <CollectionView
                         ItemsSource="{Binding CookingSteps}"
                         ItemsLayout="VerticalList"
-                        ItemTemplate="{StaticResource RecipeStepTemplate}" />
+                        ItemTemplate="{StaticResource RecipeStepTemplate}">
+                        <CollectionView.EmptyView>
+                            <Grid
+                                MinimumHeightRequest="100"
+                                Padding="{StaticResource PaddingLarge}">
+                                <ActivityIndicator
+                                    IsRunning="{Binding IsBusy}"
+                                    IsVisible="{Binding IsBusy}"
+                                    VerticalOptions="Center"
+                                    HorizontalOptions="Center"
+                                    Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Primary}}" />
+                            </Grid>
+                        </CollectionView.EmptyView>
+                    </CollectionView>
                 </toolkit:Expander>
         </VerticalStackLayout>
     </ScrollView>

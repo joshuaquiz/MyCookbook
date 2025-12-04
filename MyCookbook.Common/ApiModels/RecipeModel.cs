@@ -13,6 +13,10 @@ public readonly record struct RecipeModel(
     TimeSpan? CookTime,
     int Servings,
     string? Description,
+    int RecipeHearts,
+    decimal? Rating,
+    IReadOnlyList<string> Tags,
+    IReadOnlyList<string> Categories,
     UserProfileModel? UserProfile,
     IReadOnlyList<StepModel> PrepSteps,
     IReadOnlyList<StepModel> CookingSteps)

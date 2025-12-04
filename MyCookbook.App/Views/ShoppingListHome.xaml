@@ -12,12 +12,18 @@
         <CollectionView.ItemTemplate>
             <DataTemplate>
                 <VerticalStackLayout>
-                    <Grid
-                        RowDefinitions="50"
-                        ColumnDefinitions="Auto,*,150">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="{StaticResource HeightMedium}" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="{StaticResource WidthXLarge}" />
+                        </Grid.ColumnDefinitions>
                         <CheckBox
-                            HeightRequest="40"
-                            WidthRequest="40"
+                            HeightRequest="{StaticResource TouchTargetSize}"
+                            WidthRequest="{StaticResource TouchTargetSize}"
                             VerticalOptions="Center"
                             HorizontalOptions="Center"
                             Color="{StaticResource Primary}" />
@@ -25,8 +31,14 @@
                             Grid.Row="0"
                             Grid.Column="1"
                             VerticalOptions="Fill"
-                            VerticalTextAlignment="Center"
-                            Margin="15,0,0,0">
+                            VerticalTextAlignment="Center">
+                            <Label.Margin>
+                                <Thickness>
+                                    <OnPlatform x:TypeArguments="Thickness">
+                                        <On Platform="iOS, Android, WinUI, MacCatalyst">15,0,0,0</On>
+                                    </OnPlatform>
+                                </Thickness>
+                            </Label.Margin>
                             <Label.Text>
                                 <MultiBinding StringFormat="{}{0} {1} - {2}">
                                     <Binding Path="Quantity" />
@@ -40,8 +52,8 @@
                             Grid.Column="3"
                             Source="{Binding ImageUri, TargetNullValue=profile}"
                             Aspect="AspectFill"
-                            HeightRequest="50"
-                            WidthRequest="150" />
+                            HeightRequest="{StaticResource HeightMedium}"
+                            WidthRequest="{StaticResource WidthXLarge}" />
                         <Rectangle
                             Grid.Row="0"
                             Grid.Column="3">
@@ -53,15 +65,15 @@
                                         Color="Transparent"
                                         Offset="0.7" />
                                     <GradientStop
-                                        Color="{AppThemeBinding Light=White, Dark=Black}"
+                                        Color="{AppThemeBinding Light={StaticResource PageBackgroundColorLight}, Dark={StaticResource PageBackgroundColorDark}}"
                                         Offset="1" />
                                 </LinearGradientBrush>
                             </Rectangle.Background>
                         </Rectangle>
                     </Grid>
                     <Rectangle
-                        Fill="LightGray"
-                        HeightRequest="2"
+                        Fill="{AppThemeBinding Light={StaticResource SeparatorColorLight}, Dark={StaticResource SeparatorColorDark}}"
+                        HeightRequest="{StaticResource BorderThicknessMedium}"
                         HorizontalOptions="Fill" />
                 </VerticalStackLayout>
             </DataTemplate>

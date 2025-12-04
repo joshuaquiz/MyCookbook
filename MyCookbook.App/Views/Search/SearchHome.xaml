@@ -33,9 +33,18 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate
                     x:DataType="models:SearchCategoryItem">
-                    <Grid
-                        RowDefinitions="5,55,25,5"
-                        ColumnDefinitions="5,80,5">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="5" />
+                            <RowDefinition Height="55" />
+                            <RowDefinition Height="25" />
+                            <RowDefinition Height="5" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="5" />
+                            <ColumnDefinition Width="80" />
+                            <ColumnDefinition Width="5" />
+                        </Grid.ColumnDefinitions>
                         <Button
                             Grid.Row="0"
                             Grid.RowSpan="4"
@@ -86,9 +95,17 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate
                     x:DataType="models:SearchCategoryItem">
-                    <Grid
-                        RowDefinitions="5,35,5"
-                        ColumnDefinitions="5,80,5">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="5" />
+                            <RowDefinition Height="35" />
+                            <RowDefinition Height="5" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="5" />
+                            <ColumnDefinition Width="80" />
+                            <ColumnDefinition Width="5" />
+                        </Grid.ColumnDefinitions>
                         <Button
                             Grid.Row="0"
                             Grid.RowSpan="3"

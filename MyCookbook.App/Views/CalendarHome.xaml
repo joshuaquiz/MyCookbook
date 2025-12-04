@@ -9,9 +9,14 @@
     Shell.NavBarIsVisible="False"
     Shell.PresentationMode="ModalAnimated"
     Title="{Binding Recipe.Name}">
-    <Grid
-        RowDefinitions="50,*"
-        ColumnDefinitions="*">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
         <xc:CalendarView
             Grid.Row="1"
             Grid.Column="0"

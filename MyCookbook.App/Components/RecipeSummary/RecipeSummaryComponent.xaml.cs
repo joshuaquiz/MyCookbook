@@ -135,6 +135,14 @@ public partial class RecipeSummaryComponent
             navigationUrl += $"&PreviewItemUrl={Uri.EscapeDataString(Item.ItemUrl.AbsoluteUri)}";
         }
 
+        // Always pass hearts (even if 0) to show the correct count
+        navigationUrl += $"&PreviewHearts={Item.Hearts}";
+
+        if (Item.Rating.HasValue)
+        {
+            navigationUrl += $"&PreviewRating={Item.Rating.Value}";
+        }
+
         // Navigate to recipe page with preview data (fire and forget for immediate navigation)
         return Shell.Current.GoToAsync(navigationUrl);
     }

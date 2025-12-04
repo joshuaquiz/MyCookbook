@@ -36,6 +36,9 @@ public class Recipe
     [Column("created_at")]
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+    [Column("rating")]
+    public decimal? Rating { get; set; }
+
     // Foreign Keys
     [Column("author_id")]
     public Guid AuthorId { get; set; }
@@ -57,9 +60,11 @@ public class Recipe
     // Navigation for Relationships
     public virtual ICollection<RecipeTag> RecipeTags { get; set; }
 
+    public virtual ICollection<RecipeCategory> RecipeCategories { get; set; }
+
     public virtual ICollection<RecipeStep> Steps { get; set; }
 
-    public virtual ICollection<RecipeHeart> Hearts { get; set; }
+    public virtual ICollection<RecipeHeart> RecipeHearts { get; set; }
 
     public virtual ICollection<EntityImage> EntityImages { get; set; }
 }

@@ -20,18 +20,18 @@
                 IsEnabled="{Binding IsBusy}" />
             <Image
                 IsVisible="{Binding IsNotBusy}"
-                HeightRequest="160"
+                HeightRequest="{StaticResource HeightHero}"
                 Source="{Binding UserProfile.BackgroundImageUri}"
                 Aspect="AspectFill" />
             <Frame
                 IsVisible="{Binding IsNotBusy}"
                 Margin="0,-75,0,0"
-                HeightRequest="150"
-                WidthRequest="150"
-                BorderColor="White"
+                HeightRequest="{StaticResource HeightXXLarge}"
+                WidthRequest="{StaticResource HeightXXLarge}"
+                BorderColor="{StaticResource White}"
                 HorizontalOptions="Center"
                 HasShadow="False"
-                CornerRadius="75"
+                CornerRadius="{StaticResource CornerRadiusCircle}"
                 Padding="0"
                 IsClippedToBounds="True">
                 <Image
@@ -41,10 +41,10 @@
             <Label
                 IsVisible="{Binding IsNotBusy}"
                 FontAttributes="Bold"
-                TextColor="#383b67"
+                TextColor="{AppThemeBinding Light={StaticResource ProfileAccent}, Dark={StaticResource White}}"
                 HorizontalTextAlignment="Center"
-                Margin="0,20,0,0"
-                FontSize="28">
+                Margin="0,{StaticResource SpacingXLarge},0,0"
+                FontSize="{StaticResource FontSizeHeadingLarge}">
                 <Label.Text>
                     <MultiBinding StringFormat="{}{0} {1}">
                         <Binding Path="UserProfile.FirstName" />
@@ -54,19 +54,30 @@
             </Label>
             <Grid
                 IsVisible="{Binding IsNotBusy}"
-                ColumnDefinitions="Auto,Auto,10,Auto,5,Auto,5,Auto,5,Auto"
                 VerticalOptions="Center"
                 HorizontalOptions="Center"
-                Margin="0,20,0,0">
+                Margin="0,{StaticResource SpacingXLarge},0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="{StaticResource SpacingMedium}" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="{StaticResource SpacingSmall}" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="{StaticResource SpacingSmall}" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="{StaticResource SpacingSmall}" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
                 <Image
                     Grid.Column="0"
                     Source="location"
-                    WidthRequest="18"
-                    HeightRequest="18"
+                    WidthRequest="{StaticResource IconSizeSmall}"
+                    HeightRequest="{StaticResource IconSizeSmall}"
                     HorizontalOptions="Center" />
                 <Label
                     Grid.Column="1"
-                    FontSize="15">
+                    FontSize="{StaticResource FontSizeBodyLarge}">
                     <Label.Text>
                         <MultiBinding StringFormat="{}{0}, {1}">
                             <Binding Path="UserProfile.City" />
@@ -77,8 +88,8 @@
                 <Image
                     Grid.Column="3"
                     Source="calendar"
-                    WidthRequest="18"
-                    HeightRequest="18"
+                    WidthRequest="{StaticResource IconSizeSmall}"
+                    HeightRequest="{StaticResource IconSizeSmall}"
                     HorizontalOptions="Center" />
                 <Label
                     Grid.Column="5">
@@ -91,8 +102,8 @@
                 <Image
                     Grid.Column="7"
                     Source="chef_hat"
-                    WidthRequest="18"
-                    HeightRequest="18"
+                    WidthRequest="{StaticResource IconSizeSmall}"
+                    HeightRequest="{StaticResource IconSizeSmall}"
                     HorizontalOptions="Center"
                     IsVisible="{Binding UserProfile.IsPremium}" />
                 <Label
@@ -105,8 +116,14 @@
                 IsVisible="{Binding IsNotBusy}"
                 FontAttributes="Bold"
                 HorizontalTextAlignment="Start"
-                Margin="20,20,15,10"
-                FontSize="20">
+                FontSize="{StaticResource FontSizeTitleLarge}">
+                <Label.Margin>
+                    <Thickness>
+                        <OnPlatform x:TypeArguments="Thickness">
+                            <On Platform="iOS, Android, WinUI, MacCatalyst">20,20,15,10</On>
+                        </OnPlatform>
+                    </Thickness>
+                </Label.Margin>
                 <Label.Text>
                     <MultiBinding StringFormat="{}About {0}">
                         <Binding Path="UserProfile.FirstName" />
@@ -116,16 +133,30 @@
             <Label
                 IsVisible="{Binding IsNotBusy}"
                 HorizontalTextAlignment="Start"
-                FontSize="15"
-                Margin="20,0,20,0"
-                Text="{Binding UserProfile.Description}" />
+                FontSize="{StaticResource FontSizeBodyLarge}"
+                Text="{Binding UserProfile.Description}">
+                <Label.Margin>
+                    <Thickness>
+                        <OnPlatform x:TypeArguments="Thickness">
+                            <On Platform="iOS, Android, WinUI, MacCatalyst">20,0,20,0</On>
+                        </OnPlatform>
+                    </Thickness>
+                </Label.Margin>
+            </Label>
             <Label
                 IsVisible="{Binding IsNotBusy}"
                 Text="Recipes"
                 FontAttributes="Bold"
                 HorizontalTextAlignment="Start"
-                Margin="20,20,20,0"
-                FontSize="20" />
+                FontSize="{StaticResource FontSizeTitleLarge}">
+                <Label.Margin>
+                    <Thickness>
+                        <OnPlatform x:TypeArguments="Thickness">
+                            <On Platform="iOS, Android, WinUI, MacCatalyst">20,20,20,0</On>
+                        </OnPlatform>
+                    </Thickness>
+                </Label.Margin>
+            </Label>
             <recipeSummaryList:RecipeSummaryListControl
                 x:Name="RecipeSummaryListControl"
                 GetData="{Binding GetData, Source={Reference Root}}" />
