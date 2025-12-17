@@ -11,12 +11,4 @@ internal sealed class AppSettings
     public string BranchName { get; set; }
 
     public string AccountId { get; set; }
-
-    public string GoogleClientId { get; set; }
-
-    public string GoogleClientSecret { get; set; }
-
-    public string FacebookAppId { get; set; }
-
-    public string FacebookAppSecret { get; set; }
 }

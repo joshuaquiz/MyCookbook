@@ -34,11 +34,7 @@ internal sealed class Program
                 PublicDomainName = rootConfig.PublicDomainName,
                 HostedZoneId = rootConfig.HostedZoneId,
                 GithubOidcThumbprint = rootConfig.GithubOidcThumbprint,
-                BranchName = rootConfig.BranchName,
-                GoogleClientId = rootConfig.GoogleClientId,
-                GoogleClientSecret = rootConfig.GoogleClientSecret,
-                FacebookAppId = rootConfig.FacebookAppId,
-                FacebookAppSecret = rootConfig.FacebookAppSecret
+                BranchName = rootConfig.BranchName
             })
             .Synth();
     }

@@ -149,52 +149,50 @@ internal sealed class StackBuilder
                 SupportedIdentityProviders = [UserPoolClientIdentityProvider.COGNITO]
             });
 
-        // Google Identity Provider (only if credentials are provided)
-        if (!string.IsNullOrEmpty(stackBuilderProps.GoogleClientId) &&
-            !stackBuilderProps.GoogleClientId.StartsWith("YOUR_") &&
-            !string.IsNullOrEmpty(stackBuilderProps.GoogleClientSecret) &&
-            !stackBuilderProps.GoogleClientSecret.StartsWith("YOUR_"))
-        {
-            new UserPoolIdentityProviderGoogle(
-                infrastructureStack,
-                $"{appName}GoogleProvider",
-                new UserPoolIdentityProviderGoogleProps
-                {
-                    UserPool = userPool,
-                    ClientId = stackBuilderProps.GoogleClientId,
-                    ClientSecretValue = SecretValue.UnsafePlainText(stackBuilderProps.GoogleClientSecret),
-                    Scopes = ["profile", "email", "openid"],
-                    AttributeMapping = new AttributeMapping
-                    {
-                        Email = ProviderAttribute.GOOGLE_EMAIL,
-                        GivenName = ProviderAttribute.GOOGLE_GIVEN_NAME,
-                        FamilyName = ProviderAttribute.GOOGLE_FAMILY_NAME
-                    }
-                });
-        }
+        // Google Identity Provider (using AWS Secrets Manager)
+        var googleSecret = Amazon.CDK.AWS.SecretsManager.Secret.FromSecretNameV2(
+            infrastructureStack,
+            $"{appName}GoogleOAuthSecret",
+            "mycookbook/oauth/google");
 
-        // Facebook Identity Provider (only if credentials are provided)
-        if (!string.IsNullOrEmpty(stackBuilderProps.FacebookAppId) &&
-            !stackBuilderProps.FacebookAppId.StartsWith("YOUR_") &&
-            !string.IsNullOrEmpty(stackBuilderProps.FacebookAppSecret) &&
-            !stackBuilderProps.FacebookAppSecret.StartsWith("YOUR_"))
-        {
-            new UserPoolIdentityProviderFacebook(
-                infrastructureStack,
-                $"{appName}FacebookProvider",
-                new UserPoolIdentityProviderFacebookProps
+        new UserPoolIdentityProviderGoogle(
+            infrastructureStack,
+            $"{appName}GoogleProvider",
+            new UserPoolIdentityProviderGoogleProps
+            {
+                UserPool = userPool,
+                ClientId = googleSecret.SecretValueFromJson("client_id").UnsafeUnwrap(),
+                ClientSecretValue = googleSecret.SecretValueFromJson("client_secret"),
+                Scopes = ["profile", "email", "openid"],
+                AttributeMapping = new AttributeMapping
                 {
-                    UserPool = userPool,
-                    ClientId = stackBuilderProps.FacebookAppId,
-                    ClientSecret = stackBuilderProps.FacebookAppSecret,
-                    Scopes = ["public_profile", "email"],
-                    AttributeMapping = new AttributeMapping
-                    {
-                        Email = ProviderAttribute.FACEBOOK_EMAIL,
-                        GivenName = ProviderAttribute.FACEBOOK_NAME
-                    }
-                });
-        }
+                    Email = ProviderAttribute.GOOGLE_EMAIL,
+                    GivenName = ProviderAttribute.GOOGLE_GIVEN_NAME,
+                    FamilyName = ProviderAttribute.GOOGLE_FAMILY_NAME
+                }
+            });
+
+        // Facebook Identity Provider (using AWS Secrets Manager)
+        var facebookSecret = Amazon.CDK.AWS.SecretsManager.Secret.FromSecretNameV2(
+            infrastructureStack,
+            $"{appName}FacebookOAuthSecret",
+            "mycookbook/oauth/facebook");
+
+        new UserPoolIdentityProviderFacebook(
+            infrastructureStack,
+            $"{appName}FacebookProvider",
+            new UserPoolIdentityProviderFacebookProps
+            {
+                UserPool = userPool,
+                ClientId = facebookSecret.SecretValueFromJson("client_id").UnsafeUnwrap(),
+                ClientSecret = facebookSecret.SecretValueFromJson("client_secret").UnsafeUnwrap(),
+                Scopes = ["public_profile", "email"],
+                AttributeMapping = new AttributeMapping
+                {
+                    Email = ProviderAttribute.FACEBOOK_EMAIL,
+                    GivenName = ProviderAttribute.FACEBOOK_NAME
+                }
+            });
 
         // Lookup ECR repository for API container image
         var ecrRepository = Repository.FromRepositoryName(

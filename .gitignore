@@ -400,6 +400,9 @@ FodyWeavers.xsd
 **/*.db-shm
 **/*.db-wal
 /MyCookbook.App/appsettings.local.json
+/MyCookbook.Infrastructure/src/appsettings.Development.json
+/MyCookbook.Infrastructure/src/appsettings.Staging.json
+/MyCookbook.Infrastructure/src/appsettings.Production.json
 
 **/cdk.out
 

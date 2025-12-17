@@ -13,12 +13,4 @@ internal sealed class StackBuilderProps : StackProps
     public string BranchName { get; set; } = string.Empty;
 
     public string HostedZoneId { get; set; } = string.Empty;
-
-    public string GoogleClientId { get; set; } = string.Empty;
-
-    public string GoogleClientSecret { get; set; } = string.Empty;
-
-    public string FacebookAppId { get; set; } = string.Empty;
-
-    public string FacebookAppSecret { get; set; } = string.Empty;
 }

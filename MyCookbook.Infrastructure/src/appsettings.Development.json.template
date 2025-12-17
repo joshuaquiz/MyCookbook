@@ -1,0 +1,8 @@
+{
+  "AccountId": "YOUR_AWS_ACCOUNT_ID",
+  "PublicDomainName": "YOUR_DOMAIN_NAME",
+  "HostedZoneId": "YOUR_ROUTE53_HOSTED_ZONE_ID",
+  "GithubOidcThumbprint": "YOUR_GITHUB_OIDC_THUMBPRINT",
+  "BranchName": "main"
+}
+
