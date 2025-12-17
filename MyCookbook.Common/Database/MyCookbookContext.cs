@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MyCookbook.Common.Database;
 
@@ -11,8 +12,6 @@ public class MyCookbookContext(
     : DbContext(
         options)
 {
-    public DbSet<User> Users { get; set; }
-
     public DbSet<Author> Authors { get; set; }
 
     public DbSet<Recipe> Recipes { get; set; }
@@ -43,6 +42,18 @@ public class MyCookbookContext(
 
     public DbSet<AuthorLink> AuthorLinks { get; set; }
 
+    public DbSet<UserCalendar> UserCalendars { get; set; }
+
+    public DbSet<ShoppingListItem> ShoppingListItems { get; set; }
+
+    public DbSet<UserCookbookRecipe> UserCookbookRecipes { get; set; }
+
+    public DbSet<RecipeShare> RecipeShares { get; set; }
+
+    public DbSet<CookbookShare> CookbookShares { get; set; }
+
+    public DbSet<CookbookShareRecipe> CookbookShareRecipes { get; set; }
+
     public async Task<List<Image>> GetImages(
         Guid id,
         ImageEntityType imageEntityType) =>
@@ -64,18 +75,7 @@ public class MyCookbookContext(
         // 1. Primary Keys (Defined on models, but confirming GUID text type)
         // EF Core maps C# string PKs to TEXT in SQLite by default.
 
-        // 2. User & Author Constraints
-        modelBuilder.Entity<User>()
-            .HasIndex(u => u.AuthorId)
-            .IsUnique();
-
-        // One-to-one relationship between User and Author
-        modelBuilder.Entity<Author>()
-            .HasOne(a => a.User)
-            .WithOne(u => u.Author)
-            .HasForeignKey<User>(u => u.AuthorId);
-
-        // 3. Recipe Constraints
+        // 2. Recipe Constraints
         modelBuilder.Entity<Recipe>()
             .HasOne(r => r.OriginalRecipe)
             .WithMany(r => r.Copies)
@@ -103,7 +103,7 @@ public class MyCookbookContext(
 
         // RecipeHeart (Many-to-Many setup with Composite Key)
         modelBuilder.Entity<RecipeHeart>()
-            .HasKey(rh => new { rh.UserId, rh.RecipeId });
+            .HasKey(rh => new { rh.AuthorId, rh.RecipeId });
 
         // Popularity (Unique Constraint)
         modelBuilder.Entity<Popularity>()
@@ -163,5 +163,20 @@ public class MyCookbookContext(
             .HasForeignKey(ei => ei.EntityId)
             .HasPrincipalKey(i => i.StepId)
             .IsRequired(false);
+
+        // --- 5. Sharing Tables ---
+        // RecipeShare unique index on share_token
+        modelBuilder.Entity<RecipeShare>()
+            .HasIndex(rs => rs.ShareToken)
+            .IsUnique();
+
+        // CookbookShare unique index on share_token
+        modelBuilder.Entity<CookbookShare>()
+            .HasIndex(cs => cs.ShareToken)
+            .IsUnique();
+
+        // CookbookShareRecipe composite key
+        modelBuilder.Entity<CookbookShareRecipe>()
+            .HasKey(csr => new { csr.CookbookShareId, csr.RecipeId });
     }
 }

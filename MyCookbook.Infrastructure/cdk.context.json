@@ -1,5 +1,39 @@
 {
   "acknowledged-issue-numbers": [
     34892
-  ]
+  ],
+  "availability-zones:account=525722201980:region=us-east-1": [
+    "us-east-1a",
+    "us-east-1b",
+    "us-east-1c",
+    "us-east-1d",
+    "us-east-1e",
+    "us-east-1f"
+  ],
+  "vpc-provider:account=525722201980:filter.vpc-id=vpc-07bdc77ff3b2da50a:region=us-east-1:returnAsymmetricSubnets=true": {
+    "vpcId": "vpc-07bdc77ff3b2da50a",
+    "vpcCidrBlock": "10.0.0.0/16",
+    "ownerAccountId": "525722201980",
+    "availabilityZones": [],
+    "subnetGroups": [
+      {
+        "name": "MyCookbookPublicSubnet",
+        "type": "Public",
+        "subnets": [
+          {
+            "subnetId": "subnet-081eea059c6e1a152",
+            "cidr": "10.0.0.0/24",
+            "availabilityZone": "us-east-1a",
+            "routeTableId": "rtb-0a535daae4ea5af2c"
+          },
+          {
+            "subnetId": "subnet-0dcb1fe510e8ee1a0",
+            "cidr": "10.0.1.0/24",
+            "availabilityZone": "us-east-1b",
+            "routeTableId": "rtb-03ab4122889cda224"
+          }
+        ]
+      }
+    ]
+  }
 }

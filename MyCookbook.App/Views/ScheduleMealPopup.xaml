@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:views="clr-namespace:MyCookbook.App.Views"
+             x:Class="MyCookbook.App.Views.ScheduleMealPopup"
+             x:TypeArguments="views:ScheduleMealResult"
+             CanBeDismissedByTappingOutsideOfPopup="True"
+             Color="Transparent">
+    <Border
+        Padding="{StaticResource PaddingMedium}"
+        Margin="{StaticResource ThicknessMedium}"
+        BackgroundColor="{AppThemeBinding Light={StaticResource BackgroundColorLight}, Dark={StaticResource BackgroundColorDark}}">
+        <Border.Shadow>
+            <Shadow Brush="Black" Opacity="0.3" Radius="10" Offset="0,2" />
+        </Border.Shadow>
+        <Border.StrokeShape>
+            <RoundRectangle CornerRadius="{StaticResource CornerRadiusXLarge}" />
+        </Border.StrokeShape>
+        <VerticalStackLayout Spacing="{StaticResource SpacingMedium}">
+            <!-- Header -->
+            <Grid>
+                <Label
+                    Text="Schedule Meal"
+                    FontAttributes="Bold"
+                    FontSize="20"
+                    HorizontalOptions="Start"
+                    VerticalOptions="Center" />
+                <ImageButton
+                    HorizontalOptions="End"
+                    HeightRequest="24"
+                    WidthRequest="24"
+                    VerticalOptions="Center"
+                    Source="close"
+                    BackgroundColor="Transparent"
+                    Clicked="CloseButton_Clicked" />
+            </Grid>
+
+            <!-- Divider -->
+            <BoxView
+                HeightRequest="1"
+                BackgroundColor="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}" />
+
+            <!-- Question Label -->
+            <Label
+                x:Name="QuestionLabel"
+                FontSize="16"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                Margin="0,10,0,0" />
+
+            <!-- Date Picker -->
+            <VerticalStackLayout Spacing="8">
+                <Label
+                    Text="Date"
+                    FontSize="14"
+                    FontAttributes="Bold" />
+                <DatePicker
+                    x:Name="MealDatePicker"
+                    MinimumDate="{x:Static x:DateTime.Now}"
+                    Date="{x:Static x:DateTime.Now}"
+                    DateSelected="DatePicker_DateSelected"
+                    Format="D" />
+            </VerticalStackLayout>
+
+            <!-- Meal Type Picker -->
+            <VerticalStackLayout Spacing="8">
+                <Label
+                    Text="Meal Type"
+                    FontSize="14"
+                    FontAttributes="Bold" />
+                <Picker
+                    x:Name="MealTypePicker"
+                    Title="Select meal type"
+                    SelectedIndexChanged="MealTypePicker_SelectedIndexChanged">
+                    <Picker.Items>
+                        <x:String>Breakfast</x:String>
+                        <x:String>Lunch</x:String>
+                        <x:String>Dinner</x:String>
+                        <x:String>Snack</x:String>
+                    </Picker.Items>
+                </Picker>
+            </VerticalStackLayout>
+
+            <!-- Buttons -->
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="{StaticResource SpacingMedium}" Margin="0,10,0,0">
+                <Button
+                    Grid.Column="0"
+                    Text="Cancel"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}"
+                    TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
+                    Clicked="CancelButton_Clicked" />
+                <Button
+                    Grid.Column="1"
+                    x:Name="SaveButton"
+                    Text="Save"
+                    BackgroundColor="{StaticResource Primary}"
+                    TextColor="White"
+                    IsEnabled="False"
+                    Clicked="SaveButton_Clicked" />
+            </Grid>
+        </VerticalStackLayout>
+    </Border>
+</toolkit:Popup>
+

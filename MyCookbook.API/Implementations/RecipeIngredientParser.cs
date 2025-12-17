@@ -520,7 +520,7 @@ public static partial class RecipeIngredientParser
                                 ? c
                                 : c switch
                                 {
-                                    '“' or '”' => '"',
+                                    'ï¿½' or 'ï¿½' => '"',
                                     ';' => ':',
                                     '\t' => ' ',
                                     '\\' => '/',

@@ -285,16 +285,17 @@ public sealed partial class RecipeWebSiteWrapperProcessor(
         {
             if (servingsMatch.Groups["Number"].Success)
             {
-                recipe.Servings = int.Parse(servingsMatch.Groups["Number"].Value);
+                recipe.Servings = servingsMatch.Groups["Number"].Value;
             }
             else if (servingsMatch.Groups["Range"].Success)
             {
-                recipe.Servings = (int)Math.Ceiling(
+                var avgServings = (int)Math.Ceiling(
                     new []
                     {
                         int.Parse(servingsMatch.Groups["R1"].Value),
                         int.Parse(servingsMatch.Groups["R2"].Value)
                     }.Average());
+                recipe.Servings = avgServings.ToString();
             }
         }
 

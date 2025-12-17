@@ -1,5 +1,8 @@
 using System;
+using System.Text.Json;
 using System.Threading.Tasks;
+using Amazon.SecretsManager;
+using Amazon.SecretsManager.Model;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -23,26 +26,19 @@ public sealed class Program
         // Add services to the container.
         builder.Services.AddControllers();
 
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
+        // Configure database connection
+        var connectionString = await GetDatabaseConnectionString();
         builder.Services.AddDbContextFactory<MyCookbookContext>(
             opt =>
             {
-                opt.UseSqlite(
-                        "Data Source=MyCookbook.db;",
+                opt.UseNpgsql(
+                        connectionString,
                         options => options.CommandTimeout(30))
                     .LogTo(
                         Console.WriteLine,
                         [RelationalEventId.CommandExecuting, RelationalEventId.CommandError])
                     .EnableSensitiveDataLogging();
             });
-        /*builder.Services.AddDbContextFactory<MyCookbookContext>(
-            opt =>
-            {
-                opt.UseNpgsql(
-                    "");
-            });*/
         builder.Services.AddSingleton<IJobQueuer, JobQueuer>();
         builder.Services.AddSingleton<ILdJsonExtractor, LdJsonExtractor>();
         builder.Services.AddSingleton<ILdJsonSectionJsonObjectExtractor, LdJsonSectionJsonObjectExtractor>();
@@ -60,6 +56,12 @@ public sealed class Program
         //builder.Services.AddHostedService<OneOffs>();
         //builder.Services.AddSingleton<WebDataParserJob>();
         //builder.Services.AddHostedService<WebDataParserJob>();
+
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
+        builder.Services.AddHealthChecks()
+            .AddDbContextCheck<MyCookbookContext>();
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -72,6 +74,47 @@ public sealed class Program
         app.UseHttpsRedirection();
         //app.UseAuthorization();
         app.MapControllers();
+        app.MapHealthChecks("/healthz");
         await app.RunAsync();
+    }
+
+    private static async Task<string> GetDatabaseConnectionString()
+    {
+        // Check if running in AWS (ECS/Lambda) or locally
+        var dbSecretArn = Environment.GetEnvironmentVariable("DB_SECRET_ARN");
+        var dbHost = Environment.GetEnvironmentVariable("DB_HOST");
+        var dbName = Environment.GetEnvironmentVariable("DB_NAME") ?? "mycookbook";
+        var dbPort = Environment.GetEnvironmentVariable("DB_PORT") ?? "5432";
+
+        if (string.IsNullOrEmpty(dbSecretArn) || string.IsNullOrEmpty(dbHost))
+        {
+            // Local development - use SQLite
+            Console.WriteLine("Using SQLite for local development");
+            return "Data Source=MyCookbook.db;";
+        }
+
+        // AWS environment - get credentials from Secrets Manager
+        Console.WriteLine($"Fetching database credentials from Secrets Manager: {dbSecretArn}");
+
+        using var client = new AmazonSecretsManagerClient();
+        var response = await client.GetSecretValueAsync(new GetSecretValueRequest
+        {
+            SecretId = dbSecretArn
+        });
+
+        var credentials = JsonSerializer.Deserialize<DatabaseCredentials>(response.SecretString)
+            ?? throw new InvalidOperationException("Failed to deserialize database credentials");
+
+        var connectionString = $"Host={dbHost};Port={dbPort};Database={dbName};Username={credentials.username};Password={credentials.password};SSL Mode=Require;Trust Server Certificate=true";
+
+        Console.WriteLine($"Database connection configured for: {dbHost}:{dbPort}/{dbName}");
+
+        return connectionString;
+    }
+
+    private class DatabaseCredentials
+    {
+        public string username { get; set; } = string.Empty;
+        public string password { get; set; } = string.Empty;
     }
 }

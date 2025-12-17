@@ -19,7 +19,7 @@ public class Recipe
     public string? Description { get; set; }
 
     [Column("servings")]
-    public int? Servings { get; set; }
+    public string? Servings { get; set; }
 
     [Column("prep_time")]
     public int? PrepTimeMinutes { get; set; }
@@ -28,7 +28,7 @@ public class Recipe
     public int? CookTimeMinutes { get; set; }
 
     [Column("type")]
-    public RecipeType RecipeType { get; set; }
+    public string? RecipeType { get; set; }
 
     [Column("is_public")]
     public bool IsPublic { get; set; }

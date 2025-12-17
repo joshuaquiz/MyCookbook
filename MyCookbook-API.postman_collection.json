@@ -1,0 +1,400 @@
+{
+	"info": {
+		"_postman_id": "mycookbook-api-collection",
+		"name": "MyCookbook API",
+		"description": "API collection for MyCookbook application with example requests based on the mobile app",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{cognito_access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "https://api-dev.mycookbook.com",
+			"type": "string"
+		},
+		{
+			"key": "cognito_access_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "user_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "recipe_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "author_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "entry_id",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/Account/LogIn",
+							"host": ["{{base_url}}"],
+							"path": ["api", "Account", "LogIn"]
+						}
+					}
+				},
+				{
+					"name": "Get User Profile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/user/profile",
+							"host": ["{{base_url}}"],
+							"path": ["api", "user", "profile"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Home & Discovery",
+			"item": [
+				{
+					"name": "Get Popular Recipes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/Home/Popular?take=20&skip=0",
+							"host": ["{{base_url}}"],
+							"path": ["api", "Home", "Popular"],
+							"query": [
+								{
+									"key": "take",
+									"value": "20"
+								},
+								{
+									"key": "skip",
+									"value": "0"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Search",
+			"item": [
+				{
+					"name": "Global Search",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/Search/Global?term=chicken&category=&ingredient=&exclude=&take=20&skip=0",
+							"host": ["{{base_url}}"],
+							"path": ["api", "Search", "Global"],
+							"query": [
+								{
+									"key": "term",
+									"value": "chicken",
+									"description": "Search term"
+								},
+								{
+									"key": "category",
+									"value": "",
+									"description": "Category filter"
+								},
+								{
+									"key": "ingredient",
+									"value": "",
+									"description": "Include ingredients"
+								},
+								{
+									"key": "exclude",
+									"value": "",
+									"description": "Exclude ingredients"
+								},
+								{
+									"key": "take",
+									"value": "20"
+								},
+								{
+									"key": "skip",
+									"value": "0"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Search Ingredients",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/Search/Ingredients?term=tomato",
+							"host": ["{{base_url}}"],
+							"path": ["api", "Search", "Ingredients"],
+							"query": [
+								{
+									"key": "term",
+									"value": "tomato"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Recipes",
+			"item": [
+				{
+					"name": "Get Recipe by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/Recipe/{{recipe_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "Recipe", "{{recipe_id}}"]
+						}
+					}
+				},
+				{
+					"name": "Heart Recipe",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/recipe/{{recipe_id}}/heart",
+							"host": ["{{base_url}}"],
+							"path": ["api", "recipe", "{{recipe_id}}", "heart"]
+						}
+					}
+				},
+				{
+					"name": "Unheart Recipe",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/recipe/{{recipe_id}}/unheart",
+							"host": ["{{base_url}}"],
+							"path": ["api", "recipe", "{{recipe_id}}", "unheart"]
+						}
+					}
+				},
+				{
+					"name": "Save Recipe to Cookbook",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/recipe/{{recipe_id}}/save",
+							"host": ["{{base_url}}"],
+							"path": ["api", "recipe", "{{recipe_id}}", "save"]
+						}
+					}
+				},
+				{
+					"name": "Remove Recipe from Cookbook",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/recipe/{{recipe_id}}/remove",
+							"host": ["{{base_url}}"],
+							"path": ["api", "recipe", "{{recipe_id}}", "remove"]
+						}
+					}
+				},
+				{
+					"name": "Schedule Recipe",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"recipeId\": \"{{recipe_id}}\",\n  \"date\": \"2024-12-15\",\n  \"mealType\": 1,\n  \"servingsMultiplier\": 1.0\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/recipe/schedule",
+							"host": ["{{base_url}}"],
+							"path": ["api", "recipe", "schedule"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "User Cookbook",
+			"item": [
+				{
+					"name": "Get Personal Cookbook",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/Account/{{user_id}}/Cookbook?take=20&skip=0",
+							"host": ["{{base_url}}"],
+							"path": ["api", "Account", "{{user_id}}", "Cookbook"],
+							"query": [
+								{
+									"key": "take",
+									"value": "20"
+								},
+								{
+									"key": "skip",
+									"value": "0"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Authors",
+			"item": [
+				{
+					"name": "Get Author Profile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/Author/{{author_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "Author", "{{author_id}}"]
+						}
+					}
+				},
+				{
+					"name": "Get Author Recipes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/Author/{{author_id}}/Recipes?take=20&skip=0",
+							"host": ["{{base_url}}"],
+							"path": ["api", "Author", "{{author_id}}", "Recipes"],
+							"query": [
+								{
+									"key": "take",
+									"value": "20"
+								},
+								{
+									"key": "skip",
+									"value": "0"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Author Cookbook",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/Author/{{author_id}}/Cookbook?take=20&skip=0",
+							"host": ["{{base_url}}"],
+							"path": ["api", "Author", "{{author_id}}", "Cookbook"],
+							"query": [
+								{
+									"key": "take",
+									"value": "20"
+								},
+								{
+									"key": "skip",
+									"value": "0"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Calendar",
+			"item": [
+				{
+					"name": "Get Calendar Entries",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/Calendar/Entries?userId={{user_id}}&startDate=2024-12-01&endDate=2024-12-31",
+							"host": ["{{base_url}}"],
+							"path": ["api", "Calendar", "Entries"],
+							"query": [
+								{
+									"key": "userId",
+									"value": "{{user_id}}"
+								},
+								{
+									"key": "startDate",
+									"value": "2024-12-01"
+								},
+								{
+									"key": "endDate",
+									"value": "2024-12-31"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Calendar Entry",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/Calendar/Entry/{{entry_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "Calendar", "Entry", "{{entry_id}}"]
+						}
+					}
+				}
+			]
+		}
+	]
+}
+

@@ -132,6 +132,7 @@ public static class MauiProgram
             .AddTransient<ProfileViewModel>()
             .AddTransient<RecipeViewModel>()
             .AddTransient<ShoppingListViewModel>()
+            .AddTransient<ShareRecipeViewModel>()
             .AddSingleton<MyCookbookViewModel>();
 
         builder.Services
@@ -140,6 +141,7 @@ public static class MauiProgram
             .AddSingleton<HomePage>()
             .AddTransient<ProfileHome>()
             .AddTransient<RecipePage>()
+            .AddTransient<ShareRecipePage>()
             .AddTransient<ShoppingListHome>()
             .AddSingleton<MyCookbookHome>()
             .AddTransient<SearchHome>();

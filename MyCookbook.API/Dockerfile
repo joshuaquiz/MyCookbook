@@ -1,22 +1,56 @@
-#See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
+# Optimized multi-stage Dockerfile for MyCookbook API with Alpine Linux
 
-FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
+# Base stage with AWS CLI pre-installed
+FROM mcr.microsoft.com/dotnet/aspnet:10.0-alpine AS base
+
+# Install AWS CLI v1 using pip (compatible with Alpine/musl libc)
+RUN apk add --no-cache \
+    python3 \
+    py3-pip \
+    bash \
+    curl \
+    && pip3 install --no-cache-dir awscli --break-system-packages \
+    && aws --version
+
 WORKDIR /app
 EXPOSE 80
-EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+# Build stage - optimized for layer caching
+FROM mcr.microsoft.com/dotnet/sdk:10.0-alpine AS build
 WORKDIR /src
+
+# Copy only project files first for better caching
 COPY ["MyCookbook.API/MyCookbook.API.csproj", "MyCookbook.API/"]
+COPY ["MyCookbook.Common/MyCookbook.Common.csproj", "MyCookbook.Common/"]
+
+# Restore dependencies (this layer will be cached if project files don't change)
 RUN dotnet restore "MyCookbook.API/MyCookbook.API.csproj"
-COPY . .
+
+# Copy source code
+COPY MyCookbook.API/ MyCookbook.API/
+COPY MyCookbook.Common/ MyCookbook.Common/
+
+# Build
 WORKDIR "/src/MyCookbook.API"
 RUN dotnet build "MyCookbook.API.csproj" -c Release -o /app/build
 
+# Publish stage
 FROM build AS publish
-RUN dotnet publish "MyCookbook.API.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "MyCookbook.API.csproj" -c Release -o /app/publish \
+    /p:UseAppHost=false \
+    /p:PublishTrimmed=false \
+    /p:PublishReadyToRun=true \
+    /p:PublishReadyToRunShowWarnings=true
 
+# Final stage
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "MyCookbook.API.dll"]
+COPY MyCookbook.API/update-route53.sh /app/update-route53.sh
+COPY MyCookbook.API/entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/update-route53.sh /app/entrypoint.sh
+
+# Set ASP.NET Core to listen on port 80
+ENV ASPNETCORE_URLS=http://+:80
+
+ENTRYPOINT ["/app/entrypoint.sh"]

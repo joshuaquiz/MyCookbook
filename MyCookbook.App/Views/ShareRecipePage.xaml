@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MyCookbook.App.Views.ShareRecipePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:viewModels="clr-namespace:MyCookbook.App.ViewModels"
+    xmlns:apiModels="clr-namespace:MyCookbook.Common.ApiModels;assembly=MyCookbook.Common"
+    xmlns:converters="clr-namespace:MyCookbook.App.Converters"
+    x:DataType="viewModels:ShareRecipeViewModel"
+    Title="Share Recipe">
+
+    <ContentPage.Resources>
+        <converters:IsGreaterThanZeroConverter x:Key="IsGreaterThanZeroConverter" />
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,Auto,*" Padding="{StaticResource PaddingStandard}">
+        
+        <!-- Share URL Button -->
+        <Button
+            Grid.Row="0"
+            Text="Share Recipe URL"
+            Command="{Binding ShareUrlCommand}"
+            Margin="{StaticResource MarginBottomMedium}"
+            BackgroundColor="{StaticResource Primary}"
+            TextColor="White" />
+
+        <!-- Divider -->
+        <BoxView
+            Grid.Row="1"
+            HeightRequest="1"
+            Color="{StaticResource Gray300}"
+            Margin="{StaticResource MarginBottomMedium}" />
+
+        <!-- Share to User Section -->
+        <Grid Grid.Row="2" RowDefinitions="Auto,Auto,*">
+            
+            <!-- Section Title -->
+            <Label
+                Grid.Row="0"
+                Text="Share to App User"
+                FontSize="18"
+                FontAttributes="Bold"
+                Margin="{StaticResource MarginBottomSmall}" />
+
+            <!-- Search Box -->
+            <Border
+                Grid.Row="1"
+                StrokeThickness="1"
+                Stroke="{StaticResource Gray300}"
+                BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
+                Margin="{StaticResource MarginBottomMedium}">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="8" />
+                </Border.StrokeShape>
+                <Entry
+                    Text="{Binding SearchTerm}"
+                    Placeholder="Search by name or email..."
+                    Margin="{StaticResource MarginCompact}" />
+            </Border>
+
+            <!-- Authors List -->
+            <CollectionView
+                Grid.Row="2"
+                ItemsSource="{Binding ShareableAuthors}">
+                <CollectionView.EmptyView>
+                    <StackLayout
+                        VerticalOptions="Center"
+                        HorizontalOptions="Center"
+                        Padding="{StaticResource PaddingLarge}">
+                        <Label
+                            Text="No users found"
+                            HorizontalOptions="Center"
+                            TextColor="{StaticResource Gray500}" />
+                    </StackLayout>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="apiModels:ShareableAuthorViewModel">
+                        <Border
+                            Margin="{StaticResource MarginBottomSmall}"
+                            Padding="{StaticResource PaddingCompact}"
+                            StrokeThickness="1"
+                            Stroke="{StaticResource Gray300}"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="8" />
+                            </Border.StrokeShape>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:ShareRecipeViewModel}}, Path=ShareToUserCommand}"
+                                    CommandParameter="{Binding .}" />
+                            </Border.GestureRecognizers>
+                            <Grid ColumnDefinitions="60,*,Auto" ColumnSpacing="12">
+                                
+                                <!-- Author Image -->
+                                <Border
+                                    Grid.Column="0"
+                                    WidthRequest="50"
+                                    HeightRequest="50"
+                                    StrokeThickness="0"
+                                    VerticalOptions="Center">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="25" />
+                                    </Border.StrokeShape>
+                                    <Image
+                                        Source="{Binding ImageUrl}"
+                                        Aspect="AspectFill">
+                                        <Image.Triggers>
+                                            <DataTrigger
+                                                TargetType="Image"
+                                                Binding="{Binding ImageUrl}"
+                                                Value="{x:Null}">
+                                                <Setter Property="Source" Value="default_avatar.png" />
+                                            </DataTrigger>
+                                        </Image.Triggers>
+                                    </Image>
+                                </Border>
+
+                                <!-- Author Info -->
+                                <VerticalStackLayout
+                                    Grid.Column="1"
+                                    VerticalOptions="Center"
+                                    Spacing="4">
+                                    <Label
+                                        Text="{Binding Name}"
+                                        FontSize="16"
+                                        FontAttributes="Bold" />
+                                    <Label
+                                        Text="{Binding Email}"
+                                        FontSize="14"
+                                        TextColor="{StaticResource Gray600}" />
+                                </VerticalStackLayout>
+
+                                <!-- Share Count Badge (if > 0) -->
+                                <Border
+                                    Grid.Column="2"
+                                    VerticalOptions="Center"
+                                    BackgroundColor="{StaticResource Primary}"
+                                    Padding="8,4"
+                                    IsVisible="{Binding ShareCount, Converter={StaticResource IsGreaterThanZeroConverter}}">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="12" />
+                                    </Border.StrokeShape>
+                                    <Label
+                                        Text="{Binding ShareCount}"
+                                        TextColor="White"
+                                        FontSize="12"
+                                        FontAttributes="Bold" />
+                                </Border>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
+    </Grid>
+</ContentPage>
+

@@ -32,8 +32,13 @@ internal sealed class Program
                 TerminationProtection = true,
                 EnvironmentName = environmentName,
                 PublicDomainName = rootConfig.PublicDomainName,
+                HostedZoneId = rootConfig.HostedZoneId,
                 GithubOidcThumbprint = rootConfig.GithubOidcThumbprint,
-                BranchName = rootConfig.BranchName
+                BranchName = rootConfig.BranchName,
+                GoogleClientId = rootConfig.GoogleClientId,
+                GoogleClientSecret = rootConfig.GoogleClientSecret,
+                FacebookAppId = rootConfig.FacebookAppId,
+                FacebookAppSecret = rootConfig.FacebookAppSecret
             })
             .Synth();
     }

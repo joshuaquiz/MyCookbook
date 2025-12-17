@@ -4,14 +4,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MyCookbook.Common.Database;
 
-[PrimaryKey(nameof(UserId), nameof(RecipeId))]
+[PrimaryKey(nameof(AuthorId), nameof(RecipeId))]
 [Table("RecipeHearts")]
 public class RecipeHeart
 {
-    [Column("user_id")]
-    public Guid UserId { get; set; }
+    [Column("author_id")]
+    public Guid AuthorId { get; set; }
 
-    public virtual User User { get; set; }
+    public virtual Author Author { get; set; }
 
     [Column("recipe_id")]
     public Guid RecipeId { get; set; }

@@ -402,3 +402,9 @@ FodyWeavers.xsd
 /MyCookbook.App/appsettings.local.json
 
 **/cdk.out
+
+# Large database files
+Database/Old_MyCookbook.db
+*.pem
+temp-logstream.txt
+fix_schema_quotes.py

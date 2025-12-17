@@ -19,5 +19,6 @@ public partial class AppShell
         Routing.RegisterRoute(nameof(ShoppingListHome), typeof(ShoppingListHome));
         Routing.RegisterRoute(nameof(CalendarHome), typeof(CalendarHome));
         Routing.RegisterRoute(nameof(RecipePage), typeof(RecipePage));
+        Routing.RegisterRoute(nameof(ShareRecipePage), typeof(ShareRecipePage));
     }
 }

@@ -342,10 +342,58 @@ public partial class RecipeViewModel(
                     UriKind.Absolute),
                 CancellationToken.None);
             _hasLoadedFullRecipe = true;
+
+            // Track recipe view
+            _ = TrackRecipeView();
         }
         finally
         {
             IsBusy = false;
+        }
+    }
+
+    private async Task TrackRecipeView()
+    {
+        try
+        {
+            await httpClient.Post<object, object>(
+                new Uri(
+                    $"/api/Recipe/{Guid}/View",
+                    UriKind.Absolute),
+                new { },
+                CancellationToken.None);
+        }
+        catch
+        {
+            // Silently fail - view tracking is not critical
+        }
+    }
+
+    [RelayCommand]
+    private async Task HeartRecipe()
+    {
+        // Optimistically update the UI
+        RecipeHearts++;
+
+        // Track the heart in popularity metrics
+        _ = TrackRecipeHeart();
+    }
+
+    private async Task TrackRecipeHeart()
+    {
+        try
+        {
+            await httpClient.Post<object, object>(
+                new Uri(
+                    $"/api/Recipe/{Guid}/Heart",
+                    UriKind.Absolute),
+                new { },
+                CancellationToken.None);
+        }
+        catch
+        {
+            // Silently fail - heart tracking is not critical
+            // Note: UI was already updated optimistically
         }
     }
 
@@ -357,13 +405,13 @@ public partial class RecipeViewModel(
             return;
         }
 
-        await Microsoft.Maui.ApplicationModel.DataTransfer.Share.Default
-            .RequestAsync(
-                new ShareTextRequest
-                {
-                    Uri = Url.AbsoluteUri,
-                    Title = Name,
-                    Text = $"Check out this recipe: {Name}"
-                });
+        // Navigate to share page
+        var navigationParameter = new Dictionary<string, object>
+        {
+            { "RecipeId", RecipeGuid },
+            { "RecipeUrl", Url.AbsoluteUri }
+        };
+
+        await Shell.Current.GoToAsync("ShareRecipePage", navigationParameter);
     }
 }

@@ -405,6 +405,9 @@
                                     <Binding Path="RecipeHearts"></Binding>
                                 </MultiBinding>
                             </Label.Text>
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding HeartRecipeCommand}" />
+                            </Label.GestureRecognizers>
                         </Label>
                         <!-- Rating (Bottom Right) -->
                         <Label
