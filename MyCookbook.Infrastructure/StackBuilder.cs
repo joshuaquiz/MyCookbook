@@ -161,7 +161,7 @@ internal sealed class StackBuilder
             new UserPoolIdentityProviderGoogleProps
             {
                 UserPool = userPool,
-                ClientId = googleSecret.SecretValueFromJson("client_id").UnsafeUnwrap(),
+                ClientId = googleSecret.SecretValueFromJson("client_id").ToString(),
                 ClientSecretValue = googleSecret.SecretValueFromJson("client_secret"),
                 Scopes = ["profile", "email", "openid"],
                 AttributeMapping = new AttributeMapping
@@ -184,8 +184,8 @@ internal sealed class StackBuilder
             new UserPoolIdentityProviderFacebookProps
             {
                 UserPool = userPool,
-                ClientId = facebookSecret.SecretValueFromJson("client_id").UnsafeUnwrap(),
-                ClientSecret = facebookSecret.SecretValueFromJson("client_secret").UnsafeUnwrap(),
+                ClientId = facebookSecret.SecretValueFromJson("client_id").ToString(),
+                ClientSecret = facebookSecret.SecretValueFromJson("client_secret").ToString(),
                 Scopes = ["public_profile", "email"],
                 AttributeMapping = new AttributeMapping
                 {
