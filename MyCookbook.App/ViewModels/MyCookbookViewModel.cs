@@ -6,6 +6,8 @@ using System.Net.Http.Json;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MyCookbook.App.Helpers;
+using MyCookbook.App.Interfaces;
 using MyCookbook.App.Services;
 using MyCookbook.Common.ApiModels;
 
@@ -14,6 +16,7 @@ namespace MyCookbook.App.ViewModels;
 public partial class MyCookbookViewModel : BaseViewModel
 {
     private readonly IRecipeService _recipeService;
+    private readonly INotificationService _notificationService;
     private DateTime? _lastLoadTime;
     private static readonly TimeSpan CacheExpiration = TimeSpan.FromMinutes(5);
 
@@ -30,9 +33,11 @@ public partial class MyCookbookViewModel : BaseViewModel
     private string _searchText = string.Empty;
 
     public MyCookbookViewModel(
-        IRecipeService recipeService)
+        IRecipeService recipeService,
+        INotificationService notificationService)
     {
         _recipeService = recipeService;
+        _notificationService = notificationService;
         Title = "My Cookbook";
 
         // Initialize with empty collections immediately for responsive UI
@@ -77,11 +82,15 @@ public partial class MyCookbookViewModel : BaseViewModel
             // Update cache timestamp
             _lastLoadTime = DateTime.UtcNow;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             // Initialize with empty collections to prevent null reference errors
             Recipes ??= [];
             RecipesToDisplay ??= [];
+
+            // Show user-friendly error message
+            var message = ErrorMessageHelper.GetUserFriendlyMessage(ex);
+            await _notificationService.ShowErrorAsync(message, "Failed to Load Cookbook");
         }
         finally
         {

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MyCookbook.App.Components.EmptyState.EmptyStateView"
+             x:Name="Root">
+    <Grid VerticalOptions="Center" 
+          HorizontalOptions="Center"
+          Padding="{StaticResource SpacingLarge}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="{StaticResource SpacingMedium}" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="{StaticResource SpacingSmall}" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="{StaticResource SpacingMedium}" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        
+        <!-- Icon -->
+        <Image Grid.Row="0"
+               Source="{Binding Source={x:Reference Root}, Path=IconSource}"
+               WidthRequest="120"
+               HeightRequest="120"
+               HorizontalOptions="Center"
+               Opacity="0.5" />
+        
+        <!-- Title -->
+        <Label Grid.Row="2"
+               Text="{Binding Source={x:Reference Root}, Path=Title}"
+               FontSize="{StaticResource FontSizeTitle}"
+               FontAttributes="Bold"
+               HorizontalTextAlignment="Center"
+               TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" />
+        
+        <!-- Message -->
+        <Label Grid.Row="4"
+               Text="{Binding Source={x:Reference Root}, Path=Message}"
+               FontSize="{StaticResource FontSizeBody}"
+               HorizontalTextAlignment="Center"
+               TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray500}}" />
+        
+        <!-- Action Button (optional) -->
+        <Button Grid.Row="6"
+                Text="{Binding Source={x:Reference Root}, Path=ActionButtonText}"
+                Command="{Binding Source={x:Reference Root}, Path=ActionCommand}"
+                IsVisible="{Binding Source={x:Reference Root}, Path=ShowActionButton}"
+                HorizontalOptions="Center"
+                Padding="{StaticResource SpacingMedium}" />
+    </Grid>
+</ContentView>
+

@@ -2,6 +2,7 @@
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
@@ -17,6 +18,8 @@ public sealed class CookbookStorage(
     HttpClient httpClient)
     : ICookbookStorage
 {
+    private readonly SemaphoreSlim _refreshLock = new(1, 1);
+    private Task<bool>? _ongoingRefresh;
     public ValueTask<AppTheme> GetCurrentAppTheme(
         Application application)
     {
@@ -115,39 +118,96 @@ public sealed class CookbookStorage(
 
     private async Task<bool> RefreshAccessTokenAsync()
     {
+        // Prevent concurrent refresh attempts
+        if (_ongoingRefresh != null)
+        {
+            return await _ongoingRefresh;
+        }
+
+        await _refreshLock.WaitAsync();
         try
         {
-            var refreshToken = await GetRefreshToken();
-            if (string.IsNullOrEmpty(refreshToken))
+            // Double-check after acquiring lock
+            if (_ongoingRefresh != null)
             {
-                return false;
+                return await _ongoingRefresh;
             }
 
-            var apiBaseUrl = Environment.GetEnvironmentVariable("API_BASE_URL") ?? "http://api-development-mycookbook.g3software.net";
-            var refreshRequest = new RefreshTokenRequest(refreshToken);
-
-            var response = await httpClient.PostAsJsonAsync($"{apiBaseUrl}/api/Account/RefreshToken", refreshRequest);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                return false;
-            }
-
-            var refreshResponse = await response.Content.ReadFromJsonAsync<RefreshTokenResponse>();
-            if (refreshResponse == null)
-            {
-                return false;
-            }
-
-            // Store the new tokens
-            await SetAccessToken(refreshResponse.AccessToken, refreshResponse.ExpiresIn);
-            await SetRefreshToken(refreshResponse.RefreshToken);
-
-            return true;
+            _ongoingRefresh = RefreshAccessTokenWithRetryAsync();
+            return await _ongoingRefresh;
         }
-        catch
+        finally
         {
-            return false;
+            _ongoingRefresh = null;
+            _refreshLock.Release();
         }
+    }
+
+    private async Task<bool> RefreshAccessTokenWithRetryAsync()
+    {
+        const int maxRetries = 3;
+        var delay = TimeSpan.FromSeconds(1);
+
+        for (int attempt = 0; attempt < maxRetries; attempt++)
+        {
+            try
+            {
+                var refreshToken = await GetRefreshToken();
+                if (string.IsNullOrEmpty(refreshToken))
+                {
+                    return false;
+                }
+
+                var apiBaseUrl = Environment.GetEnvironmentVariable("API_BASE_URL") ?? "http://api-development-mycookbook.g3software.net";
+                var refreshRequest = new RefreshTokenRequest(refreshToken);
+
+                var response = await httpClient.PostAsJsonAsync($"{apiBaseUrl}/api/Account/RefreshToken", refreshRequest);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    // Don't retry on 401 (invalid refresh token)
+                    if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                    {
+                        return false;
+                    }
+
+                    // Retry on other errors
+                    if (attempt < maxRetries - 1)
+                    {
+                        await Task.Delay(delay);
+                        delay = TimeSpan.FromSeconds(delay.TotalSeconds * 2); // Exponential backoff
+                        continue;
+                    }
+
+                    return false;
+                }
+
+                var refreshResponse = await response.Content.ReadFromJsonAsync<RefreshTokenResponse>();
+                if (refreshResponse == null)
+                {
+                    return false;
+                }
+
+                // Store the new tokens
+                await SetAccessToken(refreshResponse.AccessToken, refreshResponse.ExpiresIn);
+                await SetRefreshToken(refreshResponse.RefreshToken);
+
+                return true;
+            }
+            catch (Exception)
+            {
+                // Retry on network errors
+                if (attempt < maxRetries - 1)
+                {
+                    await Task.Delay(delay);
+                    delay = TimeSpan.FromSeconds(delay.TotalSeconds * 2); // Exponential backoff
+                    continue;
+                }
+
+                return false;
+            }
+        }
+
+        return false;
     }
 }

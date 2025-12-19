@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.ApplicationModel;
 using MyCookbook.App.Implementations;
 using MyCookbook.App.Interfaces;
 using MyCookbook.App.Services;
@@ -25,6 +26,9 @@ public partial class LoginViewModel : BaseViewModel
     [ObservableProperty]
     private string? _errorMessage;
 
+    [ObservableProperty]
+    private string _appVersion = string.Empty;
+
     public LoginViewModel(
         ICookbookStorage cookbookStorage,
         IAccountService accountService,
@@ -33,6 +37,9 @@ public partial class LoginViewModel : BaseViewModel
         _cookbookStorage = cookbookStorage;
         _accountService = accountService;
         _cognitoAuthService = cognitoAuthService;
+
+        // Get app version
+        AppVersion = $"Version {AppInfo.Current.VersionString} (Build {AppInfo.Current.BuildString})";
     }
 
     [RelayCommand]

@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
+using MyCookbook.App.Controls;
 using MyCookbook.App.Interfaces;
 using MyCookbook.App.ViewModels;
 using MyCookbook.App.Views;
@@ -31,7 +32,13 @@ public partial class App
         // NOW resolve pages after resources are loaded
         _login = _serviceProvider.GetRequiredService<Login>();
 
+        // Initialize CachedImage control with image cache service
+        var imageCacheService = _serviceProvider.GetRequiredService<IImageCacheService>();
+        CachedImage.Initialize(imageCacheService);
 
+        // Initialize SQLite cache database
+        var sqliteCacheService = _serviceProvider.GetRequiredService<ISqliteCacheService>();
+        Task.Run(async () => await sqliteCacheService.InitializeAsync()).Wait();
 
         //CrossMauiMTAdmob.Current.UserPersonalizedAds = true;
         //CrossMauiMTAdmob.Current.ComplyWithFamilyPolicies = true;
@@ -55,7 +62,51 @@ public partial class App
     protected override Window CreateWindow(IActivationState? activationState)
     {
         // Start with login page, will switch to AppShell if user is logged in
-        return new Window(_login);
+        var window = new Window(_login);
+
+        // Handle deep linking
+        window.Created += (s, e) =>
+        {
+            // Subscribe to app links
+            Microsoft.Maui.ApplicationModel.AppActions.OnAppAction += HandleAppLink;
+        };
+
+        return window;
+    }
+
+    private async void HandleAppLink(object? sender, Microsoft.Maui.ApplicationModel.AppActionEventArgs e)
+    {
+        await HandleDeepLink(e.AppAction.Id);
+    }
+
+    private async Task HandleDeepLink(string uri)
+    {
+        try
+        {
+            // Parse the URI to extract recipe GUID
+            // Supports: mycookbook://recipe/{guid} or https://mycookbook.app/recipe/{guid}
+            var uriParts = uri.Split('/');
+            if (uriParts.Length > 0)
+            {
+                var lastPart = uriParts[^1];
+                if (Guid.TryParse(lastPart, out var recipeGuid))
+                {
+                    // Navigate to recipe page
+                    await MainThread.InvokeOnMainThreadAsync(async () =>
+                    {
+                        if (Windows.Count > 0 && Windows[0].Page is AppShell)
+                        {
+                            await Shell.Current.GoToAsync($"///{nameof(RecipePage)}?Guid={recipeGuid}");
+                        }
+                    });
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            // Log error but don't crash
+            System.Diagnostics.Debug.WriteLine($"Deep link handling error: {ex.Message}");
+        }
     }
 
     private async void InitializeAppAsync()

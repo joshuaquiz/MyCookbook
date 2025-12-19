@@ -42,7 +42,7 @@ public sealed class CookbookHttpClient(
     /// <summary>
     /// GET request with string path (converted to absolute URI)
     /// Catches 401 Unauthorized errors and redirects to login
-    /// Catches timeout and network errors gracefully
+    /// Re-throws exceptions for caller to handle
     /// </summary>
     public async ValueTask<T> Get<T>(string path, CancellationToken cancellationToken)
     {
@@ -58,27 +58,24 @@ public sealed class CookbookHttpClient(
         {
             logger.LogWarning(ex, "HTTP GET UNAUTHORIZED: {Path} - Redirecting to login", path);
             await HandleUnauthorizedAsync();
-            // Return default value to prevent crash
-            return default!;
+            throw; // Re-throw for caller to handle
         }
         catch (TaskCanceledException ex)
         {
             logger.LogWarning(ex, "HTTP GET TIMEOUT: {Path} - Request timeout or cancelled", path);
-            // Return default value to prevent crash
-            return default!;
+            throw; // Re-throw for caller to handle
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "HTTP GET ERROR: {Path} - {Message}", path, ex.Message);
-            // Return default value to prevent crash
-            return default!;
+            throw; // Re-throw for caller to handle
         }
     }
 
     /// <summary>
     /// POST request with string path (converted to absolute URI)
     /// Catches 401 Unauthorized errors and redirects to login
-    /// Catches timeout and network errors gracefully
+    /// Re-throws exceptions for caller to handle
     /// </summary>
     public async ValueTask<TResponse> Post<TResponse, TRequest>(string path, TRequest request, CancellationToken cancellationToken)
     {
@@ -96,27 +93,24 @@ public sealed class CookbookHttpClient(
         {
             logger.LogWarning(ex, "HTTP POST UNAUTHORIZED: {Path} - Redirecting to login", path);
             await HandleUnauthorizedAsync();
-            // Return default value to prevent crash
-            return default!;
+            throw; // Re-throw for caller to handle
         }
         catch (TaskCanceledException ex)
         {
             logger.LogWarning(ex, "HTTP POST TIMEOUT: {Path} - Request timeout or cancelled", path);
-            // Return default value to prevent crash
-            return default!;
+            throw; // Re-throw for caller to handle
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "HTTP POST ERROR: {Path} - {Message}", path, ex.Message);
-            // Return default value to prevent crash
-            return default!;
+            throw; // Re-throw for caller to handle
         }
     }
 
     /// <summary>
     /// GET request with JSON deserialization (for compatibility with existing code)
     /// Catches 401 Unauthorized errors and redirects to login
-    /// Catches timeout and network errors gracefully
+    /// Re-throws exceptions for caller to handle
     /// </summary>
     public async Task<T?> GetFromJsonAsync<T>(string path)
     {
@@ -132,20 +126,17 @@ public sealed class CookbookHttpClient(
         {
             logger.LogWarning(ex, "HTTP GET (JSON) UNAUTHORIZED: {Path} - Redirecting to login", path);
             await HandleUnauthorizedAsync();
-            // Return default value to prevent crash
-            return default;
+            throw; // Re-throw for caller to handle
         }
         catch (TaskCanceledException ex)
         {
             logger.LogWarning(ex, "HTTP GET (JSON) TIMEOUT: {Path} - Request timeout or cancelled", path);
-            // Return default value to prevent crash
-            return default;
+            throw; // Re-throw for caller to handle
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "HTTP GET (JSON) ERROR: {Path} - {Message}", path, ex.Message);
-            // Return default value to prevent crash
-            return default;
+            throw; // Re-throw for caller to handle
         }
     }
 

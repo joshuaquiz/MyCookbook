@@ -18,9 +18,10 @@ public enum CalendarViewMode
     Week
 }
 
-public partial class CalendarHomeViewModel : BaseViewModel
+public partial class CalendarHomeViewModel : BaseViewModel, IDisposable
 {
     private readonly HttpClient _httpClient;
+    private bool _disposed;
     public Guid CurrentAuthorId { get; private set; }
 
     [ObservableProperty]
@@ -282,6 +283,28 @@ public partial class CalendarHomeViewModel : BaseViewModel
             var endOfWeek = startOfWeek.AddDays(6);
             HeaderText = $"{startOfWeek:MMM d} - {endOfWeek:MMM d, yyyy}";
         }
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (_disposed)
+        {
+            return;
+        }
+
+        if (disposing)
+        {
+            // Unsubscribe from event to prevent memory leaks
+            MyCalendar.DateSelectionChanged -= OnDateSelectionChanged;
+        }
+
+        _disposed = true;
     }
 }
 

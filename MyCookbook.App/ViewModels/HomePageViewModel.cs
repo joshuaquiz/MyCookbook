@@ -7,16 +7,20 @@ using System.Timers;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.Controls;
+using MyCookbook.App.Helpers;
+using MyCookbook.App.Interfaces;
 using MyCookbook.App.Services;
 
 namespace MyCookbook.App.ViewModels;
 
-public partial class HomePageViewModel : BaseViewModel
+public partial class HomePageViewModel : BaseViewModel, IDisposable
 {
     private readonly IRecipeService _recipeService;
     private readonly ISearchService _searchService;
+    private readonly INotificationService _notificationService;
     private readonly System.Timers.Timer _searchTimer;
     private readonly int _pageSize = 20;
+    private bool _disposed;
 
     [ObservableProperty]
     private string _searchText = string.Empty;
@@ -36,11 +40,15 @@ public partial class HomePageViewModel : BaseViewModel
     // This will be set by the view to trigger refresh
     public Action? TriggerRefresh { get; set; }
 
-    public HomePageViewModel(IRecipeService recipeService, ISearchService searchService)
+    public HomePageViewModel(
+        IRecipeService recipeService,
+        ISearchService searchService,
+        INotificationService notificationService)
     {
         Debug.WriteLine("[HomePageViewModel] Constructor called");
         _recipeService = recipeService;
         _searchService = searchService;
+        _notificationService = notificationService;
         _searchTimer = new System.Timers.Timer(500); // 0.5 seconds
         _searchTimer.Elapsed += OnSearchTimerElapsed;
         _searchTimer.AutoReset = false;
@@ -106,27 +114,42 @@ public partial class HomePageViewModel : BaseViewModel
 
         List<Common.ApiModels.RecipeSummaryViewModel> result;
 
-        if (!string.IsNullOrEmpty(SearchText))
+        try
         {
-            result = await _searchService.GlobalSearchAsync(
-                SearchText,
-                string.Empty,
-                IncludeIngredients,
-                ExcludeIngredients,
-                _pageSize,
-                pageNumber * _pageSize,
-                cancellationToken);
+            if (!string.IsNullOrEmpty(SearchText))
+            {
+                result = await _searchService.GlobalSearchAsync(
+                    SearchText,
+                    string.Empty,
+                    IncludeIngredients,
+                    ExcludeIngredients,
+                    _pageSize,
+                    pageNumber * _pageSize,
+                    cancellationToken);
+            }
+            else
+            {
+                result = await _recipeService.GetPopularRecipesAsync(
+                    _pageSize,
+                    _pageSize * pageNumber,
+                    cancellationToken);
+            }
+
+            Debug.WriteLine($"[HomePageViewModel] GetRecipeData received {result.Count} items");
         }
-        else
+        catch (Exception ex)
         {
-            result = await _recipeService.GetPopularRecipesAsync(
-                _pageSize,
-                _pageSize * pageNumber,
-                cancellationToken);
+            Debug.WriteLine($"[HomePageViewModel] Error loading recipes: {ex.Message}");
+
+            // Show user-friendly error message
+            var message = ErrorMessageHelper.GetUserFriendlyMessage(ex);
+            await _notificationService.ShowErrorAsync(message, "Failed to Load Recipes");
+
+            // Return empty enumerable instead of crashing
+            yield break;
         }
 
-        Debug.WriteLine($"[HomePageViewModel] GetRecipeData received {result.Count} items");
-
+        // Yield results outside of try-catch
         foreach (var item in result)
         {
             yield return new Components.RecipeSummary.RecipeSummaryViewModel
@@ -150,6 +173,37 @@ public partial class HomePageViewModel : BaseViewModel
         }
 
         Debug.WriteLine($"[HomePageViewModel] GetRecipeData finished yielding items");
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (_disposed)
+        {
+            return;
+        }
+
+        if (disposing)
+        {
+            // Dispose managed resources
+            if (_searchTimer != null)
+            {
+                _searchTimer.Elapsed -= OnSearchTimerElapsed;
+                _searchTimer.Stop();
+                _searchTimer.Dispose();
+            }
+
+            // Clear delegate references to prevent memory leaks
+            TriggerRefresh = null;
+            GetData = null;
+        }
+
+        _disposed = true;
     }
 }
 

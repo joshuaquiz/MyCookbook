@@ -6,6 +6,7 @@
     xmlns:views="using:MyCookbook.App.Views"
     xmlns:viewModels="clr-namespace:MyCookbook.App.ViewModels"
     xmlns:converters="clr-namespace:MyCookbook.App.Converters"
+    xmlns:controls="clr-namespace:MyCookbook.App.Controls"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
     x:Class="MyCookbook.App.Views.RecipePage"
     x:DataType="viewModels:RecipeViewModel"
@@ -23,7 +24,7 @@
         <DataTemplate
             x:Key="RecipeImageTemplate"
             x:DataType="system:Uri">
-            <Image
+            <controls:CachedImage
                 Source="{Binding .}"
                 Aspect="AspectFill"
                 HorizontalOptions="Fill"
@@ -127,28 +128,28 @@
                         VerticalOptions="Start" />
                 </Grid>
                 <!-- Step Image (Full Width) -->
-                <Image
+                <controls:CachedImage
                     Source="{Binding ImageUri}"
                     Aspect="AspectFill"
                     HeightRequest="{StaticResource HeightImage}"
                     Margin="{StaticResource MarginHorizontalXLarge}"
                     HorizontalOptions="Fill">
-                    <Image.Triggers>
+                    <controls:CachedImage.Triggers>
                         <DataTrigger
-                            TargetType="Image"
+                            TargetType="controls:CachedImage"
                             Binding="{Binding ImageUri, Converter={StaticResource NullToBooleanConverter}}"
                             Value="True">
                             <Setter Property="IsVisible" Value="False" />
                             <Setter Property="HeightRequest" Value="0" />
                             <Setter Property="Margin" Value="0" />
                         </DataTrigger>
-                    </Image.Triggers>
-                </Image>
+                    </controls:CachedImage.Triggers>
+                </controls:CachedImage>
             </VerticalStackLayout>
         </DataTemplate>
     </ContentPage.Resources>
     <Grid>
-        <ScrollView>
+        <ScrollView IsVisible="{Binding IsBusy, Converter={toolkit:InvertedBoolConverter}}">
             <VerticalStackLayout
                 BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}">
 
@@ -699,5 +700,16 @@
                     Rotation="{Binding IsFabExpanded, Converter={StaticResource BoolToDoubleConverter}}" />
             </Border>
         </VerticalStackLayout>
+
+        <!-- Loading Indicator -->
+        <Grid IsVisible="{Binding IsBusy}" BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}">
+            <ActivityIndicator
+                IsRunning="{Binding IsBusy}"
+                Color="{StaticResource Primary}"
+                HeightRequest="50"
+                WidthRequest="50"
+                HorizontalOptions="Center"
+                VerticalOptions="Center" />
+        </Grid>
     </Grid>
 </views:BasePage>

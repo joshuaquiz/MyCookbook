@@ -60,7 +60,7 @@ public static class MauiProgram
         builder.Services
             .AddLogging(
                 x =>
-                    x.SetMinimumLevel(LogLevel.Trace)
+                    x.SetMinimumLevel(LogLevel.Debug)
                         .AddConsole())
             .AddSingleton(new HttpClient())
             .AddSingleton<ICognitoAuthService, CognitoAuthService>()
@@ -107,7 +107,12 @@ public static class MauiProgram
             .AddSingleton(Connectivity.Current);
 
         builder.Services
-            .AddSingleton<ICookbookStorage, CookbookStorage>();
+            .AddSingleton<ICookbookStorage, CookbookStorage>()
+            .AddSingleton<Interfaces.INotificationService, Implementations.NotificationService>()
+            .AddSingleton<Interfaces.ISqliteCacheService, Implementations.SqliteCacheService>()
+            .AddSingleton<Interfaces.IOfflineCacheService>(sp => sp.GetRequiredService<Interfaces.ISqliteCacheService>())
+            .AddSingleton<Interfaces.IAppConfiguration, Implementations.AppConfiguration>()
+            .AddSingleton<Interfaces.IImageCacheService, Implementations.ImageCacheService>();
 
         // Register API services
         builder.Services

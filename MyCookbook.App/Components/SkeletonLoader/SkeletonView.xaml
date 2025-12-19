@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MyCookbook.App.Components.SkeletonLoader.SkeletonView"
+             x:Name="Root">
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <!-- Shimmer animation -->
+            <Animation x:Key="ShimmerAnimation">
+                <DoubleAnimation 
+                    From="0" 
+                    To="1" 
+                    Duration="0:0:1.5" 
+                    Easing="{x:Static Easing.SinInOut}" 
+                    RepeatBehavior="Forever" />
+            </Animation>
+        </ResourceDictionary>
+    </ContentView.Resources>
+    
+    <Grid>
+        <!-- Skeleton shape -->
+        <BoxView
+            BackgroundColor="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray700}}"
+            CornerRadius="{Binding Source={x:Reference Root}, Path=CornerRadius}"
+            HeightRequest="{Binding Source={x:Reference Root}, Path=SkeletonHeight}"
+            WidthRequest="{Binding Source={x:Reference Root}, Path=SkeletonWidth}" />
+
+        <!-- Shimmer overlay -->
+        <BoxView
+            x:Name="ShimmerOverlay"
+            BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray600}}"
+            CornerRadius="{Binding Source={x:Reference Root}, Path=CornerRadius}"
+            HeightRequest="{Binding Source={x:Reference Root}, Path=SkeletonHeight}"
+            WidthRequest="{Binding Source={x:Reference Root}, Path=SkeletonWidth}"
+            Opacity="0.5" />
+    </Grid>
+</ContentView>
+

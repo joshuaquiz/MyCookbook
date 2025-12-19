@@ -15,11 +15,12 @@ namespace MyCookbook.App.ViewModels;
 
 [QueryProperty(nameof(RecipeId), nameof(RecipeId))]
 [QueryProperty(nameof(RecipeUrl), nameof(RecipeUrl))]
-public partial class ShareRecipeViewModel : BaseViewModel
+public partial class ShareRecipeViewModel : BaseViewModel, IDisposable
 {
     private readonly IRecipeService _recipeService;
     private CancellationTokenSource? _searchCancellationTokenSource;
     private System.Timers.Timer? _searchDebounceTimer;
+    private bool _disposed;
 
     [ObservableProperty]
     private string _recipeId = string.Empty;
@@ -162,6 +163,38 @@ public partial class ShareRecipeViewModel : BaseViewModel
         {
             IsBusy = false;
         }
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (_disposed)
+        {
+            return;
+        }
+
+        if (disposing)
+        {
+            // Dispose timer
+            if (_searchDebounceTimer != null)
+            {
+                _searchDebounceTimer.Stop();
+                _searchDebounceTimer.Dispose();
+                _searchDebounceTimer = null;
+            }
+
+            // Cancel and dispose cancellation token source
+            _searchCancellationTokenSource?.Cancel();
+            _searchCancellationTokenSource?.Dispose();
+            _searchCancellationTokenSource = null;
+        }
+
+        _disposed = true;
     }
 }
 

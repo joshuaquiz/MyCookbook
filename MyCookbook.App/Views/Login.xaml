@@ -94,5 +94,15 @@
             Grid.Column="3"
             Source="facebook"
             Command="{Binding LoginWithFacebookCommand}" />
+        <Label
+            Grid.Row="12"
+            Grid.Column="0"
+            Grid.ColumnSpan="6"
+            Text="{Binding AppVersion}"
+            FontSize="{StaticResource FontSizeCaption}"
+            TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}"
+            HorizontalTextAlignment="Center"
+            VerticalTextAlignment="End"
+            Margin="0,0,0,10" />
     </Grid>
 </ContentPage>

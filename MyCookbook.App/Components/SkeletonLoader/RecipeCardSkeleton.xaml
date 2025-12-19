@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:skeleton="clr-namespace:MyCookbook.App.Components.SkeletonLoader"
+             x:Class="MyCookbook.App.Components.SkeletonLoader.RecipeCardSkeleton">
+    <Border 
+        BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
+        StrokeThickness="0"
+        Padding="{StaticResource SpacingSmall}"
+        Margin="{StaticResource SpacingSmall}">
+        <Border.StrokeShape>
+            <RoundRectangle CornerRadius="12" />
+        </Border.StrokeShape>
+        
+        <Grid RowDefinitions="200,Auto,Auto,Auto,Auto" RowSpacing="{StaticResource SpacingSmall}">
+            <!-- Recipe Image Skeleton -->
+            <skeleton:SkeletonView
+                Grid.Row="0"
+                SkeletonHeight="200"
+                SkeletonWidth="300"
+                CornerRadius="8" />
+
+            <!-- Recipe Title Skeleton -->
+            <skeleton:SkeletonView
+                Grid.Row="1"
+                SkeletonHeight="24"
+                SkeletonWidth="250"
+                CornerRadius="4"
+                Margin="0,8,0,0" />
+
+            <!-- Author Info Skeleton -->
+            <Grid Grid.Row="2" ColumnDefinitions="32,Auto" ColumnSpacing="{StaticResource SpacingSmall}" Margin="0,8,0,0">
+                <!-- Author Avatar -->
+                <skeleton:SkeletonView
+                    Grid.Column="0"
+                    SkeletonHeight="32"
+                    SkeletonWidth="32"
+                    CornerRadius="16" />
+
+                <!-- Author Name -->
+                <skeleton:SkeletonView
+                    Grid.Column="1"
+                    SkeletonHeight="16"
+                    SkeletonWidth="120"
+                    CornerRadius="4"
+                    VerticalOptions="Center" />
+            </Grid>
+
+            <!-- Recipe Stats Skeleton -->
+            <Grid Grid.Row="3" ColumnDefinitions="*,*,*" ColumnSpacing="{StaticResource SpacingSmall}" Margin="0,8,0,0">
+                <skeleton:SkeletonView
+                    Grid.Column="0"
+                    SkeletonHeight="16"
+                    SkeletonWidth="60"
+                    CornerRadius="4" />
+
+                <skeleton:SkeletonView
+                    Grid.Column="1"
+                    SkeletonHeight="16"
+                    SkeletonWidth="60"
+                    CornerRadius="4" />
+
+                <skeleton:SkeletonView
+                    Grid.Column="2"
+                    SkeletonHeight="16"
+                    SkeletonWidth="60"
+                    CornerRadius="4" />
+            </Grid>
+
+            <!-- Rating Skeleton -->
+            <skeleton:SkeletonView
+                Grid.Row="4"
+                SkeletonHeight="16"
+                SkeletonWidth="100"
+                CornerRadius="4"
+                Margin="0,8,0,0" />
+        </Grid>
+    </Border>
+</ContentView>
+

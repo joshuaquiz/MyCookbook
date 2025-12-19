@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:recipeSummary="clr-namespace:MyCookbook.App.Components.RecipeSummary"
     xmlns:converters="clr-namespace:MyCookbook.App.Converters"
+    xmlns:controls="clr-namespace:MyCookbook.App.Controls"
     x:Class="MyCookbook.App.Components.RecipeSummary.RecipeSummaryComponent"
     x:Name="Root"
     HorizontalOptions="Fill"
@@ -14,6 +15,7 @@
         <converters:NullToBooleanConverter x:Key="NullToBooleanConverter" />
         <converters:DefaultValueConverter x:Key="DefaultValueConverter" />
         <converters:TimeWithPrepConverter x:Key="TimeWithPrepConverter" />
+        <converters:StringToUriConverter x:Key="StringToUriConverter" />
     </ContentView.Resources>
     <Border
         StrokeThickness="0"
@@ -180,16 +182,16 @@
                     HorizontalScrollBarVisibility="Never">
                     <CarouselView.ItemTemplate>
                         <DataTemplate>
-                            <Image
-                                Source="{Binding .}"
+                            <controls:CachedImage
+                                Source="{Binding ., Converter={StaticResource StringToUriConverter}}"
                                 Aspect="AspectFill"
                                 HorizontalOptions="Fill"
                                 VerticalOptions="Fill">
-                                <Image.GestureRecognizers>
+                                <controls:CachedImage.GestureRecognizers>
                                     <TapGestureRecognizer
                                         Tapped="OnImageTapped" />
-                                </Image.GestureRecognizers>
-                            </Image>
+                                </controls:CachedImage.GestureRecognizers>
+                            </controls:CachedImage>
                         </DataTemplate>
                     </CarouselView.ItemTemplate>
                 </CarouselView>

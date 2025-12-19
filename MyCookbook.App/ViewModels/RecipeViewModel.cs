@@ -2,6 +2,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.ApplicationModel.DataTransfer;
 using Microsoft.Maui.Controls;
+using MyCookbook.App.Helpers;
+using MyCookbook.App.Interfaces;
 using MyCookbook.App.Services;
 using MyCookbook.Common.ApiModels;
 using System;
@@ -29,10 +31,18 @@ namespace MyCookbook.App.ViewModels;
 [QueryProperty(nameof(PreviewItemUrl), nameof(PreviewItemUrl))]
 [QueryProperty(nameof(PreviewHearts), nameof(PreviewHearts))]
 [QueryProperty(nameof(PreviewRating), nameof(PreviewRating))]
-public partial class RecipeViewModel(
-    IRecipeService recipeService)
-    : BaseViewModel
+public partial class RecipeViewModel : BaseViewModel
 {
+    private readonly IRecipeService _recipeService;
+    private readonly INotificationService _notificationService;
+
+    public RecipeViewModel(
+        IRecipeService recipeService,
+        INotificationService notificationService)
+    {
+        _recipeService = recipeService;
+        _notificationService = notificationService;
+    }
     [ObservableProperty]
     private RecipeModel? _recipe;
 
@@ -342,11 +352,23 @@ public partial class RecipeViewModel(
         IsBusy = true;
         try
         {
-            Recipe = await recipeService.GetRecipeAsync(RecipeGuid, CancellationToken.None);
+            Recipe = await _recipeService.GetRecipeAsync(RecipeGuid, CancellationToken.None);
             _hasLoadedFullRecipe = true;
 
             // Track recipe view (fire-and-forget, non-blocking)
             TrackRecipeView();
+        }
+        catch (Exception ex)
+        {
+            // Show user-friendly error message
+            var message = ErrorMessageHelper.GetUserFriendlyMessage(ex);
+            await _notificationService.ShowErrorAsync(message, "Failed to Load Recipe");
+
+            // Navigate back if recipe failed to load
+            if (Shell.Current != null)
+            {
+                await Shell.Current.GoToAsync("..");
+            }
         }
         finally
         {
@@ -361,7 +383,7 @@ public partial class RecipeViewModel(
         {
             try
             {
-                await recipeService.TrackRecipeViewAsync(RecipeGuid, CancellationToken.None);
+                await _recipeService.TrackRecipeViewAsync(RecipeGuid, CancellationToken.None);
             }
             catch
             {
@@ -400,7 +422,7 @@ public partial class RecipeViewModel(
         {
             try
             {
-                await recipeService.HeartRecipeAsync(RecipeGuid, CancellationToken.None);
+                await _recipeService.HeartRecipeAsync(RecipeGuid, CancellationToken.None);
             }
             catch
             {
@@ -417,7 +439,7 @@ public partial class RecipeViewModel(
         {
             try
             {
-                await recipeService.UnheartRecipeAsync(RecipeGuid, CancellationToken.None);
+                await _recipeService.UnheartRecipeAsync(RecipeGuid, CancellationToken.None);
             }
             catch
             {
@@ -458,5 +480,28 @@ public partial class RecipeViewModel(
     private void CloseFab()
     {
         IsFabExpanded = false;
+    }
+
+    [RelayCommand]
+    private async Task ShareDeepLink()
+    {
+        try
+        {
+            // Generate deep link for this recipe
+            var deepLink = $"mycookbook://recipe/{RecipeGuid}";
+            var webLink = $"https://mycookbook.app/recipe/{RecipeGuid}";
+
+            await Microsoft.Maui.ApplicationModel.DataTransfer.Share.Default.RequestAsync(new Microsoft.Maui.ApplicationModel.DataTransfer.ShareTextRequest
+            {
+                Text = $"Check out this recipe: {Name}\n\n{webLink}",
+                Title = "Share Recipe",
+                Subject = Name
+            });
+        }
+        catch (Exception ex)
+        {
+            // Log error but don't crash
+            System.Diagnostics.Debug.WriteLine($"Share error: {ex.Message}");
+        }
     }
 }

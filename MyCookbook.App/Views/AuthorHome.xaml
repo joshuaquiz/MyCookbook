@@ -7,6 +7,7 @@
     xmlns:viewModels="using:MyCookbook.App.ViewModels"
     xmlns:recipeSummaryList="clr-namespace:MyCookbook.App.Components.RecipeSummaryList"
     xmlns:converters="clr-namespace:MyCookbook.App.Converters"
+    xmlns:controls="clr-namespace:MyCookbook.App.Controls"
     x:DataType="viewModels:AuthorProfilePageViewModel"
     x:Name="Root"
     Title="{Binding AuthorViewModel.Name}"
@@ -14,6 +15,7 @@
     Shell.PresentationMode="Animated">
     <ContentPage.Resources>
         <converters:EqualToConverter x:Key="EqualToConverter" />
+        <converters:StringToUriConverter x:Key="StringToUriConverter" />
     </ContentPage.Resources>
     <ContentPage.ToolbarItems>
         <ToolbarItem
@@ -26,8 +28,8 @@
         <VerticalStackLayout Grid.Row="0">
             <!-- Background Image with Circular Profile Image Overlay -->
             <Grid HeightRequest="{StaticResource HeightHero}">
-                <Image
-                    Source="{Binding AuthorViewModel.BackgroundImageUri}"
+                <controls:CachedImage
+                    Source="{Binding AuthorViewModel.BackgroundImageUri, Converter={StaticResource StringToUriConverter}}"
                     Aspect="AspectFill"
                     HorizontalOptions="Fill"
                     VerticalOptions="Fill" />
@@ -43,8 +45,8 @@
                     <Border.StrokeShape>
                         <RoundRectangle CornerRadius="{StaticResource CornerRadiusCircle}" />
                     </Border.StrokeShape>
-                    <Image
-                        Source="{Binding AuthorViewModel.ProfileImageUri}"
+                    <controls:CachedImage
+                        Source="{Binding AuthorViewModel.ProfileImageUri, Converter={StaticResource StringToUriConverter}}"
                         Aspect="AspectFill" />
                 </Border>
             </Grid>
