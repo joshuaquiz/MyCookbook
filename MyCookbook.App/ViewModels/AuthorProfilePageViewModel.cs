@@ -5,9 +5,9 @@ using CommunityToolkit.Maui.Extensions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.Controls;
-using MyCookbook.App.Implementations;
 using MyCookbook.App.Interfaces;
 using MyCookbook.App.Services;
+using MyCookbook.App.Views;
 using MyCookbook.Common.ApiModels;
 
 namespace MyCookbook.App.ViewModels;
@@ -18,13 +18,12 @@ namespace MyCookbook.App.ViewModels;
 [QueryProperty(nameof(PreviewBackgroundImageUrl), nameof(PreviewBackgroundImageUrl))]
 public partial class AuthorProfilePageViewModel(
     ICookbookStorage cookbookStorage,
-    CookbookHttpClient httpClient,
-    ICognitoAuthService cognitoAuthService,
-    IServiceProvider serviceProvider)
+    IAuthorService authorService,
+    Func<SettingsViewModel> settingsViewModelFactory)
     : BaseViewModel
 {
-    private bool _hasPrePopulated = false;
-    private bool _hasLoadedFullAuthor = false;
+    private bool _hasPrePopulated;
+    private bool _hasLoadedFullAuthor;
 
     [ObservableProperty]
     private AuthorModel? _author;
@@ -49,10 +48,11 @@ public partial class AuthorProfilePageViewModel(
     private Guid _currentUserAuthorGuid;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(RecipesTabTitle))]
     private bool _isCurrentUser;
 
     [ObservableProperty]
-    private int _selectedTabIndex = 0;
+    private int _selectedTabIndex;
 
     public string RecipesTabTitle => IsCurrentUser ? "My Recipes" : "Recipes";
 
@@ -74,11 +74,6 @@ public partial class AuthorProfilePageViewModel(
         }
     }
 
-    partial void OnSelectedTabIndexChanged(int value)
-    {
-        OnPropertyChanged(nameof(RecipesTabTitle));
-    }
-
     private async void CheckIfCurrentUser(Guid authorGuid)
     {
         var currentUser = await cookbookStorage.GetUser();
@@ -88,7 +83,6 @@ public partial class AuthorProfilePageViewModel(
             // In a real scenario, you'd have a mapping from User to Author
             CurrentUserAuthorGuid = currentUser.Value.Guid;
             IsCurrentUser = authorGuid == currentUser.Value.Guid;
-            OnPropertyChanged(nameof(RecipesTabTitle));
         }
     }
 
@@ -158,26 +152,20 @@ public partial class AuthorProfilePageViewModel(
     {
         if (string.IsNullOrEmpty(AuthorGuid))
         {
-            System.Diagnostics.Debug.WriteLine("GetAuthor: AuthorGuid is null/empty, returning");
             return;
         }
 
-        System.Diagnostics.Debug.WriteLine($"GetAuthor: Starting API call for AuthorGuid: {AuthorGuid}");
         IsBusy = true;
         try
         {
-            Author = await httpClient.Get<AuthorModel>(
-                new Uri(
-                    $"/api/Author/{AuthorGuid}",
-                    UriKind.Absolute),
+            Author = await authorService.GetAuthorAsync(
+                Guid.Parse(AuthorGuid),
                 CancellationToken.None);
             _hasLoadedFullAuthor = true;
-            System.Diagnostics.Debug.WriteLine($"GetAuthor: Successfully loaded author: {Author?.Name}");
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            System.Diagnostics.Debug.WriteLine($"GetAuthor: Error loading author: {ex.Message}");
-            System.Diagnostics.Debug.WriteLine($"GetAuthor: Stack trace: {ex.StackTrace}");
+            // Silently handle errors loading author
         }
         finally
         {
@@ -200,14 +188,18 @@ public partial class AuthorProfilePageViewModel(
     [RelayCommand]
     private async Task Settings()
     {
-        var currentPage = Application.Current?.MainPage;
-        if (currentPage == null)
+        if (Application.Current?.Windows.Count > 0)
         {
-            return;
-        }
+            var currentPage = Application.Current.Windows[0].Page;
+            if (currentPage == null)
+            {
+                return;
+            }
 
-        var popup = new Views.Profile.Settings(cookbookStorage, cognitoAuthService);
-        await currentPage.ShowPopupAsync(popup);
+            var settingsViewModel = settingsViewModelFactory();
+            var popup = new Settings(settingsViewModel);
+            await currentPage.ShowPopupAsync(popup);
+        }
     }
 
     /// <summary>

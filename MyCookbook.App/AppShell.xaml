@@ -3,6 +3,32 @@
     x:Class="MyCookbook.App.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:home="using:MyCookbook.App.Views.Home">
-    <ShellContent ContentTemplate="{DataTemplate home:HomePage}" />
+    xmlns:views="clr-namespace:MyCookbook.App.Views">
+    <TabBar>
+        <ShellContent
+            Title="Home"
+            Icon="home"
+            Route="HomePage"
+            ContentTemplate="{DataTemplate views:HomePage}" />
+        <ShellContent
+            Title="Shopping"
+            Icon="list"
+            Route="ShoppingListHome"
+            ContentTemplate="{DataTemplate views:ShoppingListHome}" />
+        <ShellContent
+            Title="Cookbook"
+            Icon="cookbook"
+            Route="MyCookbookHome"
+            ContentTemplate="{DataTemplate views:MyCookbookHome}" />
+        <ShellContent
+            Title="Planner"
+            Icon="calendar"
+            Route="CalendarHome"
+            ContentTemplate="{DataTemplate views:CalendarHome}" />
+        <ShellContent
+            Title="Profile"
+            Icon="profile"
+            Route="AuthorHome"
+            ContentTemplate="{DataTemplate views:AuthorHome}" />
+    </TabBar>
 </Shell>

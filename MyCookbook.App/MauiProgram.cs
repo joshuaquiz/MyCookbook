@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Net.Http;
 using System.Reflection;
-using Amazon.Extensions.NETCore.Setup;
-using Amazon.Runtime;
-using Amazon.S3;
 using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Core;
 using G3.Maui.Core;
@@ -15,16 +12,12 @@ using Microsoft.Maui.Controls.Hosting;
 using Microsoft.Maui.Hosting;
 using Microsoft.Maui.Networking;
 using Microsoft.Maui.Storage;
-using MyCookbook.App.Helpers;
 using MyCookbook.App.Implementations;
 using MyCookbook.App.Interfaces;
+using MyCookbook.App.Services;
 using MyCookbook.App.ViewModels;
 using MyCookbook.App.Views;
-using MyCookbook.App.Views.Home;
-using MyCookbook.App.Views.MyCookbook;
-using MyCookbook.App.Views.Profile;
-using MyCookbook.App.Views.Search;
-using SQLite;
+
 //using Plugin.MauiMTAdmob;
 
 namespace MyCookbook.App;
@@ -48,29 +41,6 @@ public static class MauiProgram
             builder.Configuration.AddJsonStream(localStream);
         }
 
-        var awsConfig = builder.Configuration.GetSection("AWS");
-        var accessKey = awsConfig["AccessKey"];
-        var secretKey = awsConfig["SecretKey"];
-        var region = awsConfig["Region"];
-        if (string.IsNullOrWhiteSpace(accessKey) || string.IsNullOrWhiteSpace(secretKey))
-        {
-            throw new InvalidOperationException("AWS credentials were not properly loaded from configuration.");
-        }
-
-        builder.Services.AddSingleton(new BasicAWSCredentials(accessKey, secretKey));
-        builder.Services.AddSingleton(
-            s =>
-                new AWSOptions
-                {
-                    Credentials = s.GetRequiredService<BasicAWSCredentials>(),
-                    Region = Amazon.RegionEndpoint.GetBySystemName(region)
-                });
-        builder.Services.AddSingleton<IAmazonS3, AmazonS3Client>(
-            s =>
-                new AmazonS3Client(
-                    s.GetRequiredService<BasicAWSCredentials>(),
-                    Amazon.RegionEndpoint.GetBySystemName(region)));
-
         builder
             .UseMauiApp<App>()
             .UseMauiCommunityToolkit()
@@ -85,38 +55,51 @@ public static class MauiProgram
                 });
         builder.Services
             .AddCoreDeviceServices();
-#if DEBUG
+
+        // Configure HTTP client with authentication
         builder.Services
             .AddLogging(
                 x =>
                     x.SetMinimumLevel(LogLevel.Trace)
                         .AddConsole())
-            .AddSingleton(
-                s =>
-                    DatabaseSetupHelper.SetupDatabaseConnection(
-                            s.GetRequiredService<IConfiguration>(),
-                            s.GetRequiredService<IAmazonS3>(),
-                            s.GetRequiredService<ILogger<SQLiteAsyncConnection>>()))
-            .AddDevelopmentHttpClient<CookbookDelegatingHandler, CookbookHttpClient>(
-                (serviceProvider, baseDelegatingHandler, baseUri) =>
-                    new CookbookHttpClient(
-                        serviceProvider.GetRequiredService<IConnectivity>(),
-                        new HttpClient(
-                            baseDelegatingHandler)
-                        {
-                            BaseAddress = baseUri
-                        },
-                        serviceProvider.GetRequiredService<IMemoryCache>(),
-                        serviceProvider.GetRequiredService<ILogger<CookbookHttpClient>>()));
+            .AddSingleton(new HttpClient())
+            .AddSingleton<ICognitoAuthService, CognitoAuthService>()
+            .AddSingleton<CookbookHttpClient>(
+                serviceProvider =>
+                {
+                    var apiBaseUrl = builder.Configuration["ApiBaseUrl"] ?? "http://api-development-mycookbook.g3software.net";
+
+                    // Create platform-specific inner handler
+                    HttpMessageHandler innerHandler;
+#if ANDROID
+                    // Use SocketsHttpHandler for Android to support HTTP (not just HTTPS)
+                    innerHandler = new SocketsHttpHandler
+                    {
+                        PooledConnectionLifetime = TimeSpan.FromMinutes(2)
+                    };
 #else
-        builder.Services.AddSingleton(
-            new HttpClient()
-            {
-                BaseAddress = new Uri(
-                    "https://lol.fake.com",
-                    UriKind.Absolute)
-            });
+                    innerHandler = new HttpClientHandler();
 #endif
+
+                    // Create the auth handler with the inner handler
+                    var authHandler = new CachingDelegatingHandler(
+                        serviceProvider.GetService<ICognitoAuthService>(),
+                        serviceProvider.GetRequiredService<ICookbookStorage>())
+                    {
+                        InnerHandler = innerHandler
+                    };
+
+                    var httpClient = new HttpClient(authHandler)
+                    {
+                        BaseAddress = new Uri(apiBaseUrl, UriKind.Absolute)
+                    };
+
+                    return new CookbookHttpClient(
+                        serviceProvider.GetRequiredService<IConnectivity>(),
+                        httpClient,
+                        serviceProvider.GetRequiredService<IMemoryCache>(),
+                        serviceProvider.GetRequiredService<ILogger<CookbookHttpClient>>());
+                });
         builder.Services
             .AddMemoryCache()
             .AddSingleton(SecureStorage.Default)
@@ -126,25 +109,33 @@ public static class MauiProgram
         builder.Services
             .AddSingleton<ICookbookStorage, CookbookStorage>();
 
+        // Register API services
         builder.Services
-            .AddSingleton<LoadingViewModel>()
+            .AddSingleton<Services.IRecipeService, Services.RecipeService>()
+            .AddSingleton<Services.IAccountService, Services.AccountService>()
+            .AddSingleton<Services.IAuthorService, Services.AuthorService>()
+            .AddSingleton<Services.ISearchService, Services.SearchService>();
+
+        builder.Services
             .AddSingleton<LoginViewModel>()
-            .AddTransient<ProfileViewModel>()
+            .AddSingleton<HomePageViewModel>()
+            .AddTransient<AuthorProfilePageViewModel>()
             .AddTransient<RecipeViewModel>()
             .AddTransient<ShoppingListViewModel>()
             .AddTransient<ShareRecipeViewModel>()
-            .AddSingleton<MyCookbookViewModel>();
+            .AddTransient<SettingsViewModel>()
+            .AddSingleton<MyCookbookViewModel>()
+            .AddSingleton<CalendarHomeViewModel>();
 
         builder.Services
-            .AddSingleton<LoadingScreen>()
             .AddSingleton<Login>()
             .AddSingleton<HomePage>()
-            .AddTransient<ProfileHome>()
+            .AddTransient<AuthorHome>()
             .AddTransient<RecipePage>()
             .AddTransient<ShareRecipePage>()
             .AddTransient<ShoppingListHome>()
             .AddSingleton<MyCookbookHome>()
-            .AddTransient<SearchHome>();
+            .AddSingleton<CalendarHome>();
 
 #if DEBUG
         builder.Logging.AddDebug();

@@ -1,33 +1,29 @@
-using System.Linq;
-using XCalendar.Core.Models;
+using System.Threading.Tasks;
+using MyCookbook.App.ViewModels;
 
 namespace MyCookbook.App.Views;
 
 public partial class CalendarHome
 {
-    public Calendar<CalendarDay> MyCalendar { get; set; }
+    private CalendarHomeViewModel ViewModel { get; }
+    private bool _hasInitialized;
 
-    public CalendarHome()
+    public CalendarHome(CalendarHomeViewModel viewModel)
     {
-        MyCalendar = new Calendar<CalendarDay>();
-        BindingContext = this;
+        ViewModel = viewModel;
+        BindingContext = ViewModel;
         InitializeComponent();
-        MyCalendar.DateSelectionChanged += (sender, args) =>
+    }
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+
+        // Initialize the ViewModel asynchronously on first appearance (fire and forget)
+        if (!_hasInitialized)
         {
-            var oldStart = args.PreviousSelection.First().ToString("D");
-            var oldEnd = args.PreviousSelection.First().ToString("D");
-            var newStart = args.PreviousSelection.First().ToString("D");
-            var newEnd = args.PreviousSelection.First().ToString("D");
-            var oldDate = string.IsNullOrWhiteSpace(oldEnd)
-                ? oldStart + "-" + oldEnd
-                : oldStart;
-            var newDate = string.IsNullOrWhiteSpace(newEnd)
-                ? newStart + "-" + newEnd
-                : newStart;
-            DisplayAlert(
-                "DateChange",
-                "old: " + oldDate + ", new: " + newDate,
-                "Ok");
-        };
+            _hasInitialized = true;
+            _ = ViewModel.InitializeAsync();
+        }
     }
 }

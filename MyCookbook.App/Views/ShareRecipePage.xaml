@@ -77,8 +77,8 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="apiModels:ShareableAuthorViewModel">
                         <Border
-                            Margin="{StaticResource MarginBottomSmall}"
-                            Padding="{StaticResource PaddingCompact}"
+                            Margin="{StaticResource MarginBottomMedium}"
+                            Padding="{StaticResource PaddingStandard}"
                             StrokeThickness="1"
                             Stroke="{StaticResource Gray300}"
                             BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}">

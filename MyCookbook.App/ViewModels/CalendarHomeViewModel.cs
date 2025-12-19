@@ -21,7 +21,7 @@ public enum CalendarViewMode
 public partial class CalendarHomeViewModel : BaseViewModel
 {
     private readonly HttpClient _httpClient;
-    public Guid CurrentUserId { get; private set; }
+    public Guid CurrentAuthorId { get; private set; }
 
     [ObservableProperty]
     private Calendar<CalendarDay> _myCalendar = new();
@@ -36,6 +36,7 @@ public partial class CalendarHomeViewModel : BaseViewModel
     private ObservableCollection<CalendarMealGroup> _selectedDayMeals = [];
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ViewModeToggleText))]
     private CalendarViewMode _viewMode = CalendarViewMode.Month;
 
     [ObservableProperty]
@@ -45,7 +46,6 @@ public partial class CalendarHomeViewModel : BaseViewModel
 
     partial void OnViewModeChanged(CalendarViewMode value)
     {
-        OnPropertyChanged(nameof(ViewModeToggleText));
         UpdateHeaderText();
     }
 
@@ -88,6 +88,31 @@ public partial class CalendarHomeViewModel : BaseViewModel
         _httpClient = httpClient;
         SelectedDate = DateTime.Today;
         UpdateHeaderText();
+
+        // Subscribe to calendar date selection changes
+        MyCalendar.DateSelectionChanged += OnDateSelectionChanged;
+    }
+
+    private void OnDateSelectionChanged(object? sender, DateSelectionChangedEventArgs args)
+    {
+        // Based on the original implementation from CalendarHome.xaml.cs
+        var oldStart = args.PreviousSelection.FirstOrDefault().ToString("D");
+        var oldEnd = args.PreviousSelection.FirstOrDefault().ToString("D");
+        var newStart = args.PreviousSelection.FirstOrDefault().ToString("D");
+        var newEnd = args.PreviousSelection.FirstOrDefault().ToString("D");
+
+        var oldDate = string.IsNullOrWhiteSpace(oldEnd)
+            ? oldStart + "-" + oldEnd
+            : oldStart;
+        var newDate = string.IsNullOrWhiteSpace(newEnd)
+            ? newStart + "-" + newEnd
+            : newStart;
+
+        // Update selected date based on the calendar's current selection
+        if (MyCalendar.SelectedDates.Count > 0)
+        {
+            SelectedDate = MyCalendar.SelectedDates.First();
+        }
     }
 
     public async Task InitializeAsync()
@@ -99,10 +124,10 @@ public partial class CalendarHomeViewModel : BaseViewModel
             var userJson = await Microsoft.Maui.Storage.SecureStorage.GetAsync("UserProfile");
             if (!string.IsNullOrEmpty(userJson))
             {
-                var user = JsonSerializer.Deserialize<AuthorProfileModel?>(userJson);
+                var user = JsonSerializer.Deserialize<UserProfileModel?>(userJson);
                 if (user.HasValue)
                 {
-                    CurrentUserId = user.Value.Guid;
+                    CurrentAuthorId = user.Value.Guid;
                     await LoadCalendarEntriesAsync();
                 }
             }
@@ -122,9 +147,9 @@ public partial class CalendarHomeViewModel : BaseViewModel
 
             var mockEntries = new List<UserCalendarEntryModel>
             {
-                new UserCalendarEntryModel(
+                new(
                     Id: Guid.NewGuid(),
-                    UserId: CurrentUserId,
+                    AuthorId: CurrentAuthorId,
                     RecipeId: Guid.NewGuid(),
                     RecipeName: "Spaghetti Carbonara",
                     RecipeImageUrl: new Uri("https://picsum.photos/200/200?random=1"),
@@ -132,9 +157,9 @@ public partial class CalendarHomeViewModel : BaseViewModel
                     MealType: 1,
                     MealTypeName: "Lunch",
                     ServingsMultiplier: 2.0m),
-                new UserCalendarEntryModel(
+                new(
                     Id: Guid.NewGuid(),
-                    UserId: CurrentUserId,
+                    AuthorId: CurrentAuthorId,
                     RecipeId: Guid.NewGuid(),
                     RecipeName: "Grilled Chicken Salad",
                     RecipeImageUrl: new Uri("https://picsum.photos/200/200?random=2"),
@@ -142,9 +167,9 @@ public partial class CalendarHomeViewModel : BaseViewModel
                     MealType: 2,
                     MealTypeName: "Dinner",
                     ServingsMultiplier: 1.5m),
-                new UserCalendarEntryModel(
+                new(
                     Id: Guid.NewGuid(),
-                    UserId: CurrentUserId,
+                    AuthorId: CurrentAuthorId,
                     RecipeId: Guid.NewGuid(),
                     RecipeName: "Pancakes with Maple Syrup",
                     RecipeImageUrl: new Uri("https://picsum.photos/200/200?random=3"),
@@ -152,9 +177,9 @@ public partial class CalendarHomeViewModel : BaseViewModel
                     MealType: 0,
                     MealTypeName: "Breakfast",
                     ServingsMultiplier: 1.0m),
-                new UserCalendarEntryModel(
+                new(
                     Id: Guid.NewGuid(),
-                    UserId: CurrentUserId,
+                    AuthorId: CurrentAuthorId,
                     RecipeId: Guid.NewGuid(),
                     RecipeName: "Beef Tacos",
                     RecipeImageUrl: new Uri("https://picsum.photos/200/200?random=4"),
@@ -162,9 +187,9 @@ public partial class CalendarHomeViewModel : BaseViewModel
                     MealType: 2,
                     MealTypeName: "Dinner",
                     ServingsMultiplier: 2.0m),
-                new UserCalendarEntryModel(
+                new(
                     Id: Guid.NewGuid(),
-                    UserId: CurrentUserId,
+                    AuthorId: CurrentAuthorId,
                     RecipeId: Guid.NewGuid(),
                     RecipeName: "Caesar Salad",
                     RecipeImageUrl: new Uri("https://picsum.photos/200/200?random=5"),
@@ -179,16 +204,16 @@ public partial class CalendarHomeViewModel : BaseViewModel
             // Uncomment below for actual API call
             // var startDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
             // var endDate = startDate.AddMonths(1).AddDays(-1);
-            // var url = $"/api/Calendar/Entries?userId={CurrentUserId}&startDate={startDate:yyyy-MM-dd}&endDate={endDate:yyyy-MM-dd}";
+            // var url = $"/api/Calendar/Entries?AuthorId={CurrentAuthorId}&startDate={startDate:yyyy-MM-dd}&endDate={endDate:yyyy-MM-dd}";
             // var entries = await _httpClient.GetFromJsonAsync<List<UserCalendarEntryModel>>(url);
             // if (entries != null)
             // {
             //     AllCalendarEntries = new ObservableCollection<UserCalendarEntryModel>(entries);
             // }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            System.Diagnostics.Debug.WriteLine($"Error loading calendar entries: {ex.Message}");
+            // Silently handle errors loading calendar entries
         }
     }
 
@@ -209,9 +234,8 @@ public partial class CalendarHomeViewModel : BaseViewModel
             }
             return false;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            System.Diagnostics.Debug.WriteLine($"Error deleting calendar entry: {ex.Message}");
             return false;
         }
     }

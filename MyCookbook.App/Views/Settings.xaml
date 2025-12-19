@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="MyCookbook.App.Views.Settings"
+             CanBeDismissedByTappingOutsideOfPopup="True"
+             Color="Transparent">
+    <Frame
+        HasShadow="True"
+        Padding="0"
+        Margin="0">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50" />
+                <RowDefinition Height="2" />
+                <RowDefinition Height="20" />
+                <RowDefinition Height="40" />
+                <RowDefinition Height="20" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="20" />
+                <ColumnDefinition Width="100" />
+                <ColumnDefinition Width="125" />
+                <ColumnDefinition Width="20" />
+            </Grid.ColumnDefinitions>
+            <Label
+                Grid.Row="0"
+                Grid.Column="1"
+                FontAttributes="Bold"
+                FontSize="20"
+                HeightRequest="50"
+                WidthRequest="100"
+                Text="Settings"
+                VerticalOptions="Fill"
+                VerticalTextAlignment="Center" />
+            <ImageButton
+                Grid.Row="0"
+                Grid.Column="2"
+                HorizontalOptions="End"
+                HeightRequest="20"
+                WidthRequest="20"
+                VerticalOptions="Center"
+                Source="close"
+                BackgroundColor="Transparent"
+                Command="{Binding CloseCommand}" />
+            <Rectangle
+                Grid.Row="1"
+                Grid.Column="0"
+                Grid.ColumnSpan="4"
+                BackgroundColor="LightGray" />
+            <Label
+                Grid.Row="3"
+                Grid.Column="1"
+                HeightRequest="40"
+                WidthRequest="100"
+                VerticalOptions="Fill"
+                VerticalTextAlignment="Center"
+                FontAttributes="Bold"
+                Text="App Theme:"/>
+            <Picker
+                x:Name="ThemePicker"
+                Grid.Row="3"
+                Grid.Column="2"
+                VerticalOptions="Fill"
+                VerticalTextAlignment="Center"
+                ItemsSource="{Binding AppThemes}"
+                SelectedIndex="{Binding SelectedThemeIndex}" />
+        </Grid>
+    </Frame>
+</toolkit:Popup>

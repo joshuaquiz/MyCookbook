@@ -1,12 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.ApplicationModel.DataTransfer;
 using Microsoft.Maui.Controls;
-using MyCookbook.App.Implementations;
+using MyCookbook.App.Services;
 using MyCookbook.Common.ApiModels;
 
 namespace MyCookbook.App.ViewModels;
@@ -15,7 +17,9 @@ namespace MyCookbook.App.ViewModels;
 [QueryProperty(nameof(RecipeUrl), nameof(RecipeUrl))]
 public partial class ShareRecipeViewModel : BaseViewModel
 {
-    private readonly CookbookHttpClient _httpClient;
+    private readonly IRecipeService _recipeService;
+    private CancellationTokenSource? _searchCancellationTokenSource;
+    private System.Timers.Timer? _searchDebounceTimer;
 
     [ObservableProperty]
     private string _recipeId = string.Empty;
@@ -35,9 +39,18 @@ public partial class ShareRecipeViewModel : BaseViewModel
     [ObservableProperty]
     private bool _isSearching;
 
-    public ShareRecipeViewModel(CookbookHttpClient httpClient)
+    public ShareRecipeViewModel(IRecipeService recipeService)
     {
-        _httpClient = httpClient;
+        _recipeService = recipeService;
+
+        // Setup debounce timer for search (500ms delay)
+        _searchDebounceTimer = new System.Timers.Timer(500);
+        _searchDebounceTimer.Elapsed += async (s, e) =>
+        {
+            _searchDebounceTimer?.Stop();
+            await LoadShareableAuthors();
+        };
+        _searchDebounceTimer.AutoReset = false;
     }
 
     public async Task Initialize()
@@ -48,20 +61,32 @@ public partial class ShareRecipeViewModel : BaseViewModel
     [RelayCommand]
     private async Task LoadShareableAuthors()
     {
+        // Cancel any previous search
+        _searchCancellationTokenSource?.Cancel();
+        _searchCancellationTokenSource = new CancellationTokenSource();
+        var cancellationToken = _searchCancellationTokenSource.Token;
+
         IsSearching = true;
         try
         {
-            var authors = await _httpClient.Get<List<ShareableAuthorViewModel>>(
-                new Uri(
-                    $"/api/Recipe/ShareableAuthors?searchTerm={Uri.EscapeDataString(SearchTerm)}&take=8",
-                    UriKind.Relative),
-                CancellationToken.None);
+            var authors = await _recipeService.GetShareableAuthorsAsync(
+                SearchTerm,
+                8,
+                cancellationToken);
 
-            ShareableAuthors.Clear();
-            foreach (var author in authors)
+            // Check if cancelled before updating UI
+            if (!cancellationToken.IsCancellationRequested)
             {
-                ShareableAuthors.Add(author);
+                ShareableAuthors.Clear();
+                foreach (var author in authors)
+                {
+                    ShareableAuthors.Add(author);
+                }
             }
+        }
+        catch (OperationCanceledException)
+        {
+            // Search was cancelled, this is expected
         }
         catch (Exception ex)
         {
@@ -70,14 +95,18 @@ public partial class ShareRecipeViewModel : BaseViewModel
         }
         finally
         {
-            IsSearching = false;
+            if (!cancellationToken.IsCancellationRequested)
+            {
+                IsSearching = false;
+            }
         }
     }
 
     partial void OnSearchTermChanged(string value)
     {
-        // Debounce search
-        _ = LoadShareableAuthors();
+        // Restart the debounce timer on each keystroke
+        _searchDebounceTimer?.Stop();
+        _searchDebounceTimer?.Start();
     }
 
     [RelayCommand]
@@ -103,10 +132,9 @@ public partial class ShareRecipeViewModel : BaseViewModel
         IsBusy = true;
         try
         {
-            var request = new ShareRecipeRequest(SharedToAuthorId: targetAuthorId);
-            var response = await _httpClient.Post<ShareRecipeRequest, ShareRecipeResponse>(
-                new Uri($"/api/Recipe/{recipeGuid}/Share", UriKind.Relative),
-                request,
+            var response = await _recipeService.ShareRecipeAsync(
+                recipeGuid,
+                targetAuthorId,
                 CancellationToken.None);
 
             // Determine what to share
@@ -116,7 +144,7 @@ public partial class ShareRecipeViewModel : BaseViewModel
 
             // Use platform share functionality
             await Microsoft.Maui.ApplicationModel.DataTransfer.Share.Default.RequestAsync(
-                new ShareTextRequest
+                new Microsoft.Maui.ApplicationModel.DataTransfer.ShareTextRequest
                 {
                     Text = shareValue,
                     Title = "Share Recipe"

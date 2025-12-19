@@ -1,13 +1,17 @@
 using System;
+using System.Linq;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Amazon.SecretsManager;
 using Amazon.SecretsManager.Model;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.IdentityModel.Tokens;
 using MyCookbook.API.Interfaces;
 using MyCookbook.API.Implementations;
 using MyCookbook.API.BackgroundJobs;
@@ -25,6 +29,70 @@ public sealed class Program
 
         // Add services to the container.
         builder.Services.AddControllers();
+
+        // Configure JWT Authentication
+        var jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET") ?? "MyCookbook-Development-Secret-Key-Change-In-Production-12345678901234567890";
+        var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? "MyCookbook.API";
+        var jwtAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? "MyCookbook.App";
+
+        // Get Cognito configuration for OAuth token validation
+        var cognitoUserPoolId = Environment.GetEnvironmentVariable("COGNITO_USER_POOL_ID");
+        var cognitoRegion = Environment.GetEnvironmentVariable("AWS_REGION") ?? "us-east-1";
+
+        builder.Services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuers = new[]
+                {
+                    jwtIssuer, // Our custom JWT issuer for username/password login
+                    string.IsNullOrEmpty(cognitoUserPoolId)
+                        ? null
+                        : $"https://cognito-idp.{cognitoRegion}.amazonaws.com/{cognitoUserPoolId}" // Cognito issuer for OAuth
+                }.Where(x => x != null).ToArray(),
+                ValidAudiences = new[]
+                {
+                    jwtAudience, // Our custom JWT audience
+                    // Cognito doesn't use audience validation by default
+                }.Where(x => x != null).ToArray(),
+                IssuerSigningKeyResolver = (token, securityToken, kid, parameters) =>
+                {
+                    // For custom JWT tokens (username/password login)
+                    var customKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret));
+
+                    // For Cognito tokens (OAuth), we would need to fetch JWKS
+                    // For now, return custom key - we'll enhance this if needed
+                    return new[] { customKey };
+                },
+                // Allow some clock skew for token expiration
+                ClockSkew = TimeSpan.FromMinutes(5)
+            };
+
+            options.Events = new JwtBearerEvents
+            {
+                OnAuthenticationFailed = context =>
+                {
+                    Console.WriteLine($"Authentication failed: {context.Exception.Message}");
+                    return Task.CompletedTask;
+                },
+                OnTokenValidated = context =>
+                {
+                    Console.WriteLine($"Token validated for: {context.Principal?.Identity?.Name}");
+                    return Task.CompletedTask;
+                }
+            };
+        });
+
+        builder.Services.AddAuthorization();
 
         // Configure database connection
         var connectionString = await GetDatabaseConnectionString();
@@ -72,7 +140,8 @@ public sealed class Program
         }
 
         app.UseHttpsRedirection();
-        //app.UseAuthorization();
+        app.UseAuthentication();
+        app.UseAuthorization();
         app.MapControllers();
         app.MapHealthChecks("/healthz");
         await app.RunAsync();

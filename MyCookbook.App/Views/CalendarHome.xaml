@@ -5,25 +5,46 @@
     x:Class="MyCookbook.App.Views.CalendarHome"
     xmlns:xc="clr-namespace:XCalendar.Maui.Views;assembly=XCalendar.Maui"
     xmlns:views="using:MyCookbook.App.Views"
+    xmlns:viewModels="using:MyCookbook.App.ViewModels"
     xmlns:recipeSummary="clr-namespace:MyCookbook.App.Components.RecipeSummary"
+    x:DataType="viewModels:CalendarHomeViewModel"
     Shell.NavBarIsVisible="False"
-    Shell.PresentationMode="ModalAnimated"
-    Title="{Binding Recipe.Name}">
+    Shell.PresentationMode="NotAnimated"
+    Title="Planner">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="50" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <xc:CalendarView
+
+        <!-- Top border above calendar -->
+        <BoxView
             Grid.Row="1"
+            Grid.Column="0"
+            HeightRequest="{StaticResource BorderThicknessThin}"
+            Color="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}" />
+
+        <!-- Calendar -->
+        <xc:CalendarView
+            Grid.Row="2"
             Grid.Column="0"
             Days="{Binding MyCalendar.Days}"
             DaysOfWeek="{Binding MyCalendar.DayNamesOrder}"
             NavigatedDate="{Binding MyCalendar.NavigatedDate}"
             />
+
+        <!-- Bottom border below calendar -->
+        <BoxView
+            Grid.Row="3"
+            Grid.Column="0"
+            HeightRequest="{StaticResource BorderThicknessThin}"
+            Color="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}" />
+
         <!--<CollectionView
             IsVisible="{Binding IsNotBusy}"
             HorizontalScrollBarVisibility="Never"

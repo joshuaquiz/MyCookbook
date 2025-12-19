@@ -6,14 +6,16 @@ using System.Net.Http.Json;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using MyCookbook.App.Implementations;
+using MyCookbook.App.Services;
 using MyCookbook.Common.ApiModels;
 
 namespace MyCookbook.App.ViewModels;
 
 public partial class MyCookbookViewModel : BaseViewModel
 {
-    private readonly CookbookHttpClient _httpClient;
+    private readonly IRecipeService _recipeService;
+    private DateTime? _lastLoadTime;
+    private static readonly TimeSpan CacheExpiration = TimeSpan.FromMinutes(5);
 
     [ObservableProperty]
     private bool _isRefreshing;
@@ -24,12 +26,33 @@ public partial class MyCookbookViewModel : BaseViewModel
     [ObservableProperty]
     private ObservableCollection<RecipeModel>? _recipesToDisplay;
 
+    [ObservableProperty]
+    private string _searchText = string.Empty;
+
     public MyCookbookViewModel(
-        CookbookHttpClient httpClient)
+        IRecipeService recipeService)
     {
-        _httpClient = httpClient;
+        _recipeService = recipeService;
         Title = "My Cookbook";
-        GetRecipesCommand.Execute(null);
+
+        // Initialize with empty collections immediately for responsive UI
+        Recipes = [];
+        RecipesToDisplay = [];
+    }
+
+    /// <summary>
+    /// Call this method when the page appears to load data asynchronously
+    /// </summary>
+    public void InitializeAsync()
+    {
+        // Only reload if cache is expired or empty
+        if (_lastLoadTime == null ||
+            DateTime.UtcNow - _lastLoadTime > CacheExpiration ||
+            Recipes?.Count == 0)
+        {
+            // Fire and forget - don't block the UI
+            _ = GetRecipesCommand.ExecuteAsync(null);
+        }
     }
 
     [RelayCommand]
@@ -37,17 +60,34 @@ public partial class MyCookbookViewModel : BaseViewModel
     {
         IsRefreshing = true;
         IsBusy = true;
-        var data = await _httpClient.GetFromJsonAsync<List<RecipeModel>>(
-                       "/api/Personal/Cookbook")
-                   ?? [];
-        foreach (var recipe in data)
-        {
-            Recipes?.Add(recipe);
-        }
 
-        RecipesToDisplay = new ObservableCollection<RecipeModel>(Recipes ?? []);
-        IsRefreshing = false;
-        IsBusy = false;
+        try
+        {
+            var data = await _recipeService.GetPersonalCookbookAsync();
+
+            Recipes ??= [];
+            Recipes.Clear();
+            foreach (var recipe in data)
+            {
+                Recipes.Add(recipe);
+            }
+
+            RecipesToDisplay = new ObservableCollection<RecipeModel>(Recipes);
+
+            // Update cache timestamp
+            _lastLoadTime = DateTime.UtcNow;
+        }
+        catch (Exception)
+        {
+            // Initialize with empty collections to prevent null reference errors
+            Recipes ??= [];
+            RecipesToDisplay ??= [];
+        }
+        finally
+        {
+            IsRefreshing = false;
+            IsBusy = false;
+        }
     }
 
     [RelayCommand]

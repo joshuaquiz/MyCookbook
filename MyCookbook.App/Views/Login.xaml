@@ -9,6 +9,8 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="10" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="5" />
             <RowDefinition Height="50" />
             <RowDefinition Height="5" />
             <RowDefinition Height="50" />
@@ -29,57 +31,68 @@
         </Grid.ColumnDefinitions>
         <Image
             Grid.Row="0"
-            Grid.RowSpan="11"
+            Grid.RowSpan="13"
             Grid.Column="0"
             Grid.ColumnSpan="6"
             Aspect="AspectFill"
             Source="main_background" />
-        <Entry
-            x:Name="Username"
+        <Label
             Grid.Row="2"
             Grid.Column="2"
             Grid.ColumnSpan="2"
-            FontSize="{StaticResource FontSizeTitleLarge}"
-            FontAttributes="Bold"
-            VerticalTextAlignment="Center"
-            HorizontalTextAlignment="Start"
-            Placeholder="Username"
-            TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColorLight}, Dark={StaticResource TextPrimaryColorDark}}" />
+            Text="{Binding ErrorMessage}"
+            TextColor="Red"
+            FontSize="{StaticResource FontSizeBody}"
+            HorizontalTextAlignment="Center"
+            IsVisible="{Binding ErrorMessage, Converter={StaticResource NullToBooleanConverter}}"
+            Margin="0,5" />
         <Entry
-            x:Name="Password"
+            x:Name="Username"
             Grid.Row="4"
             Grid.Column="2"
             Grid.ColumnSpan="2"
-            FontSize="{StaticResource FontSizeTitleLarge}"
-            FontAttributes="Bold"
+            FontSize="{StaticResource FontSizeTitle}"
+            VerticalTextAlignment="Center"
+            HorizontalTextAlignment="Start"
+            Placeholder="Username"
+            Text="{Binding Username}"
+            TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColorLight}, Dark={StaticResource TextPrimaryColorDark}}" />
+        <Entry
+            x:Name="Password"
+            Grid.Row="6"
+            Grid.Column="2"
+            Grid.ColumnSpan="2"
+            FontSize="{StaticResource FontSizeTitle}"
+            IsPassword="True"
             VerticalTextAlignment="Center"
             HorizontalTextAlignment="Start"
             Placeholder="Password"
+            Text="{Binding Password}"
             TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColorLight}, Dark={StaticResource TextPrimaryColorDark}}" />
         <Button
-            Grid.Row="6"
+            Grid.Row="8"
             Grid.Column="2"
             Grid.ColumnSpan="2"
             FontSize="{StaticResource FontSizeTitleLarge}"
             FontAttributes="Bold"
             Text="Log in"
-            Clicked="Button_OnClicked" />
+            Command="{Binding LoginCommand}" />
         <Label
-            Grid.Row="7"
+            Grid.Row="9"
             Grid.Column="2"
             Grid.ColumnSpan="2"
             VerticalTextAlignment="Center"
             HorizontalTextAlignment="Center"
             Text="OR" />
         <ImageButton
-            Grid.Row="8"
+            Grid.Row="10"
             Grid.Column="2"
             Source="google"
-            Clicked="Google_OnClicked" />
+            Command="{Binding LoginWithGoogleCommand}" />
         <ImageButton
-            Grid.Row="8"
+            Grid.Row="10"
             Grid.Column="3"
             Source="facebook"
-            Clicked="Facebook_OnClicked" />
+            Command="{Binding LoginWithFacebookCommand}" />
     </Grid>
 </ContentPage>

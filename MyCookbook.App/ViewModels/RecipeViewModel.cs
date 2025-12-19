@@ -2,7 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.ApplicationModel.DataTransfer;
 using Microsoft.Maui.Controls;
-using MyCookbook.App.Implementations;
+using MyCookbook.App.Services;
 using MyCookbook.Common.ApiModels;
 using System;
 using System.Collections.Generic;
@@ -30,7 +30,7 @@ namespace MyCookbook.App.ViewModels;
 [QueryProperty(nameof(PreviewHearts), nameof(PreviewHearts))]
 [QueryProperty(nameof(PreviewRating), nameof(PreviewRating))]
 public partial class RecipeViewModel(
-    CookbookHttpClient httpClient)
+    IRecipeService recipeService)
     : BaseViewModel
 {
     [ObservableProperty]
@@ -77,6 +77,12 @@ public partial class RecipeViewModel(
 
     [ObservableProperty]
     private int _recipeHearts;
+
+    [ObservableProperty]
+    private bool _isHearted;
+
+    [ObservableProperty]
+    private bool _isFabExpanded;
 
     [ObservableProperty]
     private decimal? _rating;
@@ -336,15 +342,11 @@ public partial class RecipeViewModel(
         IsBusy = true;
         try
         {
-            Recipe = await httpClient.Get<RecipeModel>(
-                new Uri(
-                    $"/api/Recipe/{Guid}",
-                    UriKind.Absolute),
-                CancellationToken.None);
+            Recipe = await recipeService.GetRecipeAsync(RecipeGuid, CancellationToken.None);
             _hasLoadedFullRecipe = true;
 
-            // Track recipe view
-            _ = TrackRecipeView();
+            // Track recipe view (fire-and-forget, non-blocking)
+            TrackRecipeView();
         }
         finally
         {
@@ -352,49 +354,77 @@ public partial class RecipeViewModel(
         }
     }
 
-    private async Task TrackRecipeView()
+    private void TrackRecipeView()
     {
-        try
+        // Fire-and-forget: run on background thread, don't await
+        Task.Run(async () =>
         {
-            await httpClient.Post<object, object>(
-                new Uri(
-                    $"/api/Recipe/{Guid}/View",
-                    UriKind.Absolute),
-                new { },
-                CancellationToken.None);
-        }
-        catch
-        {
-            // Silently fail - view tracking is not critical
-        }
+            try
+            {
+                await recipeService.TrackRecipeViewAsync(RecipeGuid, CancellationToken.None);
+            }
+            catch
+            {
+                // Silently fail - view tracking is not critical
+            }
+        });
     }
 
     [RelayCommand]
     private async Task HeartRecipe()
     {
-        // Optimistically update the UI
-        RecipeHearts++;
+        // Close FAB after action
+        IsFabExpanded = false;
 
-        // Track the heart in popularity metrics
-        _ = TrackRecipeHeart();
+        // Toggle the heart state
+        if (IsHearted)
+        {
+            // Unheart
+            IsHearted = false;
+            RecipeHearts--;
+            TrackRecipeUnheart();
+        }
+        else
+        {
+            // Heart
+            IsHearted = true;
+            RecipeHearts++;
+            TrackRecipeHeart();
+        }
     }
 
-    private async Task TrackRecipeHeart()
+    private void TrackRecipeHeart()
     {
-        try
+        // Fire-and-forget: run on background thread, don't await
+        Task.Run(async () =>
         {
-            await httpClient.Post<object, object>(
-                new Uri(
-                    $"/api/Recipe/{Guid}/Heart",
-                    UriKind.Absolute),
-                new { },
-                CancellationToken.None);
-        }
-        catch
+            try
+            {
+                await recipeService.HeartRecipeAsync(RecipeGuid, CancellationToken.None);
+            }
+            catch
+            {
+                // Silently fail - heart tracking is not critical
+                // Note: UI was already updated optimistically
+            }
+        });
+    }
+
+    private void TrackRecipeUnheart()
+    {
+        // Fire-and-forget: run on background thread, don't await
+        Task.Run(async () =>
         {
-            // Silently fail - heart tracking is not critical
-            // Note: UI was already updated optimistically
-        }
+            try
+            {
+                await recipeService.UnheartRecipeAsync(RecipeGuid, CancellationToken.None);
+            }
+            catch
+            {
+                // Silently fail - unheart tracking is not critical
+                // Note: UI was already updated optimistically
+            }
+        });
     }
 
     [RelayCommand]
@@ -405,13 +435,28 @@ public partial class RecipeViewModel(
             return;
         }
 
+        // Close FAB after action
+        IsFabExpanded = false;
+
         // Navigate to share page
         var navigationParameter = new Dictionary<string, object>
         {
-            { "RecipeId", RecipeGuid },
+            { "RecipeId", RecipeGuid.ToString() },
             { "RecipeUrl", Url.AbsoluteUri }
         };
 
         await Shell.Current.GoToAsync("ShareRecipePage", navigationParameter);
+    }
+
+    [RelayCommand]
+    private void ToggleFab()
+    {
+        IsFabExpanded = !IsFabExpanded;
+    }
+
+    [RelayCommand]
+    private void CloseFab()
+    {
+        IsFabExpanded = false;
     }
 }

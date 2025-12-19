@@ -3,9 +3,8 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:views="using:MyCookbook.App.Views"
-    xmlns:home="using:MyCookbook.App.Views.Home"
     xmlns:recipeSummaryList="clr-namespace:MyCookbook.App.Components.RecipeSummaryList"
-    x:Class="MyCookbook.App.Views.Home.HomePage"
+    x:Class="MyCookbook.App.Views.HomePage"
     x:Name="Root"
     Title="Home"
     Shell.NavBarIsVisible="False"
@@ -18,6 +17,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="{StaticResource HeightMedium}" />
         </Grid.RowDefinitions>
         <Grid
             x:Name="SearchGrid"
@@ -61,7 +61,7 @@
                 Placeholder="Start searching"
                 HorizontalOptions="Fill"
                 VerticalOptions="Center"
-                TextChanged="TextSearchEntry_OnTextChanged" />
+                Text="{Binding SearchText}" />
             <ImageButton
                 x:Name="ClearButton"
                 Grid.Row="1"
@@ -74,7 +74,7 @@
                 Aspect="AspectFill"
                 Margin="0"
                 Padding="13"
-                Clicked="ClearButton_OnClicked" />
+                Command="{Binding ClearFiltersCommand}" />
             <ImageButton
                 x:Name="FilterButton"
                 Grid.Row="1"
@@ -86,14 +86,14 @@
                 HorizontalOptions="Center"
                 Aspect="AspectFill"
                 Padding="11"
-                Clicked="FilterButton_OnClicked" />
+                Command="{Binding ToggleFilterCommand}" />
             <StackLayout
                 x:Name="FilterSection"
                 Grid.Row="2"
                 Grid.Column="1"
                 Grid.ColumnSpan="7"
                 Margin="0,{StaticResource SpacingMedium},0,0"
-                IsVisible="False">
+                IsVisible="{Binding IsFilterVisible}">
                 <Label
                     Text="Categories"
                     FontAttributes="Bold"
@@ -104,11 +104,11 @@
                     ItemsLayout="HorizontalList">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <Button 
+                            <Button
                                 Text="{Binding Name}"
                                 BackgroundColor="{Binding IsSelected, Converter={StaticResource BoolToColorConverter}}"
                                 Margin="5,0"
-                                Clicked="CategoryButton_OnClicked"/>
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type views:HomePage}}, Path=BindingContext.CategorySelectedCommand}"/>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
@@ -116,12 +116,12 @@
                 <Entry
                     x:Name="IncludeIngredientsEntry"
                     Placeholder="Enter ingredients to include"
-                    TextChanged="IncludeIngredientsEntry_OnTextChanged" />
+                    Text="{Binding IncludeIngredients}" />
                 <Label Text="Exclude Ingredients" FontAttributes="Bold" Margin="0,10,0,5" />
                 <Entry
                     x:Name="ExcludeIngredientsEntry"
                     Placeholder="Enter ingredients to exclude"
-                    TextChanged="ExcludeIngredientsEntry_OnTextChanged" />
+                    Text="{Binding ExcludeIngredients}" />
             </StackLayout>
             <BoxView
                 Grid.Row="4"
@@ -135,7 +135,22 @@
             x:Name="RecipeList"
             Grid.Row="1"
             Grid.Column="0"
-            GetData="{Binding GetData, Source={Reference Root}}" />
+            GetData="{Binding GetData}" />
+        <Rectangle
+            Grid.Row="2"
+            Grid.Column="0"
+            HorizontalOptions="Fill"
+            VerticalOptions="Fill"
+            BackgroundColor="Gray"/>
+        <!--<controls:MTAdView
+            x:Name="MyAdView"
+            Grid.Row="3"
+            Grid.Column="0"
+            HeightRequest="90"
+            Margin="0,50,0,0"
+            BackgroundColor="Transparent"
+            AdsId="ca-app-pub-3327131024555440/4066729058"
+            AdSize="AnchoredAdaptive" />-->
     </Grid>
 </views:BasePage>
 

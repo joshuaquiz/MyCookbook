@@ -13,16 +13,13 @@
     Shell.NavBarIsVisible="True"
     Shell.PresentationMode="Animated"
     Title="{Binding Name}">
-    <ContentPage.ToolbarItems>
-        <ToolbarItem
-            Text="Share"
-            IconImageSource="share"
-            Command="{Binding ShareCommand}" />
-    </ContentPage.ToolbarItems>
     <ContentPage.Resources>
         <converters:IngredientToStringConverter x:Key="IngredientToStringConverter" />
         <converters:TimeSpanToStringConverter x:Key="TimeSpanToStringConverter" />
         <converters:NullToBooleanConverter x:Key="NullToBooleanConverter" />
+        <converters:IngredientIconConverter x:Key="IngredientIconConverter" />
+        <toolkit:BoolToObjectConverter x:Key="BoolToStringConverter" x:TypeArguments="x:String" TrueObject="heart" FalseObject="heart_outline" />
+        <toolkit:BoolToObjectConverter x:Key="BoolToDoubleConverter" x:TypeArguments="x:Double" TrueObject="45" FalseObject="0" />
         <DataTemplate
             x:Key="RecipeImageTemplate"
             x:DataType="system:Uri">
@@ -36,20 +33,43 @@
             x:Key="RecipeIngredientTemplate"
             x:DataType="viewModels:RecipeIngredientViewModel">
             <VerticalStackLayout>
-                <Grid>
+                <Grid Padding="8,4">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="{StaticResource HeightMedium}" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="48" />
                         <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="{StaticResource WidthXLarge}" />
                     </Grid.ColumnDefinitions>
-                    <Label
+
+                    <!-- Ingredient Icon (Left) -->
+                    <Border
                         Grid.Row="0"
                         Grid.Column="0"
-                        VerticalOptions="Fill"
+                        HeightRequest="40"
+                        WidthRequest="40"
+                        VerticalOptions="Center"
+                        HorizontalOptions="Center"
+                        StrokeThickness="0"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray800}}">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="8" />
+                        </Border.StrokeShape>
+                        <Image
+                            Source="{Binding ., Converter={StaticResource IngredientIconConverter}}"
+                            Aspect="AspectFit"
+                            HeightRequest="32"
+                            WidthRequest="32"
+                            Margin="4" />
+                    </Border>
+
+                    <!-- Ingredient Text (Right) -->
+                    <Label
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        VerticalOptions="Center"
                         VerticalTextAlignment="Center"
-                        Padding="{StaticResource MarginLeftXLarge}"
+                        Padding="8,0,0,0"
                         FontSize="{StaticResource FontSizeTitle}">
                         <Label.Text>
                             <MultiBinding Converter="{StaticResource IngredientToStringConverter}">
@@ -60,29 +80,6 @@
                             </MultiBinding>
                         </Label.Text>
                     </Label>
-                    <Image
-                        Grid.Row="0"
-                        Grid.Column="2"
-                        Source="{Binding ImageUri, TargetNullValue=carrot}"
-                        Aspect="AspectFill"
-                        HeightRequest="{StaticResource HeightMedium}"
-                        WidthRequest="{StaticResource WidthXLarge}" />
-                    <Rectangle
-                        Grid.Row="0"
-                        Grid.Column="2">
-                        <Rectangle.Background>
-                            <LinearGradientBrush
-                                StartPoint="1,1"
-                                EndPoint="0,1">
-                                <GradientStop
-                                    Color="Transparent"
-                                    Offset="0.7" />
-                                <GradientStop
-                                    Color="{AppThemeBinding Light=White, Dark=Black}"
-                                    Offset="1" />
-                            </LinearGradientBrush>
-                        </Rectangle.Background>
-                    </Rectangle>
                 </Grid>
                 <Rectangle
                     Fill="{AppThemeBinding Light={StaticResource SeparatorColorLight}, Dark={StaticResource SeparatorColorDark}}"
@@ -150,9 +147,10 @@
             </VerticalStackLayout>
         </DataTemplate>
     </ContentPage.Resources>
-    <ScrollView>
-        <VerticalStackLayout
-            BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}">
+    <Grid>
+        <ScrollView>
+            <VerticalStackLayout
+                BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}">
 
             <!-- Recipe Image Carousel Container -->
             <Grid
@@ -163,7 +161,6 @@
                     ItemsSource="{Binding ImageUrls}"
                     ItemTemplate="{StaticResource RecipeImageTemplate}"
                     IndicatorView="ImageIndicator"
-                    Position="0"
                     PeekAreaInsets="0"
                     Loop="False"
                     HorizontalScrollBarVisibility="Never"
@@ -405,9 +402,6 @@
                                     <Binding Path="RecipeHearts"></Binding>
                                 </MultiBinding>
                             </Label.Text>
-                            <Label.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding HeartRecipeCommand}" />
-                            </Label.GestureRecognizers>
                         </Label>
                         <!-- Rating (Bottom Right) -->
                         <Label
@@ -588,6 +582,122 @@
                         </CollectionView.EmptyView>
                     </CollectionView>
                 </toolkit:Expander>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Overlay to close FAB when clicking outside -->
+        <BoxView
+            IsVisible="{Binding IsFabExpanded}"
+            BackgroundColor="Transparent"
+            HorizontalOptions="Fill"
+            VerticalOptions="Fill">
+            <BoxView.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding CloseFabCommand}" />
+            </BoxView.GestureRecognizers>
+        </BoxView>
+
+        <!-- Floating Action Button -->
+        <VerticalStackLayout
+            VerticalOptions="End"
+            HorizontalOptions="End"
+            Margin="20"
+            Spacing="12">
+
+            <!-- Heart Button (shown when expanded) -->
+            <Border
+                IsVisible="{Binding IsFabExpanded}"
+                BackgroundColor="{StaticResource Secondary}"
+                StrokeThickness="0"
+                HeightRequest="48"
+                WidthRequest="48"
+                Opacity="0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="24" />
+                </Border.StrokeShape>
+                <Border.Shadow>
+                    <Shadow Brush="Black" Opacity="0.3" Radius="8" Offset="0,4" />
+                </Border.Shadow>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding HeartRecipeCommand}" />
+                </Border.GestureRecognizers>
+                <Border.Triggers>
+                    <DataTrigger TargetType="Border" Binding="{Binding IsFabExpanded}" Value="True">
+                        <DataTrigger.EnterActions>
+                            <toolkit:FadeInAnimation />
+                        </DataTrigger.EnterActions>
+                    </DataTrigger>
+                </Border.Triggers>
+                <Image
+                    Source="{Binding IsHearted, Converter={StaticResource BoolToStringConverter}}"
+                    HeightRequest="24"
+                    WidthRequest="24"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center">
+                    <Image.Behaviors>
+                        <toolkit:IconTintColorBehavior TintColor="White" />
+                    </Image.Behaviors>
+                </Image>
+            </Border>
+
+            <!-- Share Button (shown when expanded) -->
+            <Border
+                IsVisible="{Binding IsFabExpanded}"
+                BackgroundColor="{StaticResource Secondary}"
+                StrokeThickness="0"
+                HeightRequest="48"
+                WidthRequest="48"
+                Opacity="0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="24" />
+                </Border.StrokeShape>
+                <Border.Shadow>
+                    <Shadow Brush="Black" Opacity="0.3" Radius="8" Offset="0,4" />
+                </Border.Shadow>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding ShareCommand}" />
+                </Border.GestureRecognizers>
+                <Border.Triggers>
+                    <DataTrigger TargetType="Border" Binding="{Binding IsFabExpanded}" Value="True">
+                        <DataTrigger.EnterActions>
+                            <toolkit:FadeInAnimation />
+                        </DataTrigger.EnterActions>
+                    </DataTrigger>
+                </Border.Triggers>
+                <Image
+                    Source="share"
+                    HeightRequest="24"
+                    WidthRequest="24"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center">
+                    <Image.Behaviors>
+                        <toolkit:IconTintColorBehavior TintColor="White" />
+                    </Image.Behaviors>
+                </Image>
+            </Border>
+
+            <!-- Main FAB Button -->
+            <Border
+                BackgroundColor="{StaticResource Primary}"
+                StrokeThickness="0"
+                HeightRequest="56"
+                WidthRequest="56">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="28" />
+                </Border.StrokeShape>
+                <Border.Shadow>
+                    <Shadow Brush="Black" Opacity="0.3" Radius="8" Offset="0,4" />
+                </Border.Shadow>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding ToggleFabCommand}" />
+                </Border.GestureRecognizers>
+                <Label
+                    Text="+"
+                    FontSize="32"
+                    TextColor="White"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    Rotation="{Binding IsFabExpanded, Converter={StaticResource BoolToDoubleConverter}}" />
+            </Border>
         </VerticalStackLayout>
-    </ScrollView>
+    </Grid>
 </views:BasePage>

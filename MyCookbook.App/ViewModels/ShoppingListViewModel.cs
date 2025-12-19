@@ -14,7 +14,17 @@ public partial class ShoppingListViewModel : BaseViewModel
 
     public ShoppingListViewModel()
     {
-        GetIngredientsCommand.Execute(null);
+        // Initialize with empty collection immediately for responsive UI
+        Ingredients = [];
+    }
+
+    /// <summary>
+    /// Call this method when the page appears to load data asynchronously
+    /// </summary>
+    public void InitializeAsync()
+    {
+        // Fire and forget - don't block the UI
+        _ = GetIngredientsCommand.ExecuteAsync(null);
     }
 
     [RelayCommand]

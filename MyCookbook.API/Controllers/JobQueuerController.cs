@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyCookbook.API.Interfaces;
@@ -11,7 +12,7 @@ namespace MyCookbook.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-//[Authorize]
+[Authorize]
 public sealed class JobQueuerController(
     IDbContextFactory<MyCookbookContext> dbContextFactory,
     IJobQueuer jobQueuer)

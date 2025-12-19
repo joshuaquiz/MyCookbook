@@ -1,6 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net10.0-android;net10.0-ios;net10.0-maccatalyst</TargetFrameworks>
+    <TargetFrameworks>net10.0-android</TargetFrameworks>
+    <!-- iOS temporarily disabled - uncomment to re-enable: net10.0-ios -->
+    <!-- MacCatalyst removed - was: net10.0-maccatalyst -->
     <!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
     <!-- <TargetFrameworks>$(TargetFrameworks);net7.0-tizen</TargetFrameworks> -->
     <OutputType>Exe</OutputType>
@@ -28,6 +30,15 @@
     <DefaultLanguage>en-US</DefaultLanguage>
     <UserSecretsId>033e6a11-b88f-4e3d-b86a-7a836464f206</UserSecretsId>
   </PropertyGroup>
+
+  <!-- Android Debug Build Performance Optimizations -->
+  <!-- See: https://github.com/dotnet/android/issues/9455 -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+    <!-- Build for single architecture to cut build time in half -->
+    <RuntimeIdentifier>android-arm64</RuntimeIdentifier>
+    <!-- Note: EmbedAssembliesIntoApk=false can speed up builds but causes font/resource deployment issues -->
+    <!-- Keeping it enabled (default true) for reliability -->
+  </PropertyGroup>
   <ItemGroup>
     <!-- App Icon -->
     <MauiIcon Include="Resources\AppIcon\appicon.svg" />
@@ -53,12 +64,8 @@
     <None Remove="Resources\Images\icon.png" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="AWSSDK.Core" Version="4.0.3.3" />
-    <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="4.0.3.14" />
-    <PackageReference Include="AWSSDK.S3" Version="4.0.13.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -68,9 +75,6 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="10.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="10.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0" />
-    <PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
-    <PackageReference Include="sqlite-net-static" Version="1.9.172" />
-    <PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.11" />
     <PackageReference Include="XCalendar.Maui" Version="4.6.0" />
     <PackageReference Include="CommunityToolkit.Maui" Version="13.0.0" />
     <PackageReference Include="CommunityToolkit.Maui.Core" Version="13.0.0" />
@@ -115,10 +119,7 @@
     <MauiXaml Update="Views\CalendarHome.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
-    <MauiXaml Update="Views\Home\HomeBar.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </MauiXaml>
-    <MauiXaml Update="Views\Home\HomePage.xaml">
+    <MauiXaml Update="Views\HomePage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
     <MauiXaml Update="Components\RecipeSummaryList\RecipeSummaryListControl.xaml">
@@ -127,22 +128,10 @@
     <MauiXaml Update="Views\Login.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
-    <MauiXaml Update="Views\MyCookbook\CookbookRecipe.xaml">
+    <MauiXaml Update="Views\MyCookbookHome.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
-    <MauiXaml Update="Views\MyCookbook\CookbookCategory.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </MauiXaml>
-    <MauiXaml Update="Views\MyCookbook\CookbookRecipeItem.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </MauiXaml>
-    <MauiXaml Update="Views\MyCookbook\MyCookbookHome.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </MauiXaml>
-    <MauiXaml Update="Views\Profile\ProfileHome.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </MauiXaml>
-    <MauiXaml Update="Views\Profile\Settings.xaml">
+    <MauiXaml Update="Views\Settings.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
     <MauiXaml Update="Views\RecipePage.xaml">

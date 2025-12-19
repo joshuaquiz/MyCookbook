@@ -16,4 +16,12 @@ public interface ICookbookStorage
     public Task SetUser(UserProfileModel user);
 
     public ValueTask<UserProfileModel?> GetUser();
+
+    public Task SetAccessToken(string accessToken, int expiresIn);
+
+    public ValueTask<string?> GetAccessToken();
+
+    public Task SetRefreshToken(string refreshToken);
+
+    public ValueTask<string?> GetRefreshToken();
 }

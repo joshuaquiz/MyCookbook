@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Maui;
 using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Controls;
 using MyCookbook.App.Interfaces;
 using MyCookbook.App.ViewModels;
 using MyCookbook.App.Views;
@@ -13,9 +16,7 @@ public partial class App
 {
     private readonly ICookbookStorage _cookbookStorage;
     private readonly IServiceProvider _serviceProvider;
-    private LoadingViewModel _loadingViewModel;
     private Login _login;
-
 
     public App(
         ICookbookStorage cookbookStorage,
@@ -28,12 +29,9 @@ public partial class App
         InitializeComponent();
 
         // NOW resolve pages after resources are loaded
-        _loadingViewModel = _serviceProvider.GetRequiredService<LoadingViewModel>();
-        var loadingScreen = _serviceProvider.GetRequiredService<LoadingScreen>();
         _login = _serviceProvider.GetRequiredService<Login>();
 
-        // Show loading screen after resources are loaded
-        MainPage = loadingScreen;
+
 
         //CrossMauiMTAdmob.Current.UserPersonalizedAds = true;
         //CrossMauiMTAdmob.Current.ComplyWithFamilyPolicies = true;
@@ -46,32 +44,93 @@ public partial class App
         //CrossMauiMTAdmob.Current.MaximumNumberOfAdsCached = 3;
         UserAppTheme = AppTheme.Light;//cookbookStorage.GetCurrentAppTheme(this).GetAwaiter().GetResult();
 
+        // Register global exception handler for unauthorized access
+        AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
+        TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
+
         // Start the initialization process
         InitializeAppAsync();
+    }
+
+    protected override Window CreateWindow(IActivationState? activationState)
+    {
+        // Start with login page, will switch to AppShell if user is logged in
+        return new Window(_login);
     }
 
     private async void InitializeAppAsync()
     {
         try
         {
-            // Run data loading in the ViewModel
-            await _loadingViewModel.InitializeAppAsync();
-
-            // After loading completes, navigate to the appropriate page
+            // Check if user is already logged in
             var user = await _cookbookStorage.GetUser();
-            if (user is null)
+
+            // If logged in, navigate to main app
+            if (user != null)
             {
-                MainPage = _login;
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    if (Windows.Count > 0)
+                    {
+                        Windows[0].Page = new AppShell();
+                    }
+                });
             }
-            else
-            {
-                MainPage = new AppShell();
-            }
+            // Otherwise stay on login page (already set in CreateWindow)
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            // Handle error - show login page as fallback
-            MainPage = _login;
+            // On error, stay on login page (already set in CreateWindow)
+        }
+    }
+
+    private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
+    {
+        // Reserved for future global exception handling
+        // 401 errors are now handled at the HTTP client level
+    }
+
+    private void OnUnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
+    {
+        // Reserved for future global exception handling
+        // 401 errors are now handled at the HTTP client level
+    }
+
+    private async Task HandleUnauthorizedAccess()
+    {
+        try
+        {
+            // Clear all stored authentication data
+            await _cookbookStorage.Empty();
+
+            await MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                if (Windows.Count > 0)
+                {
+                    // Navigate to login page
+                    Windows[0].Page = _login;
+
+                    // Show a message to the user
+                    if (Windows[0].Page != null)
+                    {
+                        await Windows[0].Page!.DisplayAlertAsync(
+                            "Session Expired",
+                            "Your session has expired. Please log in again.",
+                            "OK");
+                    }
+                }
+            });
+        }
+        catch
+        {
+            // If anything fails, just navigate to login
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                if (Windows.Count > 0)
+                {
+                    Windows[0].Page = _login;
+                }
+            });
         }
     }
 }

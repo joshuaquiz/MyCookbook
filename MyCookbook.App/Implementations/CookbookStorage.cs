@@ -1,4 +1,7 @@
-﻿using System.Text.Json;
+﻿using System;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
@@ -10,7 +13,8 @@ namespace MyCookbook.App.Implementations;
 
 public sealed class CookbookStorage(
     ISecureStorage secureStorage,
-    IPreferences preferences)
+    IPreferences preferences,
+    HttpClient httpClient)
     : ICookbookStorage
 {
     public ValueTask<AppTheme> GetCurrentAppTheme(
@@ -58,5 +62,92 @@ public sealed class CookbookStorage(
             ? null
             : JsonSerializer.Deserialize<UserProfileModel>(
                 profileAsString);
+    }
+
+    public async Task SetAccessToken(string accessToken, int expiresIn)
+    {
+        await secureStorage.SetAsync("JWT_AccessToken", accessToken);
+        var expiresAt = DateTime.UtcNow.AddSeconds(expiresIn);
+        await secureStorage.SetAsync("JWT_ExpiresAt", expiresAt.ToString("O"));
+    }
+
+    public async ValueTask<string?> GetAccessToken()
+    {
+        var accessToken = await secureStorage.GetAsync("JWT_AccessToken");
+        var expiresAtStr = await secureStorage.GetAsync("JWT_ExpiresAt");
+
+        if (string.IsNullOrEmpty(accessToken) || string.IsNullOrEmpty(expiresAtStr))
+        {
+            return null;
+        }
+
+        // Check if token is expired or will expire in the next 5 minutes
+        if (DateTime.TryParse(expiresAtStr, out var expiresAt))
+        {
+            // Refresh 5 minutes before expiry
+            if (DateTime.UtcNow >= expiresAt.AddMinutes(-5))
+            {
+                // Try to refresh the token
+                var refreshed = await RefreshAccessTokenAsync();
+                if (refreshed)
+                {
+                    // Return the new access token
+                    return await secureStorage.GetAsync("JWT_AccessToken");
+                }
+
+                // Refresh failed, return null to trigger logout
+                return null;
+            }
+        }
+
+        return accessToken;
+    }
+
+    public async Task SetRefreshToken(string refreshToken)
+    {
+        await secureStorage.SetAsync("JWT_RefreshToken", refreshToken);
+    }
+
+    public async ValueTask<string?> GetRefreshToken()
+    {
+        return await secureStorage.GetAsync("JWT_RefreshToken");
+    }
+
+    private async Task<bool> RefreshAccessTokenAsync()
+    {
+        try
+        {
+            var refreshToken = await GetRefreshToken();
+            if (string.IsNullOrEmpty(refreshToken))
+            {
+                return false;
+            }
+
+            var apiBaseUrl = Environment.GetEnvironmentVariable("API_BASE_URL") ?? "http://api-development-mycookbook.g3software.net";
+            var refreshRequest = new RefreshTokenRequest(refreshToken);
+
+            var response = await httpClient.PostAsJsonAsync($"{apiBaseUrl}/api/Account/RefreshToken", refreshRequest);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return false;
+            }
+
+            var refreshResponse = await response.Content.ReadFromJsonAsync<RefreshTokenResponse>();
+            if (refreshResponse == null)
+            {
+                return false;
+            }
+
+            // Store the new tokens
+            await SetAccessToken(refreshResponse.AccessToken, refreshResponse.ExpiresIn);
+            await SetRefreshToken(refreshResponse.RefreshToken);
+
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 }

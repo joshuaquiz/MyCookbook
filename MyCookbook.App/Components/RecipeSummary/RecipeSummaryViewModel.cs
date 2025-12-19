@@ -16,23 +16,23 @@ public partial class RecipeSummaryViewModel
         init => _imageUrlsRawJson = value;
     }
 
-    public List<Uri>? ImageUrls
+    public List<Uri> ImageUrls
     {
         get
         {
             if (string.IsNullOrWhiteSpace(_imageUrlsRawJson))
             {
-                return null;
+                return [];
             }
 
             try
             {
                 var urls = JsonSerializer.Deserialize<List<string>>(_imageUrlsRawJson);
-                return urls?.Select(url => new Uri(url)).ToList();
+                return urls?.Select(url => new Uri(url)).ToList() ?? [];
             }
             catch
             {
-                return null;
+                return [];
             }
         }
     }
@@ -57,7 +57,7 @@ public partial class RecipeSummaryViewModel
 
     public string Difficulty { get; init; } = "Medium";
 
-    public string Category { get; init; }
+    public string? Category { get; init; }
 
     public int? Calories { get; init; }
 
@@ -65,5 +65,5 @@ public partial class RecipeSummaryViewModel
 
     public decimal? Rating { get; init; }
 
-    public string Tags { get; init; }
+    public string? Tags { get; init; }
 }

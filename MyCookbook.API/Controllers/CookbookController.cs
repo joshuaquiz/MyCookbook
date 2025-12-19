@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyCookbook.Common.ApiModels;
@@ -14,7 +15,7 @@ namespace MyCookbook.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-//[Authorize]
+[Authorize]
 public sealed class CookbookController(
     IDbContextFactory<MyCookbookContext> myCookbookContextFactory)
     : ControllerBase
@@ -134,18 +135,33 @@ public sealed class CookbookController(
 
         // Build recipe summaries
         var recipeSummaries = cookbookShare.CookbookShareRecipes
-            .Select(csr => new RecipeSummaryViewModel
+            .Select(csr =>
             {
-                Guid = csr.Recipe.RecipeId,
-                ImageUri = csr.Recipe.EntityImages
+                var imageUrls = csr.Recipe.EntityImages
                     .Where(ei => ei.Image.ImageType == ImageType.Main || ei.Image.ImageType == ImageType.Background)
+                    .Select(ei => ei.Image.Url.AbsoluteUri)
+                    .ToList();
+
+                var authorImageUri = csr.Recipe.Author.EntityImages
+                    .Where(ei => ei.Image.ImageType == ImageType.Main)
                     .Select(ei => ei.Image.Url)
-                    .FirstOrDefault(),
-                Name = csr.Recipe.Title,
-                AuthorName = csr.Recipe.Author.Name,
-                PrepTime = csr.Recipe.PrepTimeMinutes.HasValue ? TimeSpan.FromMinutes(csr.Recipe.PrepTimeMinutes.Value) : null,
-                CookTime = csr.Recipe.CookTimeMinutes.HasValue ? TimeSpan.FromMinutes(csr.Recipe.CookTimeMinutes.Value) : null,
-                Rating = csr.Recipe.Rating
+                    .FirstOrDefault();
+
+                var prepMinutes = csr.Recipe.PrepTimeMinutes ?? 0;
+                var cookMinutes = csr.Recipe.CookTimeMinutes ?? 0;
+                var totalMinutes = prepMinutes + cookMinutes;
+
+                return new RecipeSummaryViewModel
+                {
+                    Guid = csr.Recipe.RecipeId,
+                    ImageUrlsRaw = imageUrls.Count > 0 ? System.Text.Json.JsonSerializer.Serialize(imageUrls) : null,
+                    Name = csr.Recipe.Title,
+                    AuthorImageUrlRaw = authorImageUri?.AbsoluteUri,
+                    AuthorName = csr.Recipe.Author.Name,
+                    PrepMinutes = prepMinutes,
+                    TotalMinutes = totalMinutes,
+                    Rating = csr.Recipe.Rating
+                };
             })
             .ToList();
 

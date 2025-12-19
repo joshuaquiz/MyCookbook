@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyCookbook.Common.ApiModels;
@@ -15,7 +16,7 @@ namespace MyCookbook.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-//[Authorize]
+[Authorize]
 public sealed class RecipeController(
     IDbContextFactory<MyCookbookContext> myCookbookContextFactory)
     : ControllerBase
@@ -245,7 +246,9 @@ public sealed class RecipeController(
         // Build query for authors
         var authorsQuery = db.Authors
             .Include(a => a.EntityImages).ThenInclude(ei => ei.Image)
-            .Where(a => a.AuthorId != currentAuthorId); // Exclude current user
+            .Where(a => a.AuthorId != currentAuthorId) // Exclude current user
+            .Where(a => a.AuthorType != AuthorType.ImportedProfile) // Exclude imported profiles
+            .Where(a => a.Email != null && a.Email != string.Empty); // Only authors with email
 
         // Apply search filter if provided
         if (!string.IsNullOrWhiteSpace(searchTerm))
@@ -306,12 +309,6 @@ public sealed class RecipeController(
         if (!recipeShare.IsActive)
         {
             return BadRequest("This share link has been deactivated");
-        }
-
-        // Check if share has expired
-        if (recipeShare.ExpiresAt.HasValue && recipeShare.ExpiresAt.Value < DateTime.UtcNow)
-        {
-            return BadRequest("This share link has expired");
         }
 
         // Increment access count

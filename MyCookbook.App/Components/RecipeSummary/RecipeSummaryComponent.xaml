@@ -174,7 +174,6 @@
                     x:Name="ImageCarousel"
                     ItemsSource="{Binding ImageUrls}"
                     IndicatorView="ImageIndicator"
-                    Position="0"
                     HorizontalOptions="Fill"
                     VerticalOptions="Fill"
                     Loop="False"

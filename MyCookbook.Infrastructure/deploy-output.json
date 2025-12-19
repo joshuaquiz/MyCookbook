@@ -1,0 +1,15 @@
+{
+  "MyCookbookInfrastructure-Development": {
+    "UserPoolClientId": "60q7o2cica137ash8qkebajmd8",
+    "UserPoolDomain": "g3-mycookbook-development",
+    "UserPoolId": "us-east-1_hTCQJnbxn",
+    "ApiUrl": "http://api-development-mycookbook.g3software.net",
+    "VpcId": "vpc-07bdc77ff3b2da50a",
+    "AuroraClusterEndpoint": "my-cookbook.cluster-cvf8xttiq5pt.us-east-1.rds.amazonaws.com",
+    "DbSecretArn": "arn:aws:secretsmanager:us-east-1:525722201980:secret:mycookbook/db/development",
+    "CognitoHostedUIUrl": "https://g3-mycookbook-development.auth.us-east-1.amazoncognito.com",
+    "EcsClusterName": "MyCookbookCluster-Development",
+    "FargateServiceName": "MyCookbookInfrastructure-Development-MyCookbookApiServiceV2Service4609081C-eGgBMXDMJg3B",
+    "ConfigBucketName": "g3-mycookbook-config-development"
+  }
+}
