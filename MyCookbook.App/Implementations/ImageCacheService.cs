@@ -27,7 +27,10 @@ public class ImageCacheService : IImageCacheService, IDisposable
 
     public ImageCacheService(ILogger<ImageCacheService> logger)
     {
-        _httpClient = new HttpClient();
+        _httpClient = new HttpClient
+        {
+            Timeout = TimeSpan.FromSeconds(30) // 30 second timeout for image downloads
+        };
         _logger = logger;
         _cacheDirectory = Path.Combine(FileSystem.CacheDirectory, "image_cache");
         Directory.CreateDirectory(_cacheDirectory);
@@ -82,6 +85,18 @@ public class ImageCacheService : IImageCacheService, IDisposable
             {
                 _cacheLock.Release();
             }
+        }
+        catch (TaskCanceledException)
+        {
+            // Image download was cancelled, don't log as error
+            _logger.LogDebug("Image download cancelled: {Url}", imageUrl);
+            return null;
+        }
+        catch (OperationCanceledException)
+        {
+            // Image download was cancelled, don't log as error
+            _logger.LogDebug("Image download cancelled: {Url}", imageUrl);
+            return null;
         }
         catch (Exception ex)
         {

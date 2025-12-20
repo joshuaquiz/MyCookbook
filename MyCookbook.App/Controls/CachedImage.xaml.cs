@@ -11,6 +11,7 @@ public partial class CachedImage : ContentView
 {
     private static IImageCacheService? _imageCacheService;
     private CancellationTokenSource? _loadCancellation;
+    private Task? _loadTask;
 
     public static readonly BindableProperty SourceProperty =
         BindableProperty.Create(
@@ -100,6 +101,7 @@ public partial class CachedImage : ContentView
     {
         // Cancel any ongoing load
         _loadCancellation?.Cancel();
+        _loadCancellation?.Dispose();
         _loadCancellation = new CancellationTokenSource();
 
         if (Source == null || _imageCacheService == null)
@@ -113,15 +115,43 @@ public partial class CachedImage : ContentView
         IsLoading = true;
         IsImageLoaded = false;
 
+        // Add a small delay to debounce rapid source changes (e.g., during scrolling)
+        // This prevents canceling downloads that are about to complete
         try
         {
-            var cachedPath = await _imageCacheService.GetCachedImagePathAsync(Source, _loadCancellation.Token);
-            
-            if (!string.IsNullOrEmpty(cachedPath) && !_loadCancellation.Token.IsCancellationRequested)
+            await Task.Delay(50, _loadCancellation.Token);
+        }
+        catch (OperationCanceledException)
+        {
+            IsLoading = false;
+            return;
+        }
+
+        // Store the current task so we can track it
+        _loadTask = LoadImageAsync(_loadCancellation.Token);
+        await _loadTask;
+    }
+
+    private async Task LoadImageAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            var cachedPath = await _imageCacheService!.GetCachedImagePathAsync(Source!, cancellationToken);
+
+            if (!string.IsNullOrEmpty(cachedPath) && !cancellationToken.IsCancellationRequested)
             {
                 CachedSource = ImageSource.FromFile(cachedPath);
                 IsImageLoaded = true;
             }
+            else if (cancellationToken.IsCancellationRequested)
+            {
+                // Image load was cancelled, keep showing loading state
+                return;
+            }
+        }
+        catch (TaskCanceledException)
+        {
+            // Image load was cancelled, ignore
         }
         catch (OperationCanceledException)
         {
@@ -134,7 +164,10 @@ public partial class CachedImage : ContentView
         }
         finally
         {
-            IsLoading = false;
+            if (!cancellationToken.IsCancellationRequested)
+            {
+                IsLoading = false;
+            }
         }
     }
 

@@ -28,6 +28,7 @@ public partial class CalendarHomeViewModel : BaseViewModel, IDisposable
     private Calendar<CalendarDay> _myCalendar = new();
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(SelectedDateText))]
     private DateTime? _selectedDate;
 
     [ObservableProperty]
@@ -35,6 +36,8 @@ public partial class CalendarHomeViewModel : BaseViewModel, IDisposable
 
     [ObservableProperty]
     private ObservableCollection<CalendarMealGroup> _selectedDayMeals = [];
+
+    public string SelectedDateText => SelectedDate?.ToString("dddd, MMMM d, yyyy") ?? string.Empty;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ViewModeToggleText))]
@@ -53,10 +56,11 @@ public partial class CalendarHomeViewModel : BaseViewModel, IDisposable
     partial void OnSelectedDateChanged(DateTime? value)
     {
         UpdateHeaderText();
-        UpdateSelectedDayMeals();
+        // Fire and forget - don't block UI thread
+        _ = UpdateSelectedDayMealsAsync();
     }
 
-    private void UpdateSelectedDayMeals()
+    private async Task UpdateSelectedDayMealsAsync()
     {
         if (!SelectedDate.HasValue)
         {
@@ -64,23 +68,28 @@ public partial class CalendarHomeViewModel : BaseViewModel, IDisposable
             return;
         }
 
-        var mealsForDay = AllCalendarEntries
-            .Where(x => x.Date.Date == SelectedDate.Value.Date)
-            .OrderBy(x => x.MealType)
-            .ToList();
+        // Run LINQ operations off the UI thread
+        var grouped = await Task.Run(() =>
+        {
+            var mealsForDay = AllCalendarEntries
+                .Where(x => x.Date.Date == SelectedDate.Value.Date)
+                .OrderBy(x => x.MealType)
+                .ToList();
 
-        // Group by meal type
-        var grouped = mealsForDay
-            .GroupBy(x => new { x.MealType, x.MealTypeName })
-            .Select(g => new CalendarMealGroup
-            {
-                MealType = g.Key.MealType,
-                MealTypeName = g.Key.MealTypeName,
-                Recipes = new ObservableCollection<UserCalendarEntryModel>(g)
-            })
-            .OrderBy(x => x.MealType)
-            .ToList();
+            // Group by meal type
+            return mealsForDay
+                .GroupBy(x => new { x.MealType, x.MealTypeName })
+                .Select(g => new CalendarMealGroup
+                {
+                    MealType = g.Key.MealType,
+                    MealTypeName = g.Key.MealTypeName,
+                    Recipes = new ObservableCollection<UserCalendarEntryModel>(g)
+                })
+                .OrderBy(x => x.MealType)
+                .ToList();
+        });
 
+        // Update UI on main thread
         SelectedDayMeals = new ObservableCollection<CalendarMealGroup>(grouped);
     }
 

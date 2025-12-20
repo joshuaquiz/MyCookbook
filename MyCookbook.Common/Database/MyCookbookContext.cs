@@ -72,6 +72,30 @@ public class MyCookbookContext(
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // Configure all DateTime properties to use UTC
+        var dateTimeConverter = new ValueConverter<DateTime, DateTime>(
+            v => v.ToUniversalTime(),
+            v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
+
+        var nullableDateTimeConverter = new ValueConverter<DateTime?, DateTime?>(
+            v => v.HasValue ? v.Value.ToUniversalTime() : v,
+            v => v.HasValue ? DateTime.SpecifyKind(v.Value, DateTimeKind.Utc) : v);
+
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            foreach (var property in entityType.GetProperties())
+            {
+                if (property.ClrType == typeof(DateTime))
+                {
+                    property.SetValueConverter(dateTimeConverter);
+                }
+                else if (property.ClrType == typeof(DateTime?))
+                {
+                    property.SetValueConverter(nullableDateTimeConverter);
+                }
+            }
+        }
+
         // 1. Primary Keys (Defined on models, but confirming GUID text type)
         // EF Core maps C# string PKs to TEXT in SQLite by default.
 
@@ -81,6 +105,12 @@ public class MyCookbookContext(
             .WithMany(r => r.Copies)
             .HasForeignKey(r => r.OriginalRecipeId)
             .IsRequired(false); // Can be NULL for original recipes
+
+        modelBuilder.Entity<Recipe>()
+            .HasOne(r => r.RawDataSource)
+            .WithMany()
+            .HasForeignKey(r => r.RawDataSourceId)
+            .IsRequired(false); // Can be NULL for user-created recipes
 
         modelBuilder.Entity<RecipeStepIngredient>()
             .HasOne(r => r.RecipeStep)
@@ -105,10 +135,9 @@ public class MyCookbookContext(
         modelBuilder.Entity<RecipeHeart>()
             .HasKey(rh => new { rh.AuthorId, rh.RecipeId });
 
-        // Popularity (Unique Constraint)
+        // Popularity (Index for efficient queries - NOT unique to allow multiple time-stamped entries)
         modelBuilder.Entity<Popularity>()
-            .HasIndex(p => new { p.EntityType, p.EntityId, p.MetricType })
-            .IsUnique();
+            .HasIndex(p => new { p.EntityType, p.EntityId, p.MetricType, p.CreatedAt });
 
         // 5. Polymorphic Image Mapping (EntityImage)
         // This is the key structural link for images across different entity types.

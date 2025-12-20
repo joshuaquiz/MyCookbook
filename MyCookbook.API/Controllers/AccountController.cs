@@ -10,6 +10,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MyCookbook.Common.ApiModels;
@@ -26,6 +28,7 @@ public sealed class AccountController(
 {
     [HttpPost("LogIn")]
     [AllowAnonymous]
+    [EnableRateLimiting("login")]
     public async ValueTask<ActionResult<LoginResponse>> LogIn(
         [FromBody] LoginRequest loginRequest,
         CancellationToken cancellationToken)
@@ -35,6 +38,7 @@ public sealed class AccountController(
 
         // Find user by email
         var author = await db.Authors
+            .AsNoTracking()
             .Include(a => a.EntityImages).ThenInclude(ei => ei.Image)
             .FirstOrDefaultAsync(a => a.Email == loginRequest.Username, cancellationToken);
 
@@ -93,7 +97,7 @@ public sealed class AccountController(
             AccessToken: accessToken,
             RefreshToken: refreshToken,
             TokenType: "Bearer",
-            ExpiresIn: 3600 // 1 hour
+            ExpiresIn: 7200 // 2 hours
         );
 
         return Ok(loginResponse);
@@ -160,7 +164,7 @@ public sealed class AccountController(
                 AccessToken: newAccessToken,
                 RefreshToken: newRefreshToken,
                 TokenType: "Bearer",
-                ExpiresIn: 3600 // 1 hour
+                ExpiresIn: 7200 // 2 hours
             );
 
             return Ok(response);
@@ -199,8 +203,8 @@ public sealed class AccountController(
             claims.Add(new Claim("token_type", "refresh"));
         }
 
-        // Refresh tokens expire in 30 days, access tokens in 1 hour
-        var expiration = isRefreshToken ? DateTime.UtcNow.AddDays(30) : DateTime.UtcNow.AddHours(1);
+        // Refresh tokens expire in 30 days, access tokens in 2 hours
+        var expiration = isRefreshToken ? DateTime.UtcNow.AddDays(30) : DateTime.UtcNow.AddHours(2);
 
         var token = new JwtSecurityToken(
             issuer: jwtIssuer,
@@ -222,6 +226,7 @@ public sealed class AccountController(
     }
 
     [HttpGet("{userId:guid}/Cookbook")]
+    [OutputCache(PolicyName = "UserCookbook")]
     public async ValueTask<ActionResult<List<RecipeSummaryViewModel>>> GetUserCookbook(
         Guid userId,
         [FromQuery] int take = 20,
@@ -233,6 +238,7 @@ public sealed class AccountController(
 
         // Get recipes from the user's cookbook
         var userRecipeIds = await db.UserCookbookRecipes
+            .AsNoTracking()
             .Where(ucr => ucr.AuthorId == userId)
             .Select(ucr => ucr.RecipeId)
             .ToListAsync(cancellationToken);
@@ -243,10 +249,11 @@ public sealed class AccountController(
         }
 
         var recipes = await db.Recipes
+            .AsNoTracking()
             .Where(r => userRecipeIds.Contains(r.RecipeId))
             .Include(x => x.EntityImages).ThenInclude(x => x.Image)
             .Include(x => x.Author).ThenInclude(x => x.EntityImages).ThenInclude(x => x.Image)
-            .Include(x => x.RawDataSource)
+            // ✅ Fix #1: Don't include RawDataSource to avoid loading massive HTML
             .Include(x => x.RecipeTags).ThenInclude(x => x.Tag)
             .Include(x => x.RecipeCategories).ThenInclude(x => x.Category)
             .Include(x => x.RecipeHearts)
@@ -254,6 +261,18 @@ public sealed class AccountController(
             .Skip(skip)
             .Take(take)
             .ToListAsync(cancellationToken);
+
+        // Get ONLY the URLs for these recipes (not the entire RawDataSource with HTML)
+        var recipeIds = recipes.Select(r => r.RecipeId).ToList();
+        var recipeUrls = await db.Recipes
+            .AsNoTracking()
+            .Where(r => recipeIds.Contains(r.RecipeId))
+            .Select(r => new
+            {
+                r.RecipeId,
+                Url = r.RawDataSource != null ? r.RawDataSource.Url : null
+            })
+            .ToDictionaryAsync(x => x.RecipeId, x => x.Url, cancellationToken);
 
         var result = recipes.Select(x => new RecipeSummaryViewModel
         {
@@ -272,7 +291,7 @@ public sealed class AccountController(
                 .Where(ei => ei.Image.ImageType == ImageType.Main)
                 .Select(ei => ei.Image.Url.ToString())
                 .FirstOrDefault(),
-            ItemUrlRaw = x.RawDataSource.Url.ToString(),
+            ItemUrlRaw = recipeUrls.GetValueOrDefault(x.RecipeId)?.ToString(),
             Tags = string.Join(" ", x.RecipeTags.Select(rt => "#" + rt.Tag.TagName)),
             Category = string.Join(", ", x.RecipeCategories.Select(rc => rc.Category.CategoryName)),
             Hearts = x.RecipeHearts.Count,

@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,6 +21,7 @@ public sealed class HomeController(
     : ControllerBase
 {
     [HttpGet("Popular")]
+    [OutputCache(PolicyName = "PopularRecipes")]
     public async ValueTask<ActionResult<List<RecipeSummaryViewModel>>> GetPopular(
         [FromQuery] int take = 20,
         [FromQuery] int skip = 0,
@@ -36,6 +38,7 @@ public sealed class HomeController(
 
         // Get all popularity metrics for recipes
         var allPopularity = await db.Popularities
+            .AsNoTracking()
             .Where(p => p.EntityType == PopularityType.Recipe)
             .ToListAsync(cancellationToken);
 
@@ -76,28 +79,87 @@ public sealed class HomeController(
             .OrderByDescending(x => x.PopularityScore)
             .ToDictionary(x => x.RecipeId, x => x.PopularityScore);
 
-        // Fetch ALL recipes with their related data
-        var allRecipes = await db.Recipes
+        // Step 1: Get recipe IDs with their hosts and popularity scores, ordered by popularity
+        // This query is lightweight - only fetches IDs and host names
+        var recipesWithHosts = await db.Recipes
+            .AsNoTracking()
+            .Select(r => new
+            {
+                r.RecipeId,
+                r.CreatedAt,
+                UrlHost = r.RawDataSource != null ? r.RawDataSource.UrlHost : null,
+                PopularityScore = popularityScores.ContainsKey(r.RecipeId) ? popularityScores[r.RecipeId] : 0
+            })
+            .ToListAsync(cancellationToken);
+
+        // Step 2: Distribute recipes by host to avoid bandwidth concentration
+        // Take top recipes while ensuring diversity across hosts
+        var selectedRecipeIds = new List<Guid>();
+        var hostCounts = new Dictionary<string, int>();
+        const int maxPerHost = 3; // Maximum recipes per host in a single page
+
+        foreach (var recipe in recipesWithHosts
+            .OrderByDescending(r => r.PopularityScore)
+            .ThenByDescending(r => r.CreatedAt))
+        {
+            if (selectedRecipeIds.Count >= skip + take)
+                break;
+
+            var host = recipe.UrlHost ?? "user-created";
+            var currentHostCount = hostCounts.GetValueOrDefault(host, 0);
+
+            // Allow recipe if we haven't hit the per-host limit, or if we need to fill the page
+            if (currentHostCount < maxPerHost || selectedRecipeIds.Count < skip + take)
+            {
+                selectedRecipeIds.Add(recipe.RecipeId);
+                hostCounts[host] = currentHostCount + 1;
+            }
+        }
+
+        // Step 3: Apply skip/take and fetch only the selected recipes with full data
+        var recipeIdsToFetch = selectedRecipeIds.Skip(skip).Take(take).ToList();
+
+        if (!recipeIdsToFetch.Any())
+        {
+            return Ok(new List<RecipeSummaryViewModel>());
+        }
+
+        // Step 4: Fetch full recipe data ONLY for the selected recipes
+        // Fix #1: Remove .Include(x => x.RawDataSource) to avoid loading massive HTML
+        // Fix #4: Add .AsNoTracking() for read-only query
+        var recipes = await db.Recipes
+            .AsNoTracking()
+            .Where(r => recipeIdsToFetch.Contains(r.RecipeId))
             .Include(x => x.EntityImages).ThenInclude(x => x.Image)
             .Include(x => x.Author).ThenInclude(x => x.EntityImages).ThenInclude(x => x.Image)
-            .Include(x => x.RawDataSource)
+            // ✅ Fix #1: Don't include RawDataSource - we'll get URL separately
             .Include(x => x.RecipeTags).ThenInclude(x => x.Tag)
             .Include(x => x.RecipeCategories).ThenInclude(x => x.Category)
             .Include(x => x.RecipeHearts)
             .ToListAsync(cancellationToken);
 
-        // Sort recipes: first by popularity score (descending), then by creation date (descending) for recipes with no popularity
-        var sortedRecipes = allRecipes
-            .OrderByDescending(r => popularityScores.GetValueOrDefault(r.RecipeId, 0))
-            .ThenByDescending(r => r.CreatedAt)
-            .Skip(skip)
-            .Take(take)
+        // Step 5: Get ONLY the URLs for these recipes (not the entire RawDataSource with HTML)
+        var recipeUrls = await db.Recipes
+            .AsNoTracking()
+            .Where(r => recipeIdsToFetch.Contains(r.RecipeId))
+            .Select(r => new
+            {
+                r.RecipeId,
+                Url = r.RawDataSource != null ? r.RawDataSource.Url : null
+            })
+            .ToDictionaryAsync(x => x.RecipeId, x => x.Url, cancellationToken);
+
+        // Step 6: Maintain the original order (by popularity, then creation date)
+        var orderedRecipes = recipeIdsToFetch
+            .Select(id => recipes.First(r => r.RecipeId == id))
             .ToList();
 
-        return Ok(MapToRecipeSummaryViewModels(sortedRecipes));
+        return Ok(MapToRecipeSummaryViewModels(orderedRecipes, recipeUrls));
     }
 
-    private static List<RecipeSummaryViewModel> MapToRecipeSummaryViewModels(List<Recipe> recipes)
+    private static List<RecipeSummaryViewModel> MapToRecipeSummaryViewModels(
+        List<Recipe> recipes,
+        Dictionary<Guid, Uri?> recipeUrls)
     {
         return recipes.Select(x => new RecipeSummaryViewModel
         {
@@ -116,7 +178,7 @@ public sealed class HomeController(
                 .Where(ei => ei.Image.ImageType == ImageType.Main)
                 .Select(ei => ei.Image.Url.ToString())
                 .FirstOrDefault(),
-            ItemUrlRaw = x.RawDataSource.Url.ToString(),
+            ItemUrlRaw = recipeUrls.GetValueOrDefault(x.RecipeId)?.ToString(),
             Tags = string.Join(" ", x.RecipeTags.Select(rt => "#" + rt.Tag.TagName)),
             Category = string.Join(", ", x.RecipeCategories.Select(rc => rc.Category.CategoryName)),
             Hearts = x.RecipeHearts.Count,

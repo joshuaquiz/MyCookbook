@@ -46,9 +46,9 @@ public class Recipe
     public virtual Author Author { get; set; }
 
     [Column("recipe_url_id")]
-    public Guid RawDataSourceId { get; set; }
+    public Guid? RawDataSourceId { get; set; }
 
-    public virtual RawDataSource RawDataSource { get; set; }
+    public virtual RawDataSource? RawDataSource { get; set; }
 
     [Column("original_recipe_id")]
     public Guid? OriginalRecipeId { get; set; }

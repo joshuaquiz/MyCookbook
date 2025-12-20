@@ -19,8 +19,14 @@
         <converters:TimeSpanToStringConverter x:Key="TimeSpanToStringConverter" />
         <converters:NullToBooleanConverter x:Key="NullToBooleanConverter" />
         <converters:IngredientIconConverter x:Key="IngredientIconConverter" />
-        <toolkit:BoolToObjectConverter x:Key="BoolToStringConverter" x:TypeArguments="x:String" TrueObject="heart" FalseObject="heart_outline" />
-        <toolkit:BoolToObjectConverter x:Key="BoolToDoubleConverter" x:TypeArguments="x:Double" TrueObject="45" FalseObject="0" />
+        <toolkit:BoolToObjectConverter x:Key="BoolToDoubleConverter" x:TypeArguments="x:Double">
+            <toolkit:BoolToObjectConverter.TrueObject>
+                <x:Double>45</x:Double>
+            </toolkit:BoolToObjectConverter.TrueObject>
+            <toolkit:BoolToObjectConverter.FalseObject>
+                <x:Double>0</x:Double>
+            </toolkit:BoolToObjectConverter.FalseObject>
+        </toolkit:BoolToObjectConverter>
         <DataTemplate
             x:Key="RecipeImageTemplate"
             x:DataType="system:Uri">
@@ -589,9 +595,11 @@
         <!-- Overlay to close FAB when clicking outside -->
         <BoxView
             IsVisible="{Binding IsFabExpanded}"
-            BackgroundColor="Transparent"
+            BackgroundColor="Gray"
+            Opacity="0.0"
             HorizontalOptions="Fill"
-            VerticalOptions="Fill">
+            VerticalOptions="Fill"
+            ZIndex="10">
             <BoxView.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding CloseFabCommand}" />
             </BoxView.GestureRecognizers>
@@ -602,7 +610,8 @@
             VerticalOptions="End"
             HorizontalOptions="End"
             Margin="20"
-            Spacing="12">
+            Spacing="12"
+            ZIndex="20">
 
             <!-- Heart Button (shown when expanded) -->
             <Border
@@ -610,8 +619,7 @@
                 BackgroundColor="{StaticResource Secondary}"
                 StrokeThickness="0"
                 HeightRequest="48"
-                WidthRequest="48"
-                Opacity="0">
+                WidthRequest="48">
                 <Border.StrokeShape>
                     <RoundRectangle CornerRadius="24" />
                 </Border.StrokeShape>
@@ -621,15 +629,8 @@
                 <Border.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding HeartRecipeCommand}" />
                 </Border.GestureRecognizers>
-                <Border.Triggers>
-                    <DataTrigger TargetType="Border" Binding="{Binding IsFabExpanded}" Value="True">
-                        <DataTrigger.EnterActions>
-                            <toolkit:FadeInAnimation />
-                        </DataTrigger.EnterActions>
-                    </DataTrigger>
-                </Border.Triggers>
                 <Image
-                    Source="{Binding IsHearted, Converter={StaticResource BoolToStringConverter}}"
+                    Source="heart_outline"
                     HeightRequest="24"
                     WidthRequest="24"
                     HorizontalOptions="Center"
@@ -637,6 +638,11 @@
                     <Image.Behaviors>
                         <toolkit:IconTintColorBehavior TintColor="White" />
                     </Image.Behaviors>
+                    <Image.Triggers>
+                        <DataTrigger TargetType="Image" Binding="{Binding IsHearted}" Value="True">
+                            <Setter Property="Source" Value="heart" />
+                        </DataTrigger>
+                    </Image.Triggers>
                 </Image>
             </Border>
 
@@ -646,8 +652,7 @@
                 BackgroundColor="{StaticResource Secondary}"
                 StrokeThickness="0"
                 HeightRequest="48"
-                WidthRequest="48"
-                Opacity="0">
+                WidthRequest="48">
                 <Border.StrokeShape>
                     <RoundRectangle CornerRadius="24" />
                 </Border.StrokeShape>
@@ -657,13 +662,6 @@
                 <Border.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding ShareCommand}" />
                 </Border.GestureRecognizers>
-                <Border.Triggers>
-                    <DataTrigger TargetType="Border" Binding="{Binding IsFabExpanded}" Value="True">
-                        <DataTrigger.EnterActions>
-                            <toolkit:FadeInAnimation />
-                        </DataTrigger.EnterActions>
-                    </DataTrigger>
-                </Border.Triggers>
                 <Image
                     Source="share"
                     HeightRequest="24"
@@ -697,6 +695,9 @@
                     TextColor="White"
                     HorizontalOptions="Center"
                     VerticalOptions="Center"
+                    VerticalTextAlignment="Center"
+                    HorizontalTextAlignment="Center"
+                    Margin="-1,-4,0,0"
                     Rotation="{Binding IsFabExpanded, Converter={StaticResource BoolToDoubleConverter}}" />
             </Border>
         </VerticalStackLayout>

@@ -6,6 +6,7 @@
     xmlns:xc="clr-namespace:XCalendar.Maui.Views;assembly=XCalendar.Maui"
     xmlns:views="using:MyCookbook.App.Views"
     xmlns:viewModels="using:MyCookbook.App.ViewModels"
+    xmlns:apiModels="clr-namespace:MyCookbook.Common.ApiModels;assembly=MyCookbook.Common"
     xmlns:recipeSummary="clr-namespace:MyCookbook.App.Components.RecipeSummary"
     x:DataType="viewModels:CalendarHomeViewModel"
     Shell.NavBarIsVisible="False"
@@ -15,8 +16,10 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="50" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -45,18 +48,73 @@
             HeightRequest="{StaticResource BorderThicknessThin}"
             Color="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}" />
 
-        <!--<CollectionView
-            IsVisible="{Binding IsNotBusy}"
-            HorizontalScrollBarVisibility="Never"
-            ItemsSource="{Binding DayRecipes}"
-            ItemsLayout="HorizontalList"
-            Margin="0">
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <recipeSummary:RecipeSummaryComponent
-                        Item="{Binding .}" />
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>-->
+        <!-- Selected Day Label -->
+        <Label
+            Grid.Row="4"
+            Grid.Column="0"
+            Text="{Binding SelectedDateText}"
+            FontSize="20"
+            FontAttributes="Bold"
+            HorizontalTextAlignment="Center"
+            Margin="0,16,0,8"
+            TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColorLight}, Dark={StaticResource TextPrimaryColorDark}}" />
+
+        <!-- Day's Recipes -->
+        <ScrollView
+            Grid.Row="5"
+            Grid.Column="0"
+            IsVisible="{Binding IsNotBusy}">
+            <VerticalStackLayout>
+                <CollectionView
+                    ItemsSource="{Binding SelectedDayMeals}"
+                    SelectionMode="None">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="viewModels:CalendarMealGroup">
+                            <VerticalStackLayout Margin="0,8">
+                                <!-- Meal Type Header -->
+                                <Label
+                                    Text="{Binding MealTypeName}"
+                                    FontSize="18"
+                                    FontAttributes="Bold"
+                                    Margin="16,8,16,4"
+                                    TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColorLight}, Dark={StaticResource TextPrimaryColorDark}}" />
+
+                                <!-- Recipes for this meal type -->
+                                <CollectionView
+                                    ItemsSource="{Binding Recipes}"
+                                    ItemsLayout="HorizontalList"
+                                    HorizontalScrollBarVisibility="Never"
+                                    SelectionMode="None">
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate x:DataType="apiModels:UserCalendarEntryModel">
+                                            <VerticalStackLayout Margin="8,0" WidthRequest="200">
+                                                <Border
+                                                    HeightRequest="150"
+                                                    StrokeThickness="0"
+                                                    BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray800}}">
+                                                    <Border.StrokeShape>
+                                                        <RoundRectangle CornerRadius="8" />
+                                                    </Border.StrokeShape>
+                                                    <Image
+                                                        Source="{Binding RecipeImageUrl}"
+                                                        Aspect="AspectFill" />
+                                                </Border>
+                                                <Label
+                                                    Text="{Binding RecipeName}"
+                                                    FontSize="14"
+                                                    FontAttributes="Bold"
+                                                    Margin="0,4,0,0"
+                                                    LineBreakMode="TailTruncation"
+                                                    MaxLines="2" />
+                                            </VerticalStackLayout>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                            </VerticalStackLayout>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+        </ScrollView>
     </Grid>
 </views:BasePage>

@@ -15,13 +15,16 @@ public class RecipeService : IRecipeService
 {
     private readonly CookbookHttpClient _httpClient;
     private readonly IOfflineCacheService _cacheService;
+    private readonly ICookbookStorage _cookbookStorage;
 
     public RecipeService(
         CookbookHttpClient httpClient,
-        IOfflineCacheService cacheService)
+        IOfflineCacheService cacheService,
+        ICookbookStorage cookbookStorage)
     {
         _httpClient = httpClient;
         _cacheService = cacheService;
+        _cookbookStorage = cookbookStorage;
     }
 
     public async Task<RecipeModel> GetRecipeAsync(Guid recipeGuid, CancellationToken cancellationToken = default)
@@ -129,15 +132,33 @@ public class RecipeService : IRecipeService
 
         try
         {
-            var result = await _httpClient.GetFromJsonAsync<List<RecipeModel>>(
-                "/api/Personal/Cookbook");
-
-            var recipes = result ?? [];
-
-            // Cache each recipe individually for offline access
-            foreach (var recipe in recipes)
+            // Get current user ID
+            var user = await _cookbookStorage.GetUser();
+            if (!user.HasValue)
             {
-                await _cacheService.CacheRecipeAsync(recipe);
+                throw new InvalidOperationException("User not logged in");
+            }
+
+            // Use the correct endpoint: /api/Account/{userId}/Cookbook
+            // Note: This returns RecipeSummaryViewModel, but we need to fetch full recipes
+            var summaries = await _httpClient.Get<List<RecipeSummaryViewModel>>(
+                $"/api/Account/{user.Value.Guid}/Cookbook",
+                cancellationToken);
+
+            // Fetch full recipe details for each summary
+            var recipes = new List<RecipeModel>();
+            foreach (var summary in summaries ?? [])
+            {
+                try
+                {
+                    var recipe = await GetRecipeAsync(summary.Guid, cancellationToken);
+                    recipes.Add(recipe);
+                }
+                catch
+                {
+                    // Skip recipes that fail to load
+                    continue;
+                }
             }
 
             return recipes;

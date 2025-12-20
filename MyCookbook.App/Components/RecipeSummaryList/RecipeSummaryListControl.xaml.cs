@@ -16,6 +16,7 @@ public partial class RecipeSummaryListControl
 {
     private bool _endOfList;
     private int _pageNumber;
+    private bool _isRefreshing;
 
     public static readonly BindableProperty CountProperty =
         BindableProperty.Create(nameof(Count), typeof(int), typeof(RecipeSummaryListControl));
@@ -88,17 +89,22 @@ public partial class RecipeSummaryListControl
     public async Task RefreshData(
         CancellationToken cancellationToken)
     {
-        Debug.WriteLine("[RecipeSummaryListControl] RefreshData called");
+        // Prevent multiple simultaneous refresh calls
+        if (_isRefreshing)
+        {
+            return;
+        }
+
+        _isRefreshing = true;
         IsRefreshing = true;
         _endOfList = false;
         Items.Clear();
         Count = 0;
         _pageNumber = 0;
-        Debug.WriteLine("[RecipeSummaryListControl] Calling GetDataPage");
         await GetDataPage(
             cancellationToken);
         IsRefreshing = false;
-        Debug.WriteLine("[RecipeSummaryListControl] RefreshData completed");
+        _isRefreshing = false;
     }
 
     public ICommand GetNextPageCommand =>
@@ -108,11 +114,8 @@ public partial class RecipeSummaryListControl
     private async Task GetDataPage(
         CancellationToken cancellationToken)
     {
-        Debug.WriteLine($"[RecipeSummaryListControl] GetDataPage called - IsBusy: {IsBusy}, EndOfList: {_endOfList}, GetData is null: {GetData == null}");
-
         if (IsBusy || _endOfList || GetData == null)
         {
-            Debug.WriteLine("[RecipeSummaryListControl] GetDataPage exiting early");
             return;
         }
 
@@ -121,8 +124,6 @@ public partial class RecipeSummaryListControl
         var scrollToTop = !Items.Any();
         const int maxItems = 250;
         var itemsInPage = 0;
-
-        Debug.WriteLine($"[RecipeSummaryListControl] Starting to fetch page {_pageNumber}");
 
         try
         {
@@ -133,8 +134,6 @@ public partial class RecipeSummaryListControl
                 itemsInPage++;
             }
 
-            Debug.WriteLine($"[RecipeSummaryListControl] Fetched {itemsInPage} items");
-
             while (Items.Count > maxItems)
             {
                 Items.RemoveAt(0);
@@ -143,11 +142,11 @@ public partial class RecipeSummaryListControl
         }
         catch (TaskCanceledException)
         {
-            Debug.WriteLine("[RecipeSummaryListControl] Task was cancelled");
+            // Task was cancelled
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"[RecipeSummaryListControl] Error fetching data: {ex.Message}");
+            // Error fetching data - silently handle
         }
 
         if (scrollToTop)
@@ -164,8 +163,6 @@ public partial class RecipeSummaryListControl
         IsBusy = false;
         PagingTimeout = DateTimeOffset.UtcNow.AddMilliseconds(5);
         IsIdle = true;
-
-        Debug.WriteLine($"[RecipeSummaryListControl] GetDataPage completed - Total items: {Items.Count}");
     }
 
     public DateTimeOffset PagingTimeout { get; set; }

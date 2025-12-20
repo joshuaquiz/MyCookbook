@@ -144,8 +144,8 @@ public partial class ShareRecipeViewModel : BaseViewModel, IDisposable
                 : response.ShareUrl;   // Original URL for external sharing
 
             // Use platform share functionality
-            await Microsoft.Maui.ApplicationModel.DataTransfer.Share.Default.RequestAsync(
-                new Microsoft.Maui.ApplicationModel.DataTransfer.ShareTextRequest
+            await Share.Default.RequestAsync(
+                new ShareTextRequest
                 {
                     Text = shareValue,
                     Title = "Share Recipe"

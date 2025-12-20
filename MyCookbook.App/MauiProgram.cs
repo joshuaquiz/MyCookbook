@@ -17,7 +17,6 @@ using MyCookbook.App.Interfaces;
 using MyCookbook.App.Services;
 using MyCookbook.App.ViewModels;
 using MyCookbook.App.Views;
-
 //using Plugin.MauiMTAdmob;
 
 namespace MyCookbook.App;
@@ -103,23 +102,22 @@ public static class MauiProgram
         builder.Services
             .AddMemoryCache()
             .AddSingleton(SecureStorage.Default)
-            .AddSingleton(Preferences.Default)
-            .AddSingleton(Connectivity.Current);
+            .AddSingleton(Preferences.Default);
 
         builder.Services
             .AddSingleton<ICookbookStorage, CookbookStorage>()
-            .AddSingleton<Interfaces.INotificationService, Implementations.NotificationService>()
-            .AddSingleton<Interfaces.ISqliteCacheService, Implementations.SqliteCacheService>()
-            .AddSingleton<Interfaces.IOfflineCacheService>(sp => sp.GetRequiredService<Interfaces.ISqliteCacheService>())
-            .AddSingleton<Interfaces.IAppConfiguration, Implementations.AppConfiguration>()
-            .AddSingleton<Interfaces.IImageCacheService, Implementations.ImageCacheService>();
+            .AddSingleton<INotificationService, NotificationService>()
+            .AddSingleton<ISqliteCacheService, SqliteCacheService>()
+            .AddSingleton<IOfflineCacheService>(sp => sp.GetRequiredService<ISqliteCacheService>())
+            .AddSingleton<IAppConfiguration, AppConfiguration>()
+            .AddSingleton<IImageCacheService, ImageCacheService>();
 
         // Register API services
         builder.Services
-            .AddSingleton<Services.IRecipeService, Services.RecipeService>()
-            .AddSingleton<Services.IAccountService, Services.AccountService>()
-            .AddSingleton<Services.IAuthorService, Services.AuthorService>()
-            .AddSingleton<Services.ISearchService, Services.SearchService>();
+            .AddSingleton<IRecipeService, RecipeService>()
+            .AddSingleton<IAccountService, AccountService>()
+            .AddSingleton<IAuthorService, AuthorService>()
+            .AddSingleton<ISearchService, SearchService>();
 
         builder.Services
             .AddSingleton<LoginViewModel>()
@@ -131,6 +129,9 @@ public static class MauiProgram
             .AddTransient<SettingsViewModel>()
             .AddSingleton<MyCookbookViewModel>()
             .AddSingleton<CalendarHomeViewModel>();
+
+        // Register factory for SettingsViewModel (needed by AuthorProfilePageViewModel)
+        builder.Services.AddTransient<Func<SettingsViewModel>>(sp => sp.GetRequiredService<SettingsViewModel>);
 
         builder.Services
             .AddSingleton<Login>()

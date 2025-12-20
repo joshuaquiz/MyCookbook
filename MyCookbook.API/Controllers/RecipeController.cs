@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.EntityFrameworkCore;
 using MyCookbook.Common.ApiModels;
 using MyCookbook.Common.Database;
@@ -22,6 +23,7 @@ public sealed class RecipeController(
     : ControllerBase
 {
     [HttpGet("{id:guid}")]
+    [OutputCache(PolicyName = "RecipeDetails")]
     public async ValueTask<ActionResult<RecipeModel>> GetRecipe(
         Guid id,
         CancellationToken cancellationToken)
@@ -30,7 +32,8 @@ public sealed class RecipeController(
             cancellationToken);
 
         var recipe = await db.Recipes
-            .Include(x => x.RawDataSource)
+            .AsNoTracking()
+            // Don't include RawDataSource - we'll fetch URL separately to avoid loading HTML
             .Include(x => x.EntityImages).ThenInclude(x => x.Image)
             .Include(x => x.Author).ThenInclude(x => x.EntityImages).ThenInclude(x => x.Image)
             .Include(x => x.Steps).ThenInclude(x => x.StepIngredients).ThenInclude(x => x.Ingredient).ThenInclude(x => x.EntityImages).ThenInclude(x => x.Image)
@@ -45,9 +48,16 @@ public sealed class RecipeController(
             return NotFound();
         }
 
+        // Fetch ONLY the URL (not the entire RawDataSource with HTML/JSON)
+        var recipeUrl = await db.Recipes
+            .AsNoTracking()
+            .Where(r => r.RecipeId == id)
+            .Select(r => r.RawDataSource != null ? r.RawDataSource.Url : null)
+            .FirstOrDefaultAsync(cancellationToken);
+
         var recipeModel = new RecipeModel(
             Guid: recipe.RecipeId,
-            Url: recipe.RawDataSource.Url,
+            Url: recipeUrl,
             ImageUrls: recipe.EntityImages
                 .Where(ei => ei.Image.ImageType == ImageType.Main || ei.Image.ImageType == ImageType.Background)
                 .Select(ei => ei.Image.Url)
@@ -158,6 +168,7 @@ public sealed class RecipeController(
 
         // Verify recipe exists
         var recipe = await db.Recipes
+            .AsNoTracking()
             .Include(r => r.RawDataSource)
             .FirstOrDefaultAsync(r => r.RecipeId == id, cancellationToken);
         if (recipe == null)
@@ -227,6 +238,7 @@ public sealed class RecipeController(
         // TODO: Get actual user ID from authentication context
         // For now, using the first author (test user)
         var currentAuthorId = await db.Authors
+            .AsNoTracking()
             .Where(a => a.Email == "testuser@mycookbook.com")
             .Select(a => a.AuthorId)
             .FirstOrDefaultAsync(cancellationToken);
@@ -238,6 +250,7 @@ public sealed class RecipeController(
 
         // Get share counts for all authors this user has shared with
         var shareCounts = await db.RecipeShares
+            .AsNoTracking()
             .Where(rs => rs.SharedByAuthorId == currentAuthorId && rs.SharedToAuthorId != null)
             .GroupBy(rs => rs.SharedToAuthorId!.Value)
             .Select(g => new { AuthorId = g.Key, ShareCount = g.Count() })
@@ -245,6 +258,7 @@ public sealed class RecipeController(
 
         // Build query for authors
         var authorsQuery = db.Authors
+            .AsNoTracking()
             .Include(a => a.EntityImages).ThenInclude(ei => ei.Image)
             .Where(a => a.AuthorId != currentAuthorId) // Exclude current user
             .Where(a => a.AuthorType != AuthorType.ImportedProfile) // Exclude imported profiles

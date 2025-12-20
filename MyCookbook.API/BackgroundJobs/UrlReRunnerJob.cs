@@ -4,12 +4,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using MyCookbook.Common.Database;
 
 namespace MyCookbook.API.BackgroundJobs;
 
 public sealed class UrlReRunnerJob(
-    IDbContextFactory<MyCookbookContext> myCookbookContextFactory)
+    IDbContextFactory<MyCookbookContext> myCookbookContextFactory,
+    ILogger<UrlReRunnerJob> logger)
     : BackgroundService
 {
     protected override async Task ExecuteAsync(
@@ -38,7 +40,7 @@ public sealed class UrlReRunnerJob(
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            logger.LogError(e, "Error in UrlReRunnerJob");
             throw;
         }
     }

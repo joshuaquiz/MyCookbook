@@ -6,7 +6,6 @@ using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
 using MyCookbook.App.Controls;
 using MyCookbook.App.Interfaces;
-using MyCookbook.App.ViewModels;
 using MyCookbook.App.Views;
 //using Plugin.MauiMTAdmob;
 //using Plugin.MauiMTAdmob.Extra;
@@ -16,30 +15,19 @@ namespace MyCookbook.App;
 public partial class App
 {
     private readonly ICookbookStorage _cookbookStorage;
-    private readonly IServiceProvider _serviceProvider;
-    private Login _login;
+    private readonly Login _login;
 
     public App(
         ICookbookStorage cookbookStorage,
         IServiceProvider serviceProvider)
     {
         _cookbookStorage = cookbookStorage;
-        _serviceProvider = serviceProvider;
-
-        // Initialize resources FIRST before resolving any pages
         InitializeComponent();
-
-        // NOW resolve pages after resources are loaded
-        _login = _serviceProvider.GetRequiredService<Login>();
-
-        // Initialize CachedImage control with image cache service
-        var imageCacheService = _serviceProvider.GetRequiredService<IImageCacheService>();
+        _login = serviceProvider.GetRequiredService<Login>();
+        var imageCacheService = serviceProvider.GetRequiredService<IImageCacheService>();
         CachedImage.Initialize(imageCacheService);
-
-        // Initialize SQLite cache database
-        var sqliteCacheService = _serviceProvider.GetRequiredService<ISqliteCacheService>();
+        var sqliteCacheService = serviceProvider.GetRequiredService<ISqliteCacheService>();
         Task.Run(async () => await sqliteCacheService.InitializeAsync()).Wait();
-
         //CrossMauiMTAdmob.Current.UserPersonalizedAds = true;
         //CrossMauiMTAdmob.Current.ComplyWithFamilyPolicies = true;
         //CrossMauiMTAdmob.Current.UseRestrictedDataProcessing = true;
@@ -49,13 +37,9 @@ public partial class App
         //CrossMauiMTAdmob.Current.MaxAdContentRating = MTMaxAdContentRating.MaxAdContentRatingG;
         //CrossMauiMTAdmob.Current.AdChoicesCorner = AdChoicesCorner.ADCHOICES_BOTTOM_LEFT;
         //CrossMauiMTAdmob.Current.MaximumNumberOfAdsCached = 3;
-        UserAppTheme = AppTheme.Light;//cookbookStorage.GetCurrentAppTheme(this).GetAwaiter().GetResult();
-
-        // Register global exception handler for unauthorized access
+        UserAppTheme = cookbookStorage.GetCurrentAppTheme(this).GetAwaiter().GetResult();
         AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
         TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
-
-        // Start the initialization process
         InitializeAppAsync();
     }
 
@@ -68,13 +52,13 @@ public partial class App
         window.Created += (s, e) =>
         {
             // Subscribe to app links
-            Microsoft.Maui.ApplicationModel.AppActions.OnAppAction += HandleAppLink;
+            AppActions.OnAppAction += HandleAppLink;
         };
 
         return window;
     }
 
-    private async void HandleAppLink(object? sender, Microsoft.Maui.ApplicationModel.AppActionEventArgs e)
+    private async void HandleAppLink(object? sender, AppActionEventArgs e)
     {
         await HandleDeepLink(e.AppAction.Id);
     }
@@ -116,8 +100,11 @@ public partial class App
             // Check if user is already logged in
             var user = await _cookbookStorage.GetUser();
 
-            // If logged in, navigate to main app
-            if (user != null)
+            // Also check if we have a valid access token
+            var accessToken = await _cookbookStorage.GetAccessToken();
+
+            // If logged in AND have a valid token, navigate to main app
+            if (user != null && !string.IsNullOrEmpty(accessToken))
             {
                 await MainThread.InvokeOnMainThreadAsync(() =>
                 {
@@ -126,6 +113,14 @@ public partial class App
                         Windows[0].Page = new AppShell();
                     }
                 });
+            }
+            else
+            {
+                // Token expired or invalid, clear storage and stay on login page
+                if (user != null && string.IsNullOrEmpty(accessToken))
+                {
+                    await _cookbookStorage.Empty();
+                }
             }
             // Otherwise stay on login page (already set in CreateWindow)
         }

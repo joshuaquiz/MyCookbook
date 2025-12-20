@@ -50,9 +50,31 @@ public sealed class CookbookHttpClient(
 
         try
         {
-            var result = await base.Get<T>(MakeAbsoluteUri(path), cancellationToken);
+            // Make the request directly to capture response body on error
+            var response = await _httpClient.GetAsync(MakeAbsoluteUri(path), cancellationToken);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                // Read response body for error details
+                var errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+                var statusCode = (int)response.StatusCode;
+
+                logger.LogError(
+                    "HTTP GET ERROR: {Path} - Status: {StatusCode} {ReasonPhrase}\nResponse Body: {ErrorBody}",
+                    path, statusCode, response.ReasonPhrase, errorBody);
+
+                // Handle 401 specially
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    await HandleUnauthorizedAsync();
+                }
+
+                response.EnsureSuccessStatusCode(); // This will throw with the status code
+            }
+
+            var result = await response.Content.ReadFromJsonAsync<T>(cancellationToken);
             logger.LogInformation("HTTP GET SUCCESS: {Path} (Type: {Type})", path, typeof(T).Name);
-            return result;
+            return result!;
         }
         catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized)
         {
@@ -84,10 +106,40 @@ public sealed class CookbookHttpClient(
 
         try
         {
-            var result = await base.Post<TResponse, TRequest>(MakeAbsoluteUri(path), request, cancellationToken);
+            // Make the request directly to capture response body on error
+            var response = await _httpClient.PostAsJsonAsync(MakeAbsoluteUri(path), request, cancellationToken);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                // Read response body for error details
+                var errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+                var statusCode = (int)response.StatusCode;
+
+                logger.LogError(
+                    "HTTP POST ERROR: {Path} - Status: {StatusCode} {ReasonPhrase}\nResponse Body: {ErrorBody}",
+                    path, statusCode, response.ReasonPhrase, errorBody);
+
+                // Handle 401 specially
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    await HandleUnauthorizedAsync();
+                }
+
+                response.EnsureSuccessStatusCode(); // This will throw with the status code
+            }
+
+            // Check if response has content before trying to deserialize
+            var contentLength = response.Content.Headers.ContentLength;
+            if (contentLength == 0)
+            {
+                logger.LogInformation("HTTP POST SUCCESS: {Path} (Empty response)", path);
+                return default!;
+            }
+
+            var result = await response.Content.ReadFromJsonAsync<TResponse>(cancellationToken);
             logger.LogInformation("HTTP POST SUCCESS: {Path} (Response: {ResponseType})",
                 path, typeof(TResponse).Name);
-            return result;
+            return result!;
         }
         catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized)
         {

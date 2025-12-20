@@ -12,7 +12,8 @@ public partial class RecipeSummaryComponent
     public static readonly BindableProperty ItemProperty = BindableProperty.Create(
         nameof(Item),
         typeof(RecipeSummaryViewModel),
-        typeof(RecipeSummaryComponent));
+        typeof(RecipeSummaryComponent),
+        propertyChanged: OnItemChanged);
 
     public RecipeSummaryViewModel Item
     {
@@ -23,7 +24,14 @@ public partial class RecipeSummaryComponent
     public RecipeSummaryComponent()
     {
         InitializeComponent();
-        BindingContext = Item;
+    }
+
+    private static void OnItemChanged(BindableObject bindable, object oldValue, object newValue)
+    {
+        if (bindable is RecipeSummaryComponent component)
+        {
+            component.BindingContext = newValue;
+        }
     }
 
     private async void OnTapped(
@@ -48,11 +56,8 @@ public partial class RecipeSummaryComponent
             // Reset to normal state immediately
             VisualStateManager.GoToState(border, "Normal");
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            // An unexpected error occurred. No browser may be installed on the device.
-            Console.WriteLine(ex.Message);
-
             // Make sure to reset state even on error
             VisualStateManager.GoToState(border, "Normal");
         }
@@ -143,7 +148,7 @@ public partial class RecipeSummaryComponent
             navigationUrl += $"&PreviewRating={Item.Rating.Value}";
         }
 
-        // Navigate to recipe page with preview data (fire and forget for immediate navigation)
+        // Navigate to recipe page with preview data
         return Shell.Current.GoToAsync(navigationUrl);
     }
 }

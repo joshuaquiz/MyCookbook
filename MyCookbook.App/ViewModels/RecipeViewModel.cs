@@ -16,7 +16,6 @@ using System.Threading.Tasks;
 
 namespace MyCookbook.App.ViewModels;
 
-[QueryProperty(nameof(Recipe), nameof(Recipe))]
 [QueryProperty(nameof(Guid), nameof(Guid))]
 [QueryProperty(nameof(PreviewName), nameof(PreviewName))]
 [QueryProperty(nameof(PreviewImageUrl), nameof(PreviewImageUrl))]
@@ -491,7 +490,7 @@ public partial class RecipeViewModel : BaseViewModel
             var deepLink = $"mycookbook://recipe/{RecipeGuid}";
             var webLink = $"https://mycookbook.app/recipe/{RecipeGuid}";
 
-            await Microsoft.Maui.ApplicationModel.DataTransfer.Share.Default.RequestAsync(new Microsoft.Maui.ApplicationModel.DataTransfer.ShareTextRequest
+            await Microsoft.Maui.ApplicationModel.DataTransfer.Share.Default.RequestAsync(new ShareTextRequest
             {
                 Text = $"Check out this recipe: {Name}\n\n{webLink}",
                 Title = "Share Recipe",

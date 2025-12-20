@@ -183,7 +183,7 @@
                     <CarouselView.ItemTemplate>
                         <DataTemplate>
                             <controls:CachedImage
-                                Source="{Binding ., Converter={StaticResource StringToUriConverter}}"
+                                Source="{Binding .}"
                                 Aspect="AspectFill"
                                 HorizontalOptions="Fill"
                                 VerticalOptions="Fill">

@@ -1,14 +1,20 @@
 using System;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Threading.RateLimiting;
 using Amazon.SecretsManager;
 using Amazon.SecretsManager.Model;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.IdentityModel.Tokens;
@@ -16,7 +22,9 @@ using MyCookbook.API.Interfaces;
 using MyCookbook.API.Implementations;
 using MyCookbook.API.BackgroundJobs;
 using MyCookbook.API.Implementations.SiteParsers;
+using MyCookbook.API.Middleware;
 using MyCookbook.Common.Database;
+using Npgsql;
 
 namespace MyCookbook.API;
 
@@ -29,6 +37,57 @@ public sealed class Program
 
         // Add services to the container.
         builder.Services.AddControllers();
+
+        // Configure response compression for better performance
+        builder.Services.AddResponseCompression(options =>
+        {
+            options.EnableForHttps = true;
+            options.Providers.Add<GzipCompressionProvider>();
+            options.Providers.Add<BrotliCompressionProvider>();
+            options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+                new[] { "application/json" });
+        });
+
+        builder.Services.Configure<GzipCompressionProviderOptions>(options =>
+        {
+            options.Level = CompressionLevel.Fastest;
+        });
+
+        builder.Services.Configure<BrotliCompressionProviderOptions>(options =>
+        {
+            options.Level = CompressionLevel.Fastest;
+        });
+
+        // Configure output caching for GET endpoints
+        builder.Services.AddOutputCache(options =>
+        {
+            // Default policy - cache for 1 minute
+            options.AddBasePolicy(builder => builder.Expire(TimeSpan.FromMinutes(1)));
+
+            // Popular recipes - cache for 5 minutes (high traffic, changes infrequently)
+            options.AddPolicy("PopularRecipes", builder =>
+                builder.Expire(TimeSpan.FromMinutes(5))
+                    .SetVaryByQuery("take", "skip"));
+
+            // Search results - cache for 2 minutes (varies by search params)
+            options.AddPolicy("SearchResults", builder =>
+                builder.Expire(TimeSpan.FromMinutes(2))
+                    .SetVaryByQuery("term", "category", "ingredient", "exclude", "take", "skip"));
+
+            // Individual recipes - cache for 10 minutes (rarely change)
+            options.AddPolicy("RecipeDetails", builder =>
+                builder.Expire(TimeSpan.FromMinutes(10)));
+
+            // User cookbook - cache for 1 minute (user-specific, changes more often)
+            options.AddPolicy("UserCookbook", builder =>
+                builder.Expire(TimeSpan.FromMinutes(1))
+                    .SetVaryByQuery("take", "skip")
+                    .SetVaryByRouteValue("userId"));
+
+            // Ingredients list - cache for 30 minutes (rarely changes)
+            options.AddPolicy("Ingredients", builder =>
+                builder.Expire(TimeSpan.FromMinutes(30)));
+        });
 
         // Configure JWT Authentication
         var jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET") ?? "MyCookbook-Development-Secret-Key-Change-In-Production-12345678901234567890";
@@ -81,12 +140,14 @@ public sealed class Program
             {
                 OnAuthenticationFailed = context =>
                 {
-                    Console.WriteLine($"Authentication failed: {context.Exception.Message}");
+                    var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
+                    logger.LogWarning("Authentication failed: {Message}", context.Exception.Message);
                     return Task.CompletedTask;
                 },
                 OnTokenValidated = context =>
                 {
-                    Console.WriteLine($"Token validated for: {context.Principal?.Identity?.Name}");
+                    var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
+                    logger.LogInformation("Token validated for user: {UserName}", context.Principal?.Identity?.Name);
                     return Task.CompletedTask;
                 }
             };
@@ -94,18 +155,88 @@ public sealed class Program
 
         builder.Services.AddAuthorization();
 
-        // Configure database connection
+        // Configure rate limiting to prevent abuse and reduce costs
+        builder.Services.AddRateLimiter(options =>
+        {
+            // Global rate limit: 100 requests per minute per IP
+            options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
+                RateLimitPartition.GetFixedWindowLimiter(
+                    partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                    factory: partition => new FixedWindowRateLimiterOptions
+                    {
+                        PermitLimit = 100,
+                        Window = TimeSpan.FromMinutes(1),
+                        QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                        QueueLimit = 10
+                    }));
+
+            // Stricter limit for login endpoint: 5 attempts per 15 minutes per IP
+            options.AddPolicy("login", context =>
+                RateLimitPartition.GetFixedWindowLimiter(
+                    partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                    factory: partition => new FixedWindowRateLimiterOptions
+                    {
+                        PermitLimit = 5,
+                        Window = TimeSpan.FromMinutes(15),
+                        QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                        QueueLimit = 0
+                    }));
+
+            // Handle rate limit rejections
+            options.OnRejected = async (context, cancellationToken) =>
+            {
+                context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+
+                var retryAfter = context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfterValue)
+                    ? retryAfterValue.TotalSeconds
+                    : (double?)null;
+
+                await context.HttpContext.Response.WriteAsJsonAsync(new
+                {
+                    error = "Too many requests. Please try again later.",
+                    retryAfter = retryAfter
+                }, cancellationToken);
+            };
+        });
+
+        // Configure database connection with optimized pooling
         var connectionString = await GetDatabaseConnectionString();
+
+        // Configure connection pooling for optimal performance
+        var connectionStringBuilder = new NpgsqlConnectionStringBuilder(connectionString)
+        {
+            // Connection pooling configuration
+            Pooling = true,
+            MinPoolSize = 5,                    // Maintain minimum connections
+            MaxPoolSize = 100,                  // Maximum connections in pool
+            ConnectionIdleLifetime = 300,       // 5 minutes - prune idle connections
+            ConnectionPruningInterval = 10,     // Check for pruning every 10 seconds
+
+            // Performance optimizations
+            MaxAutoPrepare = 20,                // Auto-prepare frequently used statements
+            AutoPrepareMinUsages = 2,           // Prepare after 2 uses
+
+            // Timeouts
+            Timeout = 30,                       // Connection timeout
+            CommandTimeout = 30,                // Command timeout
+
+            // Keep alive to prevent connection drops
+            KeepAlive = 30                      // Send keepalive every 30 seconds
+        };
+
         builder.Services.AddDbContextFactory<MyCookbookContext>(
             opt =>
             {
-                opt.UseNpgsql(
-                        connectionString,
-                        options => options.CommandTimeout(30))
-                    .LogTo(
-                        Console.WriteLine,
-                        [RelationalEventId.CommandExecuting, RelationalEventId.CommandError])
-                    .EnableSensitiveDataLogging();
+                var npgsqlOptions = opt.UseNpgsql(
+                    connectionStringBuilder.ConnectionString,
+                    options => options.CommandTimeout(30));
+
+                // Only enable sensitive data logging in development
+                // In production, this would log passwords, tokens, and PII to CloudWatch
+                if (builder.Environment.IsDevelopment())
+                {
+                    npgsqlOptions.EnableSensitiveDataLogging();
+                }
             });
         builder.Services.AddSingleton<IJobQueuer, JobQueuer>();
         builder.Services.AddSingleton<ILdJsonExtractor, LdJsonExtractor>();
@@ -133,6 +264,15 @@ public sealed class Program
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
+        // Global exception handler should be first to catch all exceptions
+        app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
+
+        // Response compression MUST be early in the pipeline
+        app.UseResponseCompression();
+
+        // Output caching should be early in the pipeline
+        app.UseOutputCache();
+
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
@@ -140,6 +280,10 @@ public sealed class Program
         }
 
         app.UseHttpsRedirection();
+
+        // Rate limiting should be after routing but before authentication
+        app.UseRateLimiter();
+
         app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();

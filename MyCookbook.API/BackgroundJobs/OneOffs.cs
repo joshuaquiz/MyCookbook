@@ -54,7 +54,7 @@ public sealed partial class OneOffs(
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            logger.LogError(e, "Error in OneOffs job");
             throw;
         }
     }

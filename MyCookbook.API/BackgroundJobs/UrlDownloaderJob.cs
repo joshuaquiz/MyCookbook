@@ -76,7 +76,7 @@ public sealed class UrlDownloaderJob(
                     }
                     finally
                     {
-                        dataSource.ProcessedDatetime = DateTime.Now;
+                        dataSource.ProcessedDatetime = DateTime.UtcNow;
                     }
 
                     await db.SaveChangesAsync(

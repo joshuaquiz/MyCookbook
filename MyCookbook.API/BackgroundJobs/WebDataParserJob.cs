@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using MyCookbook.API.Interfaces;
 using MyCookbook.Common.Database;
 
@@ -12,7 +13,8 @@ namespace MyCookbook.API.BackgroundJobs;
 public sealed class WebDataParserJob(
     IDbContextFactory<MyCookbookContext> myCookbookContextFactory,
     IUrlLdJsonDataNormalizer urlLdJsonDataNormalizer,
-    IRecipeWebSiteWrapperProcessor recipeWebSiteWrapperProcessor)
+    IRecipeWebSiteWrapperProcessor recipeWebSiteWrapperProcessor,
+    ILogger<WebDataParserJob> logger)
     : BackgroundService
 {
     protected override async Task ExecuteAsync(
@@ -61,7 +63,7 @@ public sealed class WebDataParserJob(
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                logger.LogError(e, "Error in WebDataParserJob");
                 throw;
             }
         }

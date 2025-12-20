@@ -18,22 +18,18 @@ public partial class HomePage
 
     public HomePage(HomePageViewModel viewModel)
     {
-        Debug.WriteLine("[HomePage] Constructor called");
         ViewModel = viewModel;
         BindingContext = ViewModel;
         InitializeComponent();
 
-        Debug.WriteLine("[HomePage] Setting GetData property");
-        ViewModel.GetData = ViewModel.GetRecipeData;
+        RecipeList.GetData = ViewModel.GetRecipeData;
 
-        Debug.WriteLine("[HomePage] Setting TriggerRefresh action");
         ViewModel.TriggerRefresh = () =>
             MainThread.InvokeOnMainThreadAsync(() =>
                 RecipeList.RefreshData(CancellationToken.None));
 
         RecipeList.Loaded += (_, _) =>
         {
-            Debug.WriteLine("[HomePage] RecipeList Loaded event fired");
             if (RecipeList.Content is Grid grid
                 && grid.Children[0] is RefreshView { Content: CollectionView collectionView })
             {
@@ -45,13 +41,11 @@ public partial class HomePage
     protected override void OnAppearing()
     {
         base.OnAppearing();
-        Debug.WriteLine($"[HomePage] OnAppearing called - HasInitialized: {_hasInitialized}");
 
         // Load data asynchronously on first appearance
         if (!_hasInitialized)
         {
             _hasInitialized = true;
-            Debug.WriteLine("[HomePage] Calling RecipeList.RefreshData");
             _ = RecipeList.RefreshData(CancellationToken.None);
         }
     }

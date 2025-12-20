@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Amazon.CDK;
 using Amazon.CDK.AWS.ApplicationAutoScaling;
+using Amazon.CDK.AWS.Budgets;
 using Amazon.CDK.AWS.Cognito;
 using Amazon.CDK.AWS.EC2;
 using Amazon.CDK.AWS.ECS;
@@ -298,6 +299,9 @@ internal sealed class StackBuilder
                         new LogGroupProps
                         {
                             LogGroupName = $"/ecs/{appName}-api-{stackBuilderProps.EnvironmentName.ToLower()}",
+                            // CRITICAL: Keep retention at 3 days to prevent runaway CloudWatch costs
+                            // 3 days @ ~500MB/day = ~1.5GB max = ~$0.75/month storage
+                            // vs 30 days = ~15GB = ~$7.50/month
                             Retention = RetentionDays.THREE_DAYS,
                             RemovalPolicy = RemovalPolicy.DESTROY
                         })
@@ -503,6 +507,161 @@ internal sealed class StackBuilder
         // Apply tags to all resources in the stack
         Tags.Of(infrastructureStack)
             .Add("Application", appName);
+
+        // Create AWS Budget to monitor costs and prevent overspending
+        // Budget for overall monthly costs - alert at $50, hard limit conceptually at $100
+        new CfnBudget(
+            infrastructureStack,
+            $"{appName}MonthlyBudget",
+            new CfnBudgetProps
+            {
+                Budget = new CfnBudget.BudgetDataProperty
+                {
+                    BudgetName = $"{appName}-Monthly-Budget-{stackBuilderProps.EnvironmentName}",
+                    BudgetType = "COST",
+                    TimeUnit = "MONTHLY",
+                    BudgetLimit = new CfnBudget.SpendProperty
+                    {
+                        Amount = 100.0, // $100/month total budget
+                        Unit = "USD"
+                    },
+                    CostFilters = new Dictionary<string, object>
+                    {
+                        {
+                            "TagKeyValue", new[]
+                            {
+                                $"user:Application${appName}"
+                            }
+                        }
+                    }
+                },
+                NotificationsWithSubscribers = new[]
+                {
+                    // Alert at 50% ($50)
+                    new CfnBudget.NotificationWithSubscribersProperty
+                    {
+                        Notification = new CfnBudget.NotificationProperty
+                        {
+                            NotificationType = "ACTUAL",
+                            ComparisonOperator = "GREATER_THAN",
+                            Threshold = 50.0,
+                            ThresholdType = "PERCENTAGE"
+                        },
+                        Subscribers = new[]
+                        {
+                            new CfnBudget.SubscriberProperty
+                            {
+                                SubscriptionType = "EMAIL",
+                                Address = "joshua.galloway@outlook.com" // Replace with your email
+                            }
+                        }
+                    },
+                    // Alert at 80% ($80)
+                    new CfnBudget.NotificationWithSubscribersProperty
+                    {
+                        Notification = new CfnBudget.NotificationProperty
+                        {
+                            NotificationType = "ACTUAL",
+                            ComparisonOperator = "GREATER_THAN",
+                            Threshold = 80.0,
+                            ThresholdType = "PERCENTAGE"
+                        },
+                        Subscribers = new[]
+                        {
+                            new CfnBudget.SubscriberProperty
+                            {
+                                SubscriptionType = "EMAIL",
+                                Address = "joshua.galloway@outlook.com"
+                            }
+                        }
+                    },
+                    // Alert at 100% ($100)
+                    new CfnBudget.NotificationWithSubscribersProperty
+                    {
+                        Notification = new CfnBudget.NotificationProperty
+                        {
+                            NotificationType = "ACTUAL",
+                            ComparisonOperator = "GREATER_THAN",
+                            Threshold = 100.0,
+                            ThresholdType = "PERCENTAGE"
+                        },
+                        Subscribers = new[]
+                        {
+                            new CfnBudget.SubscriberProperty
+                            {
+                                SubscriptionType = "EMAIL",
+                                Address = "joshua.galloway@outlook.com"
+                            }
+                        }
+                    }
+                }
+            });
+
+        // Create a separate budget specifically for CloudWatch Logs to prevent runaway costs
+        new CfnBudget(
+            infrastructureStack,
+            $"{appName}LogsBudget",
+            new CfnBudgetProps
+            {
+                Budget = new CfnBudget.BudgetDataProperty
+                {
+                    BudgetName = $"{appName}-Logs-Budget-{stackBuilderProps.EnvironmentName}",
+                    BudgetType = "COST",
+                    TimeUnit = "MONTHLY",
+                    BudgetLimit = new CfnBudget.SpendProperty
+                    {
+                        Amount = 5.0, // $5/month for logs (should be ~$0.50 with 3-day retention)
+                        Unit = "USD"
+                    },
+                    CostFilters = new Dictionary<string, object>
+                    {
+                        {
+                            "Service", new[] { "Amazon CloudWatch Logs" }
+                        }
+                    }
+                },
+                NotificationsWithSubscribers = new[]
+                {
+                    // Alert at 50% ($2.50)
+                    new CfnBudget.NotificationWithSubscribersProperty
+                    {
+                        Notification = new CfnBudget.NotificationProperty
+                        {
+                            NotificationType = "ACTUAL",
+                            ComparisonOperator = "GREATER_THAN",
+                            Threshold = 50.0,
+                            ThresholdType = "PERCENTAGE"
+                        },
+                        Subscribers = new[]
+                        {
+                            new CfnBudget.SubscriberProperty
+                            {
+                                SubscriptionType = "EMAIL",
+                                Address = "joshua.galloway@outlook.com"
+                            }
+                        }
+                    },
+                    // Alert at 100% ($5)
+                    new CfnBudget.NotificationWithSubscribersProperty
+                    {
+                        Notification = new CfnBudget.NotificationProperty
+                        {
+                            NotificationType = "ACTUAL",
+                            ComparisonOperator = "GREATER_THAN",
+                            Threshold = 100.0,
+                            ThresholdType = "PERCENTAGE"
+                        },
+                        Subscribers = new[]
+                        {
+                            new CfnBudget.SubscriberProperty
+                            {
+                                SubscriptionType = "EMAIL",
+                                Address = "joshua.galloway@outlook.com"
+                            }
+                        }
+                    }
+                }
+            });
 
         return app;
     }

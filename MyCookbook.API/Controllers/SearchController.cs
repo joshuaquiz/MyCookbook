@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.EntityFrameworkCore;
 using MyCookbook.Common.ApiModels;
 using MyCookbook.Common.Database;
@@ -19,6 +20,7 @@ public sealed class SearchController(
     : ControllerBase
 {
     [HttpGet("Ingredients")]
+    [OutputCache(PolicyName = "Ingredients")]
     public async ValueTask<ActionResult<List<SearchCategoryItem>>> GetIngredients(
         CancellationToken cancellationToken)
     {
@@ -26,6 +28,7 @@ public sealed class SearchController(
             cancellationToken);
 
         var ingredients = await db.Ingredients
+            .AsNoTracking()
             .Where(i => !i.Name.Contains(" "))
             .Select(i => new SearchCategoryItem
             {
@@ -43,6 +46,7 @@ public sealed class SearchController(
     }
 
     [HttpGet("Global")]
+    [OutputCache(PolicyName = "SearchResults")]
     public async ValueTask<ActionResult<List<RecipeSummaryViewModel>>> GlobalSearch(
         [FromQuery] string? term = null,
         [FromQuery] string? category = null,
@@ -56,9 +60,10 @@ public sealed class SearchController(
             cancellationToken);
 
         var query = db.Recipes
+            .AsNoTracking()
             .Include(x => x.EntityImages).ThenInclude(x => x.Image)
             .Include(x => x.Author).ThenInclude(x => x.EntityImages).ThenInclude(x => x.Image)
-            .Include(x => x.RawDataSource)
+            // ✅ Fix #1: Don't include RawDataSource to avoid loading massive HTML
             .Include(x => x.RecipeTags).ThenInclude(x => x.Tag)
             .Include(x => x.RecipeCategories).ThenInclude(x => x.Category)
             .Include(x => x.RecipeHearts)
@@ -98,6 +103,18 @@ public sealed class SearchController(
             .Take(take)
             .ToListAsync(cancellationToken);
 
+        // Get ONLY the URLs for these recipes (not the entire RawDataSource with HTML)
+        var recipeIds = recipes.Select(r => r.RecipeId).ToList();
+        var recipeUrls = await db.Recipes
+            .AsNoTracking()
+            .Where(r => recipeIds.Contains(r.RecipeId))
+            .Select(r => new
+            {
+                r.RecipeId,
+                Url = r.RawDataSource != null ? r.RawDataSource.Url : null
+            })
+            .ToDictionaryAsync(x => x.RecipeId, x => x.Url, cancellationToken);
+
         var result = recipes.Select(x => new RecipeSummaryViewModel
         {
             Guid = x.RecipeId,
@@ -115,7 +132,7 @@ public sealed class SearchController(
                 .Where(ei => ei.Image.ImageType == ImageType.Main)
                 .Select(ei => ei.Image.Url.ToString())
                 .FirstOrDefault(),
-            ItemUrlRaw = x.RawDataSource.Url.ToString(),
+            ItemUrlRaw = recipeUrls.GetValueOrDefault(x.RecipeId)?.ToString(),
             Tags = string.Join(" ", x.RecipeTags.Select(rt => "#" + rt.Tag.TagName)),
             Category = string.Join(", ", x.RecipeCategories.Select(rc => rc.Category.CategoryName)),
             Hearts = x.RecipeHearts.Count,

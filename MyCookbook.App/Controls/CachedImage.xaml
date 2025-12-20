@@ -6,9 +6,9 @@
     <Grid>
         <!-- Placeholder (shown while loading) -->
         <BoxView x:Name="PlaceholderBox"
-                 BackgroundColor="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray700}}"
+                 BackgroundColor="{AppThemeBinding Light=White, Dark=Black}"
                  IsVisible="{Binding Source={x:Reference Root}, Path=IsLoading}" />
-        
+
         <!-- Actual Image -->
         <Image x:Name="CachedImageControl"
                Source="{Binding Source={x:Reference Root}, Path=CachedSource}"

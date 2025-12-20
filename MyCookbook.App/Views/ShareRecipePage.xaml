@@ -8,7 +8,9 @@
     xmlns:apiModels="clr-namespace:MyCookbook.Common.ApiModels;assembly=MyCookbook.Common"
     xmlns:converters="clr-namespace:MyCookbook.App.Converters"
     x:DataType="viewModels:ShareRecipeViewModel"
-    Title="Share Recipe">
+    Title="Share Recipe"
+    Shell.TabBarIsVisible="False"
+    Shell.NavBarIsVisible="True">
 
     <ContentPage.Resources>
         <converters:IsGreaterThanZeroConverter x:Key="IsGreaterThanZeroConverter" />

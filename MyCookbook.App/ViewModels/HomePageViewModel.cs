@@ -45,7 +45,6 @@ public partial class HomePageViewModel : BaseViewModel, IDisposable
         ISearchService searchService,
         INotificationService notificationService)
     {
-        Debug.WriteLine("[HomePageViewModel] Constructor called");
         _recipeService = recipeService;
         _searchService = searchService;
         _notificationService = notificationService;
@@ -57,11 +56,6 @@ public partial class HomePageViewModel : BaseViewModel, IDisposable
     private void OnSearchTimerElapsed(object? sender, ElapsedEventArgs e)
     {
         TriggerRefresh?.Invoke();
-    }
-
-    partial void OnGetDataChanged(Func<int, CancellationToken, IAsyncEnumerable<Components.RecipeSummary.RecipeSummaryViewModel>>? value)
-    {
-        Debug.WriteLine($"[HomePageViewModel] GetData property set: {value != null}");
     }
 
     partial void OnSearchTextChanged(string value)
@@ -110,8 +104,6 @@ public partial class HomePageViewModel : BaseViewModel, IDisposable
         int pageNumber,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        Debug.WriteLine($"[HomePageViewModel] GetRecipeData called - Page: {pageNumber}");
-
         List<Common.ApiModels.RecipeSummaryViewModel> result;
 
         try
@@ -134,13 +126,9 @@ public partial class HomePageViewModel : BaseViewModel, IDisposable
                     _pageSize * pageNumber,
                     cancellationToken);
             }
-
-            Debug.WriteLine($"[HomePageViewModel] GetRecipeData received {result.Count} items");
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"[HomePageViewModel] Error loading recipes: {ex.Message}");
-
             // Show user-friendly error message
             var message = ErrorMessageHelper.GetUserFriendlyMessage(ex);
             await _notificationService.ShowErrorAsync(message, "Failed to Load Recipes");
@@ -171,8 +159,6 @@ public partial class HomePageViewModel : BaseViewModel, IDisposable
                 Tags = item.Tags ?? string.Empty
             };
         }
-
-        Debug.WriteLine($"[HomePageViewModel] GetRecipeData finished yielding items");
     }
 
     public void Dispose()
