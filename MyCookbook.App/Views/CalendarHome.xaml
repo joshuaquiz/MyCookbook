@@ -8,6 +8,8 @@
     xmlns:viewModels="using:MyCookbook.App.ViewModels"
     xmlns:apiModels="clr-namespace:MyCookbook.Common.ApiModels;assembly=MyCookbook.Common"
     xmlns:recipeSummary="clr-namespace:MyCookbook.App.Components.RecipeSummary"
+    xmlns:controls="clr-namespace:Plugin.MauiMTAdmob.Controls;assembly=Plugin.MauiMTAdmob"
+    xmlns:constants="clr-namespace:MyCookbook.App.Constants"
     x:DataType="viewModels:CalendarHomeViewModel"
     Shell.NavBarIsVisible="False"
     Shell.PresentationMode="NotAnimated"
@@ -20,6 +22,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="{StaticResource HeightMedium}" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -116,5 +119,11 @@
                 </CollectionView>
             </VerticalStackLayout>
         </ScrollView>
+        <controls:MTAdView
+            Grid.Row="6"
+            HeightRequest="50"
+            BackgroundColor="Transparent"
+            AdsId="{x:Static constants:AdMobConstants.BannerAdUnitId}"
+            AdSize="AnchoredAdaptive" />
     </Grid>
 </views:BasePage>

@@ -17,7 +17,7 @@ using MyCookbook.App.Interfaces;
 using MyCookbook.App.Services;
 using MyCookbook.App.ViewModels;
 using MyCookbook.App.Views;
-//using Plugin.MauiMTAdmob;
+using Plugin.MauiMTAdmob;
 
 namespace MyCookbook.App;
 
@@ -44,7 +44,7 @@ public static class MauiProgram
             .UseMauiApp<App>()
             .UseMauiCommunityToolkit()
             .UseMauiCommunityToolkitCore()
-            //.UseMauiMTAdmob()
+            .UseMauiMTAdmob()
             .ConfigureFonts(
                 fonts =>
                 {

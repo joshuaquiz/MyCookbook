@@ -2,13 +2,21 @@
 <views:BasePage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                 xmlns:views="using:MyCookbook.App.Views"
+                xmlns:controls="clr-namespace:Plugin.MauiMTAdmob.Controls;assembly=Plugin.MauiMTAdmob"
+                xmlns:constants="clr-namespace:MyCookbook.App.Constants"
                 x:Class="MyCookbook.App.Views.ShoppingListHome"
                 Title="{Binding Title}"
                 Shell.NavBarIsVisible="False"
                 Shell.PresentationMode="ModalAnimated">
-    <CollectionView
-        ItemsSource="{Binding Ingredients}"
-        ItemsLayout="VerticalList">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="{StaticResource HeightMedium}" />
+        </Grid.RowDefinitions>
+        <CollectionView
+            Grid.Row="0"
+            ItemsSource="{Binding Ingredients}"
+            ItemsLayout="VerticalList">
         <CollectionView.EmptyView>
             <VerticalStackLayout
                 VerticalOptions="Center"
@@ -91,5 +99,12 @@
                 </VerticalStackLayout>
             </DataTemplate>
         </CollectionView.ItemTemplate>
-    </CollectionView>
+        </CollectionView>
+        <controls:MTAdView
+            Grid.Row="1"
+            HeightRequest="50"
+            BackgroundColor="Transparent"
+            AdsId="{x:Static constants:AdMobConstants.BannerAdUnitId}"
+            AdSize="AnchoredAdaptive" />
+    </Grid>
 </views:BasePage>

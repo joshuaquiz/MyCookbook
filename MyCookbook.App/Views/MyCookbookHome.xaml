@@ -6,6 +6,8 @@
     xmlns:views="using:MyCookbook.App.Views"
     xmlns:recipeSummary="clr-namespace:MyCookbook.App.Components.RecipeSummary"
     xmlns:viewModels="using:MyCookbook.App.ViewModels"
+    xmlns:controls="clr-namespace:Plugin.MauiMTAdmob.Controls;assembly=Plugin.MauiMTAdmob"
+    xmlns:constants="clr-namespace:MyCookbook.App.Constants"
     x:DataType="viewModels:MyCookbookViewModel"
     Title="{Binding Title}"
     Shell.NavBarIsVisible="False"
@@ -68,25 +70,13 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
         </RefreshView>
-        <Rectangle
+        <controls:MTAdView
             Grid.Row="2"
             Grid.Column="0"
             Grid.ColumnSpan="2"
-            HorizontalOptions="Fill"
-            VerticalOptions="Fill"
-            BackgroundColor="Gray"/>
-        <!--<controls:MTAdView
-            Grid.Row="1"
-            Grid.Column="0"/>-->
-        <Label
-            Grid.Row="2"
-            Grid.Column="0"
-            Grid.ColumnSpan="2"
-            HorizontalOptions="Fill"
-            VerticalOptions="Fill"
-            VerticalTextAlignment="Center"
-            HorizontalTextAlignment="Center"
-            Text="Ads go here"
-            TextColor="{AppThemeBinding Light=Black, Dark=White}" />
+            HeightRequest="50"
+            BackgroundColor="Transparent"
+            AdsId="{x:Static constants:AdMobConstants.BannerAdUnitId}"
+            AdSize="AnchoredAdaptive" />
     </Grid>
 </views:BasePage>

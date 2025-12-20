@@ -4,11 +4,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
+using MyCookbook.App.Constants;
 using MyCookbook.App.Controls;
 using MyCookbook.App.Interfaces;
 using MyCookbook.App.Views;
-//using Plugin.MauiMTAdmob;
-//using Plugin.MauiMTAdmob.Extra;
+using Plugin.MauiMTAdmob;
+using Plugin.MauiMTAdmob.Extra;
 
 namespace MyCookbook.App;
 
@@ -28,15 +29,18 @@ public partial class App
         CachedImage.Initialize(imageCacheService);
         var sqliteCacheService = serviceProvider.GetRequiredService<ISqliteCacheService>();
         Task.Run(async () => await sqliteCacheService.InitializeAsync()).Wait();
-        //CrossMauiMTAdmob.Current.UserPersonalizedAds = true;
-        //CrossMauiMTAdmob.Current.ComplyWithFamilyPolicies = true;
-        //CrossMauiMTAdmob.Current.UseRestrictedDataProcessing = true;
-        //CrossMauiMTAdmob.Current.AdsId = "ca-app-pub-3327131024555440/4066729058";
-        //CrossMauiMTAdmob.Current.TagForChildDirectedTreatment = MTTagForChildDirectedTreatment.TagForChildDirectedTreatmentUnspecified;
-        //CrossMauiMTAdmob.Current.TagForUnderAgeOfConsent = MTTagForUnderAgeOfConsent.TagForUnderAgeOfConsentUnspecified;
-        //CrossMauiMTAdmob.Current.MaxAdContentRating = MTMaxAdContentRating.MaxAdContentRatingG;
-        //CrossMauiMTAdmob.Current.AdChoicesCorner = AdChoicesCorner.ADCHOICES_BOTTOM_LEFT;
-        //CrossMauiMTAdmob.Current.MaximumNumberOfAdsCached = 3;
+
+        // Configure AdMob
+        CrossMauiMTAdmob.Current.UserPersonalizedAds = true;
+        CrossMauiMTAdmob.Current.ComplyWithFamilyPolicies = true;
+        CrossMauiMTAdmob.Current.UseRestrictedDataProcessing = true;
+        CrossMauiMTAdmob.Current.AdsId = AdMobConstants.BannerAdUnitId;
+        CrossMauiMTAdmob.Current.TagForChildDirectedTreatment = MTTagForChildDirectedTreatment.TagForChildDirectedTreatmentUnspecified;
+        CrossMauiMTAdmob.Current.TagForUnderAgeOfConsent = MTTagForUnderAgeOfConsent.TagForUnderAgeOfConsentUnspecified;
+        CrossMauiMTAdmob.Current.MaxAdContentRating = MTMaxAdContentRating.MaxAdContentRatingG;
+        CrossMauiMTAdmob.Current.AdChoicesCorner = AdChoicesCorner.ADCHOICES_BOTTOM_LEFT;
+        CrossMauiMTAdmob.Current.MaximumNumberOfAdsCached = 3;
+
         UserAppTheme = cookbookStorage.GetCurrentAppTheme(this).GetAwaiter().GetResult();
         AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
         TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;

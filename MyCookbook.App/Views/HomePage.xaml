@@ -4,6 +4,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:views="using:MyCookbook.App.Views"
     xmlns:recipeSummaryList="clr-namespace:MyCookbook.App.Components.RecipeSummaryList"
+    xmlns:controls="clr-namespace:Plugin.MauiMTAdmob.Controls;assembly=Plugin.MauiMTAdmob"
+    xmlns:constants="clr-namespace:MyCookbook.App.Constants"
     x:Class="MyCookbook.App.Views.HomePage"
     x:Name="Root"
     Title="Home"
@@ -135,21 +137,14 @@
             x:Name="RecipeList"
             Grid.Row="1"
             Grid.Column="0" />
-        <Rectangle
+        <controls:MTAdView
+            x:Name="MyAdView"
             Grid.Row="2"
             Grid.Column="0"
-            HorizontalOptions="Fill"
-            VerticalOptions="Fill"
-            BackgroundColor="Gray"/>
-        <!--<controls:MTAdView
-            x:Name="MyAdView"
-            Grid.Row="3"
-            Grid.Column="0"
-            HeightRequest="90"
-            Margin="0,50,0,0"
+            HeightRequest="50"
             BackgroundColor="Transparent"
-            AdsId="ca-app-pub-3327131024555440/4066729058"
-            AdSize="AnchoredAdaptive" />-->
+            AdsId="{x:Static constants:AdMobConstants.BannerAdUnitId}"
+            AdSize="AnchoredAdaptive" />
     </Grid>
 </views:BasePage>
 

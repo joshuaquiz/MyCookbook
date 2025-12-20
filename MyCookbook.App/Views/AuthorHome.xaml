@@ -8,6 +8,8 @@
     xmlns:recipeSummaryList="clr-namespace:MyCookbook.App.Components.RecipeSummaryList"
     xmlns:converters="clr-namespace:MyCookbook.App.Converters"
     xmlns:controls="clr-namespace:MyCookbook.App.Controls"
+    xmlns:adControls="clr-namespace:Plugin.MauiMTAdmob.Controls;assembly=Plugin.MauiMTAdmob"
+    xmlns:constants="clr-namespace:MyCookbook.App.Constants"
     x:DataType="viewModels:AuthorProfilePageViewModel"
     x:Name="Root"
     Title="{Binding AuthorViewModel.Name}"
@@ -23,7 +25,7 @@
             IconImageSource="gear"
             Command="{Binding SettingsCommand}" />
     </ContentPage.ToolbarItems>
-    <Grid RowDefinitions="Auto,*">
+    <Grid RowDefinitions="Auto,*,{StaticResource HeightMedium}">
         <!-- Header Section with Images and Info -->
         <VerticalStackLayout Grid.Row="0">
             <!-- Background Image with Circular Profile Image Overlay -->
@@ -170,5 +172,11 @@
                     IsVisible="{Binding Source={x:Reference Root}, Path=BindingContext.SelectedTabIndex, Converter={StaticResource EqualToConverter}, ConverterParameter=1}" />
             </Grid>
         </Grid>
+        <adControls:MTAdView
+            Grid.Row="2"
+            HeightRequest="50"
+            BackgroundColor="Transparent"
+            AdsId="{x:Static constants:AdMobConstants.BannerAdUnitId}"
+            AdSize="AnchoredAdaptive" />
     </Grid>
 </views:BasePage>
